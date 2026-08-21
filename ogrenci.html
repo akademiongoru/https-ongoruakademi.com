@@ -114,14 +114,30 @@
 
   document.getElementById("ogrenciGirisForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const kAdi = document.getElementById("gKullaniciAdi").value.toLowerCase().trim();
+    const kAdi = document.getElementById("gKullaniciAdi").value.trim();
     const sifre = document.getElementById("gSifre").value.trim();
     const btn = document.getElementById("girisBtn");
     btn.disabled = true; btn.innerText = "Giriş Yapılıyor...";
 
     try {
-      const q = query(collection(db, "kullanicilar"), where("kullaniciAdi", "==", kAdi), where("sifre", "==", sifre), where("rol", "==", "ogrenci"));
-      const snapshot = await getDocs(q);
+      // 1. Önce "ogrenciler" koleksiyonunda ara
+      let q = query(
+        collection(db, "ogrenciler"), 
+        where("kullaniciAdi", "==", kAdi), 
+        where("sifre", "==", sifre)
+      );
+      let snapshot = await getDocs(q);
+
+      // 2. Bulunamazsa "kullanicilar" koleksiyonunu dene
+      if (snapshot.empty) {
+        q = query(
+          collection(db, "kullanicilar"), 
+          where("kullaniciAdi", "==", kAdi), 
+          where("sifre", "==", sifre), 
+          where("rol", "==", "ogrenci")
+        );
+        snapshot = await getDocs(q);
+      }
 
       if (snapshot.empty) {
         alert("Kullanıcı adı veya şifre hatalı!");
