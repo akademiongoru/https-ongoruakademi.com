@@ -131,7 +131,6 @@
       border-bottom: 1px solid var(--border-color);
       position: relative;
       z-index: 999;
-      flex-wrap: wrap;
     }
 
     nav a {
@@ -1155,13 +1154,48 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 1. DERS PROGRAMI GÖSTERME (Window Scope'a Bağlandı)
+    // ZİYARETÇİ SAYACI MANTIĞI
+    async function ziyaretciSayaciniGuncelle() {
+      const sayacRef = doc(db, "istatistikler", "ziyaretler");
+      const yeniZiyaretci = !localStorage.getItem("ongoru_ziyaretci_id");
+
+      try {
+        const docSnap = await getDoc(sayacRef);
+        if (!docSnap.exists()) {
+          await setDoc(sayacRef, { toplam: 1, tekil: 1 });
+        } else {
+          const guncellemeVerisi = { toplam: increment(1) };
+          if (yeniZiyaretci) {
+            guncellemeVerisi.tekil = increment(1);
+          }
+          await updateDoc(sayacRef, guncellemeVerisi);
+        }
+        if (yeniZiyaretci) {
+          localStorage.setItem("ongoru_ziyaretci_id", "true");
+        }
+      } catch (err) {
+        console.error("Sayaç Hatası:", err);
+      }
+
+      // CANLI ANLIK BİLGİ DİNLEME
+      onSnapshot(sayacRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          const toplamEl = document.getElementById("toplamZiyaret");
+          const tekilEl = document.getElementById("tekilZiyaret");
+          if (toplamEl) toplamEl.innerText = data.toplam || 0;
+          if (tekilEl) tekilEl.innerText = data.tekil || 0;
+        }
+      });
+    }
+
+    ziyaretciSayaciniGuncelle();
+
+    // DERS PROGRAMI GÖSTERME
     window.dersProgramiGoster = function(sinifAdi) {
       const modal = document.getElementById("programModal");
       const modalBaslik = document.getElementById("modalBaslik");
       const modalResimler = document.getElementById("modalResimler");
-
-      if (!modal || !modalBaslik || !modalResimler) return;
 
       modalBaslik.innerText = sinifAdi + " Ders Programı";
       modalResimler.innerHTML = "<p style='text-align:center;'>Yükleniyor...</p>";
@@ -1190,48 +1224,12 @@
       });
     };
 
-    // 2. ZİYARETÇİ SAYACI MANTIĞI
-    async function ziyaretciSayaciniGuncelle() {
-      const sayacRef = doc(db, "istatistikler", "ziyaretler");
-      const yeniZiyaretci = !localStorage.getItem("ongoru_ziyaretci_id");
-
-      try {
-        const docSnap = await getDoc(sayacRef);
-        if (!docSnap.exists()) {
-          await setDoc(sayacRef, { toplam: 1, tekil: 1 });
-        } else {
-          const guncellemeVerisi = { toplam: increment(1) };
-          if (yeniZiyaretci) {
-            guncellemeVerisi.tekil = increment(1);
-          }
-          await updateDoc(sayacRef, guncellemeVerisi);
-        }
-        if (yeniZiyaretci) {
-          localStorage.setItem("ongoru_ziyaretci_id", "true");
-        }
-      } catch (err) {
-        console.error("Sayaç Hatası:", err);
-      }
-
-      onSnapshot(sayacRef, (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.data();
-          const toplamEl = document.getElementById("toplamZiyaret");
-          const tekilEl = document.getElementById("tekilZiyaret");
-          if (toplamEl) toplamEl.innerText = data.toplam || 0;
-          if (tekilEl) tekilEl.innerText = data.tekil || 0;
-        }
-      });
-    }
-
-    ziyaretciSayaciniGuncelle();
-
-    // 3. GALERİ DİNAMİK YÜKLEME (Slider Index Düzeltildi)
+    // GALERİ DİNAMİK YÜKLEME
     onSnapshot(collection(db, "galeri"), (snapshot) => {
       const galeriGrid = document.getElementById("anaGaleriGrid");
       const sliderContainer = document.getElementById("mainSlider");
 
-      if (galeriGrid && sliderContainer && !snapshot.empty) {
+      if (!snapshot.empty) {
         galeriGrid.innerHTML = "";
 
         const solOk = sliderContainer.querySelector(".ok.sol");
@@ -1239,7 +1237,6 @@
         mevcutSlidelar.forEach(s => s.remove());
 
         let ilkEl = true;
-        if (typeof index !== 'undefined') index = 0; // Index sıfırlama eklendi
 
         snapshot.forEach((docSnap) => {
           const item = docSnap.data();
@@ -1257,16 +1254,16 @@
           slideImg.alt = item.baslik || "Slider Fotoğrafı";
 
           slideDiv.appendChild(slideImg);
-          if (solOk) sliderContainer.insertBefore(slideDiv, solOk);
+          sliderContainer.insertBefore(slideDiv, solOk);
 
           ilkEl = false;
         });
 
-        if (typeof window.sliderBaslat === "function") window.sliderBaslat();
+        if (window.sliderBaslat) window.sliderBaslat();
       }
     });
 
-    // 4. ANA BAŞVURU FORMU
+    // ANA BAŞVURU FORMU
     const form = document.getElementById("contactForm");
     if (form) {
       form.addEventListener("submit", async function(e) {
@@ -1306,7 +1303,7 @@
       });
     }
 
-    // 5. HIZLI FORM
+    // HIZLI FORM
     const hizliForm = document.getElementById("hizliContactForm");
     if (hizliForm) {
       hizliForm.addEventListener("submit", async function(e) {
