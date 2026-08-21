@@ -39,7 +39,7 @@
 <body>
 
 <header>
-  <h1><i class="fa-solid fa-user-graduate"></i> Öngörü Akademi - Öğretmen & Öğrenci Paneli</h1>
+  <h1><i class="fa-solid fa-user-graduate"></i> Öngörü Akademi - Öğrenci Paneli</h1>
   <div>
     <span id="ogrenciIsmi" style="margin-right:15px; font-weight:bold; color:#ff7a00;"></span>
     <a href="index.html"><i class="fa-solid fa-house"></i> Ana Sayfa</a>
@@ -51,7 +51,7 @@
   <h2>Öğrenci Girişi</h2>
   <form id="ogrenciGirisForm">
     <input type="text" id="gKullaniciAdi" placeholder="Kullanıcı Adı / T.C." required autofocus>
-    <input type="password" id="gSifre" placeholder="Şifre" required>
+    <input type="password" id="gSifre" placeholder="Şifre (Varsa)">
     <button type="submit" id="girisBtn">Giriş Yap</button>
   </form>
 </div>
@@ -112,7 +112,7 @@
     }
   });
 
-  // ESNEK & GARANTİ GİRİŞ KONTROLÜ
+  // VERİTABANIYLA %100 UYUMLU KONTROL
   document.getElementById("ogrenciGirisForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const gGirilen = document.getElementById("gKullaniciAdi").value.trim();
@@ -122,7 +122,7 @@
 
     try {
       let eslesenOgrenci = null;
-      const koleksiyonlar = ["ogrenciler", "kullanicilar"];
+      const koleksiyonlar = ["kullanicilar", "ogrenciler"];
 
       for (const kol of koleksiyonlar) {
         const snapshot = await getDocs(collection(db, kol));
@@ -130,11 +130,13 @@
         snapshot.forEach(docSnap => {
           const data = docSnap.data();
           
-          const dbKullanici = String(data.kullaniciAdi || data.kullanici_adi || data.tc || data.username || "").trim();
+          const dbKullanici = String(data.kullaniciAdi || data.kullanici_adi || data.tc || data.adSoyad || "").trim();
           const dbSifre = String(data.sifre || data.password || "").trim();
 
           const kAdiEslesiyor = dbKullanici.toLocaleUpperCase('tr-TR') === gGirilen.toLocaleUpperCase('tr-TR');
-          const sifreEslesiyor = dbSifre.toLocaleUpperCase('tr-TR') === gSifre.toLocaleUpperCase('tr-TR');
+          
+          // Veritabanında şifre yoksa şifresiz geç, varsa şifreyi kontrol et
+          const sifreEslesiyor = (dbSifre === "") || (dbSifre.toLocaleUpperCase('tr-TR') === gSifre.toLocaleUpperCase('tr-TR'));
 
           if (kAdiEslesiyor && sifreEslesiyor) {
             eslesenOgrenci = { id: docSnap.id, ...data };
