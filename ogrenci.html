@@ -50,7 +50,7 @@
 <div class="giris-kutu" id="girisAlani">
   <h2>Öğrenci Girişi</h2>
   <form id="ogrenciGirisForm">
-    <input type="text" id="gKullaniciAdi" placeholder="Kullanıcı Adı / T.C." required autofocus>
+    <input type="text" id="gKullaniciAdi" placeholder="Kullanıcı Adı" required autofocus>
     <input type="password" id="gSifre" placeholder="Şifre" required>
     <button type="submit" id="girisBtn">Giriş Yap</button>
   </form>
@@ -112,60 +112,33 @@
     }
   });
 
-  // ESNEK & GARANTİ GİRİŞ KONTROLÜ
   document.getElementById("ogrenciGirisForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const gGirilen = document.getElementById("gKullaniciAdi").value.trim();
-    const gSifre = document.getElementById("gSifre").value.trim();
+    const kAdi = document.getElementById("gKullaniciAdi").value.toLowerCase().trim();
+    const sifre = document.getElementById("gSifre").value.trim();
     const btn = document.getElementById("girisBtn");
     btn.disabled = true; btn.innerText = "Giriş Yapılıyor...";
 
     try {
-      let eslesenOgrenci = null;
-      const koleksiyonlar = ["ogrenciler", "kullanicilar"];
+      const q = query(collection(db, "kullanicilar"), where("kullaniciAdi", "==", kAdi), where("sifre", "==", sifre), where("rol", "==", "ogrenci"));
+      const snapshot = await getDocs(q);
 
-      for (const kol of koleksiyonlar) {
-        const snapshot = await getDocs(collection(db, kol));
-        
-        snapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          
-          // Veritabanındaki olası alan isimlerini al
-          const dbKullanici = String(data.kullaniciAdi || data.kullanici_adi || data.tc || data.username || "").trim();
-          const dbSifre = String(data.sifre || data.password || "").trim();
-
-          // Büyük-küçük harf farksız karşılaştır
-          const kAdiEslesiyor = dbKullanici.toLocaleUpperCase('tr-TR') === gGirilen.toLocaleUpperCase('tr-TR');
-          const sifreEslesiyor = dbSifre.toLocaleUpperCase('tr-TR') === gSifre.toLocaleUpperCase('tr-TR');
-
-          if (kAdiEslesiyor && sifreEslesiyor) {
-            eslesenOgrenci = { id: docSnap.id, ...data };
-          }
-        });
-
-        if (eslesenOgrenci) break;
-      }
-
-      if (eslesenOgrenci) {
-        aktifOgrenci = eslesenOgrenci;
+      if (snapshot.empty) {
+        alert("Kullanıcı adı veya şifre hatalı!");
+      } else {
+        snapshot.forEach(docSnap => { aktifOgrenci = { id: docSnap.id, ...docSnap.data() }; });
         localStorage.setItem("ongoru_ogrenci", JSON.stringify(aktifOgrenci));
         paneliAc();
-      } else {
-        alert("Kullanıcı adı veya şifre hatalı!");
       }
-
-    } catch (err) { 
-      alert("Giriş Hatası: " + err.message); 
-    } finally { 
-      btn.disabled = false; btn.innerText = "Giriş Yap"; 
-    }
+    } catch (err) { alert("Giriş Hatası: " + err.message); } 
+    finally { btn.disabled = false; btn.innerText = "Giriş Yap"; }
   });
 
   function paneliAc() {
     document.getElementById("girisAlani").style.display = "none";
     document.getElementById("panelAlani").style.display = "block";
     document.getElementById("cikisBtn").style.display = "inline-block";
-    document.getElementById("ogrenciIsmi").innerText = "Hoş geldin, " + escapeHtml(aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad);
+    document.getElementById("ogrenciIsmi").innerText = "Hoş geldin, " + escapeHtml(aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi);
 
     canliTestleriDinle();
   }
@@ -184,7 +157,7 @@
       sonucSnap.forEach(docSnap => {
         const data = docSnap.data();
         if (data.testId) cozulenTestIds.push(data.testId);
-        else if (data.testBaslik) cozulenTestIds.push(data.testBaslik);
+        else if (data.testBaslik) cozulenTestIds.push(data.testBaslik); // Eski kayıt desteği
       });
 
       testleriYukle();
@@ -206,6 +179,7 @@
 
         if (herkese || sinifa || kisiye) {
           testVar = true;
+          // Öğrenci bu testi ID'sine veya başlığına göre çözdü mü?
           const zatenCozuldu = cozulenTestIds.includes(testId) || cozulenTestIds.includes(t.baslik);
           
           const elem = document.createElement("div");
@@ -273,6 +247,7 @@
     e.preventDefault();
     const btn = document.getElementById("sinavBitirBtn");
 
+    // Anlık Veritabanı Doğrulaması (Çift Kontrol)
     try {
       const qCheck = query(
         collection(db, "test_sonuclari"), 
@@ -308,7 +283,7 @@
         testId: seciliTestDocId,
         ogretmenId: seciliTest.ogretmenId,
         ogrenciId: aktifOgrenci.id,
-        ogrenciAd: aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad,
+        ogrenciAd: aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi,
         testBaslik: seciliTest.baslik,
         dogru: d,
         yanlis: y,
