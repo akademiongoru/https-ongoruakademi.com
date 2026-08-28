@@ -453,6 +453,77 @@
 
     <div class="admin-container">
 
+      <!-- DENEME SINAVI SONUCU YÜKLEME MODÜLÜ -->
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-award"></i> Kurumsal Deneme Sınavı Sonucu Ekle</h2>
+        <form id="denemeSonucForm" onsubmit="denemeSonucuKaydet(event)">
+          <div class="two-col-grid" style="margin-bottom: 12px;">
+            <div class="form-group">
+              <label>Hedef Öğrenci Seçin:</label>
+              <select id="dsOgrenciSecimi" required>
+                <option value="">Öğrenci Seçiniz</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Deneme Sınav Adı:</label>
+              <input type="text" id="dsSinavAdi" placeholder="Örn: 8. Sınıf Türkiye Geneli 1. LGS Denemesi" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 12px;">
+            <div class="form-group">
+              <label>Sınav Tarihi:</label>
+              <input type="date" id="dsTarih" required>
+            </div>
+            <div class="form-group">
+              <label>Doğru sayısı:</label>
+              <input type="number" id="dsDogru" min="0" value="0" placeholder="Doğru" required>
+            </div>
+            <div class="form-group">
+              <label>Yanlış sayısı:</label>
+              <input type="number" id="dsYanlis" min="0" value="0" placeholder="Yanlış" required>
+            </div>
+            <div class="form-group">
+              <label>Boş sayısı:</label>
+              <input type="number" id="dsBos" min="0" value="0" placeholder="Boş" required>
+            </div>
+            <div class="form-group">
+              <label>Puan:</label>
+              <input type="number" step="0.01" id="dsPuan" placeholder="Örn: 425.50" required>
+            </div>
+            <div class="form-group">
+              <label>Sıralama / Derece:</label>
+              <input type="text" id="dsDerece" placeholder="Örn: 3. / 150">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label>Açıklama / Öğretmen Notu (İsteğe Bağlı):</label>
+            <input type="text" id="dsNot" placeholder="Örn: Matematik bölümü hedeflere uygun, net sayısı başarılı.">
+          </div>
+
+          <button type="submit" id="dsKaydetBtn" class="btn-orange" style="width: auto; padding: 10px 25px;">
+            <i class="fa-solid fa-paper-plane"></i> Deneme Sonucunu Yayınla
+          </button>
+        </form>
+
+        <h3 style="margin-top:25px; font-size:15px; color:var(--orange);">Yayınlanan Son Deneme Sonuçları</h3>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>Öğrenci</th>
+              <th>Sınav Adı</th>
+              <th>D - Y - B</th>
+              <th>Net</th>
+              <th>Puan</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+          <tbody id="denemeSonuclariContainer"></tbody>
+        </table>
+      </div>
+
       <!-- SINIF YÖNETİMİ -->
       <div class="admin-card">
         <h2><i class="fa-solid fa-school"></i> Sınıf Yönetimi</h2>
@@ -554,7 +625,6 @@
 
           <h3 style="margin-top:25px; font-size:15px; color:var(--orange);">Kayıtlı Öğretmenler</h3>
           
-          <!-- ÖĞRETMEN ARAMA KUTUSU -->
           <div class="search-box-wrapper">
             <input type="text" id="ogretmenAramaInput" placeholder="Öğretmen Adı veya Branş Ara..." oninput="kullaniciListele()">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -601,7 +671,6 @@
 
           <h3 style="margin-top:25px; font-size:15px; color:var(--orange);">Kayıtlı Öğrenciler</h3>
 
-          <!-- ÖĞRENCİ ARAMA KUTUSU -->
           <div class="search-box-wrapper">
             <input type="text" id="ogrenciAramaInput" placeholder="Öğrenci Adı, Sınıfı veya T.C. Ara..." oninput="kullaniciListele()">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -651,7 +720,6 @@
     window.doc = doc;
     window.onSnapshot = onSnapshot;
 
-    // ANA SAYFA İLE BİREBİR UYUMLU SABİT SINIF YAPISI
     const sabitSiniflar = [
       { id: "s1", ad: "1. Sınıf", isStatic: true },
       { id: "s2", ad: "2. Sınıf", isStatic: true },
@@ -809,7 +877,6 @@
         }
       });
 
-      // Select Seçim Kutularını Güncelle
       const dpSelect = document.getElementById('dpSinifSecimi');
       const ogrenciSelect = document.getElementById('ogrenciSinif');
 
@@ -827,6 +894,60 @@
       dpSelect.value = dpSecilen;
       ogrenciSelect.value = ogrSecilen;
     }
+
+    /* DENEME SINAVI VERİ İŞLEMLERİ */
+    window.denemeSonucuKaydet = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('dsKaydetBtn');
+      const ogrenciSelect = document.getElementById('dsOgrenciSecimi');
+      const ogrenciId = ogrenciSelect.value;
+      const ogrenciAd = ogrenciSelect.options[ogrenciSelect.selectedIndex].text;
+
+      const sinavAdi = document.getElementById('dsSinavAdi').value.trim();
+      const tarih = document.getElementById('dsTarih').value;
+      const d = parseInt(document.getElementById('dsDogru').value) || 0;
+      const y = parseInt(document.getElementById('dsYanlis').value) || 0;
+      const b = parseInt(document.getElementById('dsBos').value) || 0;
+      const puan = parseFloat(document.getElementById('dsPuan').value) || 0;
+      const derece = document.getElementById('dsDerece').value.trim();
+      const not = document.getElementById('dsNot').value.trim();
+
+      const net = d - (y / 4);
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor...';
+
+      try {
+        await addDoc(collection(db, "kurumsal_deneme_sonuclari"), {
+          ogrenciId: ogrenciId,
+          ogrenciAd: ogrenciAd,
+          sinavAdi: sinavAdi,
+          tarih: tarih,
+          dogru: d,
+          yanlis: y,
+          bos: b,
+          net: net,
+          puan: puan,
+          derece: derece,
+          not: not,
+          eklemeTarihi: new Date().toLocaleString('tr-TR')
+        });
+
+        alert("Deneme sınav sonucu öğrenci sistemine eklendi!");
+        document.getElementById('denemeSonucForm').reset();
+      } catch (err) {
+        alert("Hata oluştu: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Deneme Sonucunu Yayınla';
+      }
+    };
+
+    window.denemeSonucSil = async function(id) {
+      if (confirm("Bu deneme sonucunu silmek istediğinize emin misiniz?")) {
+        await deleteDoc(doc(db, "kurumsal_deneme_sonuclari", id));
+      }
+    };
 
     window.dersProgramiYukle = async function() {
       const sinif = document.getElementById('dpSinifSecimi').value;
@@ -862,16 +983,19 @@
       if(confirm("Ders programı silinsin mi?")) await deleteDoc(doc(db, "ders_programlari", id));
     };
 
-    // Kullanıcıları Arama Filtresine Göre Ekrana Yazdıran Fonksiyon
     window.kullaniciListele = function() {
       const ogretmenDiv = document.getElementById('ogretmenListesi');
       const ogrenciDiv = document.getElementById('ogrenciListesi');
-      
+      const dsSelect = document.getElementById('dsOgrenciSecimi');
+
       const ogrArama = (document.getElementById('ogretmenAramaInput')?.value || '').toLowerCase().trim();
       const ogrnArama = (document.getElementById('ogrenciAramaInput')?.value || '').toLowerCase().trim();
 
       ogretmenDiv.innerHTML = "";
       ogrenciDiv.innerHTML = "";
+      
+      const seciliDsOgrenci = dsSelect.value;
+      let dsOptionsHTML = '<option value="">Öğrenci Seçiniz</option>';
 
       let ogretmenSayac = 0;
       let ogrenciSayac = 0;
@@ -913,6 +1037,8 @@
               </div>`;
           }
         } else if (u.rol === 'ogrenci') {
+          dsOptionsHTML += `<option value="${id}">${u.adSoyad || u.kullaniciAdi} (${u.sinif || 'Sınıf Yok'})</option>`;
+
           const adMatch = (u.adSoyad || '').toLowerCase().includes(ogrnArama);
           const sinifMatch = (u.sinif || '').toLowerCase().includes(ogrnArama);
           const kadiMatch = (u.kullaniciAdi || '').toLowerCase().includes(ogrnArama);
@@ -950,16 +1076,14 @@
         }
       });
 
-      if (ogretmenSayac === 0) {
-        ogretmenDiv.innerHTML = "<small style='color:#888;'>Eşleşen öğretmen bulunamadı.</small>";
-      }
-      if (ogrenciSayac === 0) {
-        ogrenciDiv.innerHTML = "<small style='color:#888;'>Eşleşen öğrenci bulunamadı.</small>";
-      }
+      dsSelect.innerHTML = dsOptionsHTML;
+      dsSelect.value = seciliDsOgrenci;
+
+      if (ogretmenSayac === 0) ogretmenDiv.innerHTML = "<small style='color:#888;'>Eşleşen öğretmen bulunamadı.</small>";
+      if (ogrenciSayac === 0) ogrenciDiv.innerHTML = "<small style='color:#888;'>Eşleşen öğrenci bulunamadı.</small>";
     };
 
     function canliDinleyiciler() {
-      // Dinamik Sınıfları Dinle
       onSnapshot(collection(db, "siniflar"), (snapshot) => {
         dinamikSiniflar = [];
         snapshot.forEach(docSnap => {
@@ -969,7 +1093,6 @@
         sinifListeleriniRenderEt();
       });
 
-      // Ders Programlarını Dinle
       onSnapshot(collection(db, "ders_programlari"), (snapshot) => {
         const div = document.getElementById('dersProgramlariListesi');
         div.innerHTML = "";
@@ -989,7 +1112,6 @@
         });
       });
 
-      // Galeriyi Dinle
       onSnapshot(collection(db, "galeri"), (snapshot) => {
         const div = document.getElementById('galeriContainer');
         div.innerHTML = "";
@@ -1004,7 +1126,6 @@
         });
       });
 
-      // Başvuruları Dinle (Ana Sayfadan Gelenler)
       onSnapshot(collection(db, "basvurular"), (snapshot) => {
         const tbody = document.getElementById('basvuruContainer');
         tbody.innerHTML = "";
@@ -1027,7 +1148,6 @@
         });
       });
 
-      // Kullanıcıları Dinle
       onSnapshot(collection(db, "kullanicilar"), (snapshot) => {
         kullaniciVerileri = {};
 
@@ -1037,8 +1157,31 @@
           kullaniciVerileri[id] = u;
         });
 
-        // Veri değiştikçe dinamik aramalı listelemeyi çalıştır
         kullaniciListele();
+      });
+
+      // Kurumsal Deneme Sonuçlarını Yönetici Paneline Canlı Yansıt
+      onSnapshot(collection(db, "kurumsal_deneme_sonuclari"), (snapshot) => {
+        const tbody = document.getElementById('denemeSonuclariContainer');
+        tbody.innerHTML = "";
+        if (snapshot.empty) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888;">Henüz girilmiş kurumsal deneme sonucu yok.</td></tr>`;
+          return;
+        }
+        snapshot.forEach(docSnap => {
+          const id = docSnap.id;
+          const ds = docSnap.data();
+          tbody.innerHTML += `
+            <tr>
+              <td>${ds.tarih || '-'}</td>
+              <td><strong>${ds.ogrenciAd || '-'}</strong></td>
+              <td>${ds.sinavAdi || '-'}</td>
+              <td><span style="color:#22c55e;">${ds.dogru}D</span> / <span style="color:#ff3b30;">${ds.yanlis}Y</span> / <span style="color:#aaa;">${ds.bos}B</span></td>
+              <td><strong style="color:var(--orange);">${ds.net ? ds.net.toFixed(2) : '0'} Net</strong></td>
+              <td><strong>${ds.puan}</strong></td>
+              <td><button class="btn-danger" style="padding:4px 8px; border:none; border-radius:4px; color:#fff; cursor:pointer;" onclick="denemeSonucSil('${id}')"><i class="fa-solid fa-trash"></i> Sil</button></td>
+            </tr>`;
+        });
       });
     }
 
