@@ -96,6 +96,7 @@
   let seciliTest = null;
   let seciliTestDocId = null;
   let cozulenTestIds = [];
+  let tumTestlerCache = [];
 
   function escapeHtml(text) {
     if (!text) return "";
@@ -112,7 +113,6 @@
     }
   });
 
-  // VERİTABANIYLA %100 UYUMLU KONTROL
   document.getElementById("ogrenciGirisForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const gGirilen = document.getElementById("gKullaniciAdi").value.trim();
@@ -134,8 +134,6 @@
           const dbSifre = String(data.sifre || data.password || "").trim();
 
           const kAdiEslesiyor = dbKullanici.toLocaleUpperCase('tr-TR') === gGirilen.toLocaleUpperCase('tr-TR');
-          
-          // Veritabanında şifre yoksa şifresiz geç, varsa şifreyi kontrol et
           const sifreEslesiyor = (dbSifre === "") || (dbSifre.toLocaleUpperCase('tr-TR') === gSifre.toLocaleUpperCase('tr-TR'));
 
           if (kAdiEslesiyor && sifreEslesiyor) {
@@ -167,7 +165,7 @@
     document.getElementById("cikisBtn").style.display = "inline-block";
     document.getElementById("ogrenciIsmi").innerText = "Hoş geldin, " + escapeHtml(aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad);
 
-    canliTestleriDinle();
+    canliVerileriBaslat();
   }
 
   document.getElementById("cikisBtn").addEventListener("click", () => {
@@ -175,64 +173,67 @@
     location.reload();
   });
 
-  function canliTestleriDinle() {
+  function canliVerileriBaslat() {
+    onSnapshot(collection(db, "testler"), (snapshot) => {
+      tumTestlerCache = [];
+      snapshot.forEach(docSnap => {
+        tumTestlerCache.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      testArayuzunuGuncelle();
+    });
+
     const qSonuc = query(collection(db, "test_sonuclari"), where("ogrenciId", "==", aktifOgrenci.id));
-    
     onSnapshot(qSonuc, (sonucSnap) => {
       cozulenTestIds = [];
       sonucSnap.forEach(docSnap => {
         const data = docSnap.data();
         if (data.testId) cozulenTestIds.push(data.testId);
-        else if (data.testBaslik) cozulenTestIds.push(data.testBaslik);
+        if (data.testBaslik) cozulenTestIds.push(data.testBaslik);
       });
-
-      testleriYukle();
+      testArayuzunuGuncelle();
     });
   }
 
-  function testleriYukle() {
-    onSnapshot(collection(db, "testler"), (snapshot) => {
-      const div = document.getElementById("testlerListesi");
-      div.innerHTML = "";
-      let testVar = false;
+  function testArayuzunuGuncelle() {
+    const div = document.getElementById("testlerListesi");
+    div.innerHTML = "";
+    let testVar = false;
 
-      snapshot.forEach(docSnap => {
-        const t = docSnap.data();
-        const testId = docSnap.id;
-        const herkese = t.hedefTuru === "hepsi";
-        const sinifa = t.hedefTuru === "sinif" && t.hedefSinif === aktifOgrenci.sinif;
-        const kisiye = t.hedefTuru === "ogrenci" && t.hedefOgrenciId === aktifOgrenci.id;
+    tumTestlerCache.forEach(t => {
+      const testId = t.id;
+      const herkese = t.hedefTuru === "hepsi";
+      const sinifa = t.hedefTuru === "sinif" && t.hedefSinif === aktifOgrenci.sinif;
+      const kisiye = t.hedefTuru === "ogrenci" && t.hedefOgrenciId === aktifOgrenci.id;
 
-        if (herkese || sinifa || kisiye) {
-          testVar = true;
-          const zatenCozuldu = cozulenTestIds.includes(testId) || cozulenTestIds.includes(t.baslik);
-          
-          const elem = document.createElement("div");
-          elem.className = "test-kart";
+      if (herkese || sinifa || kisiye) {
+        testVar = true;
+        const zatenCozuldu = cozulenTestIds.includes(testId) || cozulenTestIds.includes(t.baslik);
+        
+        const elem = document.createElement("div");
+        elem.className = "test-kart";
 
-          let aksiyon = `<button class="coz-btn" style="width:auto; padding:6px 15px;"><i class="fa-solid fa-pen-to-square"></i> Testi Çöz</button>`;
-          if (zatenCozuldu) {
-            aksiyon = `<span class="cozuldu-rozet"><i class="fa-solid fa-circle-check"></i> Çözüldü</span>`;
-          }
-
-          elem.innerHTML = `
-            <div>
-              <strong>${escapeHtml(t.baslik)}</strong>
-              <div style="font-size:12px; color:#aaa;">Öğretmen: ${escapeHtml(t.ogretmenAd)} | Tarih: ${escapeHtml(t.tarih)}</div>
-            </div>
-            ${aksiyon}
-          `;
-
-          if (!zatenCozuldu) {
-            elem.querySelector(".coz-btn").addEventListener("click", () => testiBaslat(t, testId));
-          }
-
-          div.appendChild(elem);
+        let aksiyonHTML = `<button class="coz-btn" style="width:auto; padding:6px 15px;"><i class="fa-solid fa-pen-to-square"></i> Testi Çöz</button>`;
+        if (zatenCozuldu) {
+          aksiyonHTML = `<span class="cozuldu-rozet"><i class="fa-solid fa-circle-check"></i> Çözüldü</span>`;
         }
-      });
 
-      if (!testVar) div.innerHTML = "<p style='color:#aaa;'>Size atanan aktif bir test bulunmuyor.</p>";
+        elem.innerHTML = `
+          <div>
+            <strong>${escapeHtml(t.baslik)}</strong>
+            <div style="font-size:12px; color:#aaa;">Öğretmen: ${escapeHtml(t.ogretmenAd || 'Belirtilmedi')} | Tarih: ${escapeHtml(t.tarih || '')}</div>
+          </div>
+          ${aksiyonHTML}
+        `;
+
+        if (!zatenCozuldu) {
+          elem.querySelector(".coz-btn").addEventListener("click", () => testiBaslat(t, testId));
+        }
+
+        div.appendChild(elem);
+      }
     });
+
+    if (!testVar) div.innerHTML = "<p style='color:#aaa;'>Size atanan aktif bir test bulunmuyor.</p>";
   }
 
   function testiBaslat(testData, docId) {
@@ -255,10 +256,10 @@
         <div class="soru-kart">
           <h4>Soru ${index + 1}: ${escapeHtml(q.text)}</h4>
           <div class="secenekler">
-            <label class="secenek-label"><input type="radio" name="q_${q.id}" value="A"> A) ${escapeHtml(q.options.A)}</label>
-            <label class="secenek-label"><input type="radio" name="q_${q.id}" value="B"> B) ${escapeHtml(q.options.B)}</label>
-            <label class="secenek-label"><input type="radio" name="q_${q.id}" value="C"> C) ${escapeHtml(q.options.C)}</label>
-            <label class="secenek-label"><input type="radio" name="q_${q.id}" value="D"> D) ${escapeHtml(q.options.D)}</label>
+            <label class="secenek-label"><input type="radio" name="q_${q.id}" value="A"> A) ${escapeHtml(q.options ? q.options.A : '')}</label>
+            <label class="secenek-label"><input type="radio" name="q_${q.id}" value="B"> B) ${escapeHtml(q.options ? q.options.B : '')}</label>
+            <label class="secenek-label"><input type="radio" name="q_${q.id}" value="C"> C) ${escapeHtml(q.options ? q.options.C : '')}</label>
+            <label class="secenek-label"><input type="radio" name="q_${q.id}" value="D"> D) ${escapeHtml(q.options ? q.options.D : '')}</label>
           </div>
         </div>
       `;
@@ -304,7 +305,7 @@
     try {
       await addDoc(collection(db, "test_sonuclari"), {
         testId: seciliTestDocId,
-        ogretmenId: seciliTest.ogretmenId,
+        ogretmenId: seciliTest.ogretmenId || "",
         ogrenciId: aktifOgrenci.id,
         ogrenciAd: aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad,
         testBaslik: seciliTest.baslik,
