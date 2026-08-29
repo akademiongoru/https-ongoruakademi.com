@@ -222,7 +222,7 @@
 
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
-        const netHesap = d.net !== undefined ? d.net.toFixed(2) : (d.dogru - (d.yanlis / 4)).toFixed(2);
+        const netHesap = d.net !== undefined ? Number(d.net).toFixed(2) : (d.dogru - (d.yanlis / 4)).toFixed(2);
 
         div.innerHTML += `
           <div class="deneme-kart">
