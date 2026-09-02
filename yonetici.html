@@ -422,6 +422,85 @@
       align-items: center;
       z-index: 1000;
     }
+
+    /* SÖZLEŞME VE BASKI ÖZEL STİLLERİ */
+    .sozlesme-section-title {
+      color: var(--orange);
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px;
+      margin-top: 15px;
+      margin-bottom: 12px;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        color: #000 !important;
+        background: #fff !important;
+        padding: 0;
+        margin: 0;
+        font-family: 'Times New Roman', Times, serif, sans-serif;
+        font-size: 11px;
+        line-height: 1.25;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 8px;
+      }
+      .print-table th, .print-table td {
+        border: 1px solid #000;
+        padding: 4px 6px;
+        font-size: 10.5px;
+        text-align: left;
+      }
+      .print-header {
+        text-align: center;
+        font-weight: bold;
+        font-size: 13px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+      }
+      .print-section-header {
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+      .print-articles {
+        font-size: 9.5px;
+        text-align: justify;
+      }
+      .print-articles ol {
+        padding-left: 15px;
+        margin: 0;
+      }
+      .print-articles li {
+        margin-bottom: 3px;
+      }
+      .print-signatures {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+        page-break-inside: avoid;
+      }
+      .print-sig-box {
+        width: 45%;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -452,6 +531,177 @@
     </div>
 
     <div class="admin-container">
+
+      <!-- ÖĞRENCİ SÖZLEŞME VE KAYIT MODÜLÜ -->
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-file-contract"></i> Öğrenci Sözleşme ve Kayıt Yönetimi</h2>
+        <form id="sozlesmeForm" onsubmit="sozlesmeKaydet(event)">
+          <input type="hidden" id="sozlesmeEditId" value="">
+
+          <div style="display: flex; gap: 15px; margin-bottom: 15px; background: #1a1a1a; padding: 12px; border-radius: 6px; border: 1px solid #333;">
+            <div class="form-group" style="flex: 1;">
+              <label><i class="fa-solid fa-user-check" style="color:var(--orange);"></i> Sistemde Kayıtlı Öğrenciden Doldur:</label>
+              <select id="sozlesmeOgrenciSecimi" onchange="sozlesmeOgrenciDoldur(this.value)">
+                <option value="">Öğrenci Seçerek Otomatik Doldurun</option>
+              </select>
+            </div>
+            <div class="form-group" style="width: 200px;">
+              <label>Sözleşme Tarihi:</label>
+              <input type="date" id="szTarih" required>
+            </div>
+          </div>
+
+          <div class="sozlesme-section-title"><i class="fa-solid fa-user-graduate"></i> KURSİYERE AİT BİLGİLER</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+            <div class="form-group">
+              <label>Adı ve Soyadı:</label>
+              <input type="text" id="szOgrAd" placeholder="Öğrenci Ad Soyad" required>
+            </div>
+            <div class="form-group">
+              <label>T.C. Kimlik No:</label>
+              <input type="text" id="szOgrTc" placeholder="11 Haneli T.C." maxlength="11" required>
+            </div>
+            <div class="form-group">
+              <label>Doğum Tarihi:</label>
+              <input type="text" id="szOgrDogum" placeholder="Örn: 1 Ocak 2012">
+            </div>
+            <div class="form-group">
+              <label>Öğrenim Durumu:</label>
+              <select id="szOgrDurum">
+                <option value="Öğrenime Devam Ediyor">Öğrenime Devam Ediyor</option>
+                <option value="Mezun">Mezun</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Telefon No:</label>
+              <input type="text" id="szOgrTel" placeholder="05XX XXX XX XX">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Ev / İkametgah Adresi:</label>
+              <input type="text" id="szOgrAdres" placeholder="Açık adres giriniz">
+            </div>
+          </div>
+
+          <div class="sozlesme-section-title"><i class="fa-solid fa-users"></i> KURSİYER VELİ / VASİ BİLGİLERİ (BULUNMASI HALİNDE)</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+            <div class="form-group">
+              <label>Veli Adı ve Soyadı:</label>
+              <input type="text" id="szVeliAd" placeholder="Veli Ad Soyad">
+            </div>
+            <div class="form-group">
+              <label>Veli T.C. Kimlik No:</label>
+              <input type="text" id="szVeliTc" placeholder="Veli T.C. No" maxlength="11">
+            </div>
+            <div class="form-group">
+              <label>Veli Telefon No:</label>
+              <input type="text" id="szVeliTel" placeholder="05XX XXX XX XX">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Veli Adresi:</label>
+              <input type="text" id="szVeliAdres" placeholder="Farklı ise veli adresini yazın">
+            </div>
+          </div>
+
+          <div class="sozlesme-section-title"><i class="fa-solid fa-graduation-cap"></i> KAYIT OLUNACAK KURS PROGRAMI</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Kayıt Olunacak Öğretim Programı:</label>
+              <input type="text" id="szProgram" placeholder="Örn: LGS Hazırlık / 8. Sınıf Destek" required>
+            </div>
+            <div class="form-group">
+              <label>Program Başlangıç Tarihi:</label>
+              <input type="date" id="szBaslangic" required>
+            </div>
+            <div class="form-group">
+              <label>Program Bitiş Tarihi:</label>
+              <input type="date" id="szBitis" required>
+            </div>
+            <div class="form-group">
+              <label>Teorik Ders Saati:</label>
+              <input type="text" id="szTeorik" placeholder="Örn: 200 Saat">
+            </div>
+            <div class="form-group">
+              <label>Uygulama Ders Saati:</label>
+              <input type="text" id="szUygulama" placeholder="Örn: 50 Saat">
+            </div>
+          </div>
+
+          <div class="sozlesme-section-title"><i class="fa-solid fa-turkish-lira-sign"></i> ÜCRET VE ÖDEMEYE İLİŞKİN BİLGİLER</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+            <div class="form-group">
+              <label>İlan Edilen Toplam Ücret (TL):</label>
+              <input type="number" id="szIlanUcret" placeholder="Örn: 50000" oninput="sozlesmeHesapla()">
+            </div>
+            <div class="form-group">
+              <label>İndirim Tutarı (TL):</label>
+              <input type="number" id="szIndirim" value="0" placeholder="0" oninput="sozlesmeHesapla()">
+            </div>
+            <div class="form-group">
+              <label>Kitap / Kırtasiye / Yayın Ücreti:</label>
+              <input type="text" id="szKitapUcret" placeholder="Örn: YILLIK KURS ÜCRETİNE DÂHİL">
+            </div>
+            <div class="form-group">
+              <label>Ödenecek Net Toplam Ücret (TL):</label>
+              <input type="number" id="szNetUcret" placeholder="50000" required readonly style="background:#2a2a2a; color:var(--orange); font-weight:bold;">
+            </div>
+            <div class="form-group">
+              <label>Ödeme Şekli:</label>
+              <select id="szOdemeSekli">
+                <option value="Taksit">Taksitli Ödeme</option>
+                <option value="Peşin">Peşin Ödeme</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Ödeme Türü Detayı:</label>
+              <input type="text" id="szOdemeDetay" placeholder="Örn: Nakit / Havale / Kredi Kartı">
+            </div>
+            <div class="form-group">
+              <label>Peşinat Tutarı (TL):</label>
+              <input type="number" id="szPesinat" value="0" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>Taksit Sayısı:</label>
+              <input type="number" id="szTaksitSayisi" value="10" placeholder="Örn: 10">
+            </div>
+            <div class="form-group">
+              <label>Taksit Başlangıç Tarihi:</label>
+              <input type="date" id="szTaksitBaslangic">
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button type="submit" id="szKaydetBtn" class="btn-orange" style="width: auto; padding: 12px 30px;">
+              <i class="fa-solid fa-floppy-disk"></i> Sözleşmeyi Kaydet ve Oluştur
+            </button>
+            <button type="button" id="szCancelBtn" class="btn-orange btn-danger" style="display:none; width: auto; padding: 12px 20px;" onclick="sozlesmeFormSifirla()">
+              İptal
+            </button>
+          </div>
+        </form>
+
+        <h3 style="margin-top:30px; font-size:15px; color:var(--orange);">Kayıtlı Öğrenci Sözleşmeleri</h3>
+        <div class="search-box-wrapper">
+          <input type="text" id="sozlesmeAramaInput" placeholder="Öğrenci veya Veli Adı ile Ara..." oninput="sozlesmeleriRenderEt()">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Tarih</th>
+                <th>Öğrenci Ad Soyad</th>
+                <th>T.C. No</th>
+                <th>Veli Ad Soyad</th>
+                <th>Program</th>
+                <th>Toplam Ücret</th>
+                <th>İşlemler</th>
+              </tr>
+            </thead>
+            <tbody id="sozlesmelerContainer"></tbody>
+          </table>
+        </div>
+      </div>
 
       <!-- DENEME SINAVI SONUCU YÜKLEME MODÜLÜ -->
       <div class="admin-card">
@@ -656,7 +906,7 @@
               <input type="password" id="ogrenciSifre" placeholder="Şifre" required>
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
-              <input type="text" id="ogrenciAnne" placeholder="Anne Adı">
+              <input type="text" id="ogrenciAnne" placeholder="Anne / Veli Adı">
             </div>
             <div class="form-group" style="margin-bottom: 15px;">
               <input type="text" id="ogrenciTel" placeholder="Veli / Cep Tel">
@@ -691,6 +941,9 @@
       <p id="modalTitle" style="color:white; margin-top:10px; font-weight:600;"></p>
     </div>
   </div>
+
+  <!-- BASKI / YAZDIRMA ŞABLON ALANI (GİZLİ) -->
+  <div id="printArea" style="display:none;"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -733,6 +986,7 @@
 
     let dinamikSiniflar = [];
     let kullaniciVerileri = {};
+    let sozlesmeVerileri = {};
     const YONETICI_SIFRESI = "Ongoru34+";
 
     document.getElementById('sifreToggle').addEventListener('click', function() {
@@ -752,6 +1006,10 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem('adminOturum') === 'acik') paneliAc();
+      
+      const bugün = new Date().toISOString().split('T')[0];
+      if (document.getElementById('szTarih')) document.getElementById('szTarih').value = bugün;
+      if (document.getElementById('szBaslangic')) document.getElementById('szBaslangic').value = bugün;
     });
 
     window.girisKontrol = function() {
@@ -825,6 +1083,314 @@
           icon.className = isVisible ? "fa-solid fa-chevron-down" : "fa-solid fa-chevron-up";
         }
       }
+    };
+
+    /* SÖZLEŞME MODÜLÜ İŞLEMLERİ */
+    window.sozlesmeHesapla = function() {
+      const ilan = parseFloat(document.getElementById('szIlanUcret').value) || 0;
+      const indirim = parseFloat(document.getElementById('szIndirim').value) || 0;
+      const net = Math.max(0, ilan - indirim);
+      document.getElementById('szNetUcret').value = net;
+    };
+
+    window.sozlesmeOgrenciDoldur = function(id) {
+      if (!id || !kullaniciVerileri[id]) return;
+      const u = kullaniciVerileri[id];
+      document.getElementById('szOgrAd').value = u.adSoyad || '';
+      document.getElementById('szOgrTc').value = u.kullaniciAdi || '';
+      document.getElementById('szOgrTel').value = u.cepTel || '';
+      document.getElementById('szVeliAd').value = u.anneAdSoyad || '';
+      document.getElementById('szVeliTel').value = u.cepTel || '';
+      document.getElementById('szProgram').value = (u.sinif || '') + " Programı";
+    };
+
+    window.sozlesmeKaydet = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('szKaydetBtn');
+      const editId = document.getElementById('sozlesmeEditId').value;
+
+      const veri = {
+        tarih: document.getElementById('szTarih').value,
+        ogrAd: document.getElementById('szOgrAd').value.trim(),
+        ogrTc: document.getElementById('szOgrTc').value.trim(),
+        ogrDogum: document.getElementById('szOgrDogum').value.trim(),
+        ogrDurum: document.getElementById('szOgrDurum').value,
+        ogrTel: document.getElementById('szOgrTel').value.trim(),
+        ogrAdres: document.getElementById('szOgrAdres').value.trim(),
+        
+        veliAd: document.getElementById('szVeliAd').value.trim(),
+        veliTc: document.getElementById('szVeliTc').value.trim(),
+        veliTel: document.getElementById('szVeliTel').value.trim(),
+        veliAdres: document.getElementById('szVeliAdres').value.trim(),
+
+        program: document.getElementById('szProgram').value.trim(),
+        baslangic: document.getElementById('szBaslangic').value,
+        bitis: document.getElementById('szBitis').value,
+        teorik: document.getElementById('szTeorik').value.trim(),
+        uygulama: document.getElementById('szUygulama').value.trim(),
+
+        ilanUcret: document.getElementById('szIlanUcret').value,
+        indirim: document.getElementById('szIndirim').value,
+        kitapUcret: document.getElementById('szKitapUcret').value.trim(),
+        netUcret: document.getElementById('szNetUcret').value,
+        odemeSekli: document.getElementById('szOdemeSekli').value,
+        odemeDetay: document.getElementById('szOdemeDetay').value.trim(),
+        pesinat: document.getElementById('szPesinat').value,
+        taksitSayisi: document.getElementById('szTaksitSayisi').value,
+        taksitBaslangic: document.getElementById('szTaksitBaslangic').value,
+        guncellemeTarihi: new Date().toLocaleString('tr-TR')
+      };
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor...';
+
+      try {
+        if (editId) {
+          await updateDoc(doc(db, "sozlesmeler", editId), veri);
+          alert("Sözleşme başarıyla güncellendi!");
+        } else {
+          veri.kayitTarihi = new Date().toLocaleString('tr-TR');
+          await addDoc(collection(db, "sozlesmeler"), veri);
+          alert("Sözleşme başarıyla kaydedildi!");
+        }
+        sozlesmeFormSifirla();
+      } catch (err) {
+        alert("Hata oluştu: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Sözleşmeyi Kaydet ve Oluştur';
+      }
+    };
+
+    window.sozlesmeFormSifirla = function() {
+      document.getElementById('sozlesmeForm').reset();
+      document.getElementById('sozlesmeEditId').value = "";
+      document.getElementById('szCancelBtn').style.display = "none";
+      document.getElementById('szKaydetBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Sözleşmeyi Kaydet ve Oluştur';
+      const bugün = new Date().toISOString().split('T')[0];
+      document.getElementById('szTarih').value = bugün;
+      document.getElementById('szBaslangic').value = bugün;
+    };
+
+    window.sozlesmeDuzenle = function(id) {
+      const s = sozlesmeVerileri[id];
+      if (!s) return;
+
+      document.getElementById('sozlesmeEditId').value = id;
+      document.getElementById('szTarih').value = s.tarih || '';
+      document.getElementById('szOgrAd').value = s.ogrAd || '';
+      document.getElementById('szOgrTc').value = s.ogrTc || '';
+      document.getElementById('szOgrDogum').value = s.ogrDogum || '';
+      document.getElementById('szOgrDurum').value = s.ogrDurum || 'Öğrenime Devam Ediyor';
+      document.getElementById('szOgrTel').value = s.ogrTel || '';
+      document.getElementById('szOgrAdres').value = s.ogrAdres || '';
+
+      document.getElementById('szVeliAd').value = s.veliAd || '';
+      document.getElementById('szVeliTc').value = s.veliTc || '';
+      document.getElementById('szVeliTel').value = s.veliTel || '';
+      document.getElementById('szVeliAdres').value = s.veliAdres || '';
+
+      document.getElementById('szProgram').value = s.program || '';
+      document.getElementById('szBaslangic').value = s.baslangic || '';
+      document.getElementById('szBitis').value = s.bitis || '';
+      document.getElementById('szTeorik').value = s.teorik || '';
+      document.getElementById('szUygulama').value = s.uygulama || '';
+
+      document.getElementById('szIlanUcret').value = s.ilanUcret || '';
+      document.getElementById('szIndirim').value = s.indirim || '0';
+      document.getElementById('szKitapUcret').value = s.kitapUcret || '';
+      document.getElementById('szNetUcret').value = s.netUcret || '';
+      document.getElementById('szOdemeSekli').value = s.odemeSekli || 'Taksit';
+      document.getElementById('szOdemeDetay').value = s.odemeDetay || '';
+      document.getElementById('szPesinat').value = s.pesinat || '0';
+      document.getElementById('szTaksitSayisi').value = s.taksitSayisi || '';
+      document.getElementById('szTaksitBaslangic').value = s.taksitBaslangic || '';
+
+      document.getElementById('szKaydetBtn').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Sözleşmeyi Güncelle';
+      document.getElementById('szCancelBtn').style.display = 'inline-block';
+      document.getElementById('sozlesmeForm').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.sozlesmeSil = async function(id) {
+      if (confirm("Bu sözleşmeyi silmek istediğinize emin misiniz?")) {
+        await deleteDoc(doc(db, "sozlesmeler", id));
+      }
+    };
+
+    function sozlesmeleriRenderEt() {
+      const tbody = document.getElementById('sozlesmelerContainer');
+      const arama = (document.getElementById('sozlesmeAramaInput')?.value || '').toLowerCase().trim();
+      tbody.innerHTML = "";
+
+      if (Object.keys(sozlesmeVerileri).length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888;">Henüz kayıtlı öğrenci sözleşmesi yok.</td></tr>`;
+        return;
+      }
+
+      Object.keys(sozlesmeVerileri).forEach(id => {
+        const s = sozlesmeVerileri[id];
+        const ogrMatch = (s.ogrAd || '').toLowerCase().includes(arama);
+        const tcMatch = (s.ogrTc || '').toLowerCase().includes(arama);
+        const veliMatch = (s.veliAd || '').toLowerCase().includes(arama);
+
+        if (!arama || ogrMatch || tcMatch || veliMatch) {
+          tbody.innerHTML += `
+            <tr>
+              <td>${s.tarih || '-'}</td>
+              <td><strong>${s.ogrAd || '-'}</strong></td>
+              <td>${s.ogrTc || '-'}</td>
+              <td>${s.veliAd || '-'}</td>
+              <td>${s.program || '-'}</td>
+              <td><strong style="color:var(--orange);">${Number(s.netUcret || 0).toLocaleString('tr-TR')} TL</strong></td>
+              <td>
+                <div style="display:flex; gap:5px;">
+                  <button class="btn-nav" style="padding:4px 8px; font-size:12px; background:#16a34a;" onclick="sozlesmeYazdir('${id}')" title="Yazdır / PDF Al"><i class="fa-solid fa-print"></i></button>
+                  <button class="btn-edit" style="padding:4px 8px; font-size:12px;" onclick="sozlesmeDuzenle('${id}')" title="Düzenle"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-danger" style="padding:4px 8px; font-size:12px; border:none; border-radius:4px; color:#fff; cursor:pointer;" onclick="sozlesmeSil('${id}')" title="Sil"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </td>
+            </tr>`;
+        }
+      });
+    }
+
+    /* RESMİ MEB KURSİYER KAYIT SÖZLEŞMESİ YAZDIRMA MEKANİZMASI */
+    window.sozlesmeYazdir = function(id) {
+      const s = sozlesmeVerileri[id];
+      if (!s) return;
+
+      const tarihFormat = (tStr) => {
+        if(!tStr) return '';
+        const d = new Date(tStr);
+        return isNaN(d) ? tStr : d.toLocaleDateString('tr-TR');
+      };
+
+      const html = `
+        <div class="print-header">
+          <div>Tarih: ${tarihFormat(s.tarih)}</div>
+          <div style="font-size:15px; margin-top:3px;">KURSİYER KAYIT SÖZLEŞMESİ</div>
+          <div style="font-size:9px; font-weight:normal;">(Milli Eğitim Bakanlığı Özel Öğretim Kurumları Yönetmeliğinin 53 üncü maddesi hükmü gereği düzenlenmiştir.)</div>
+        </div>
+
+        <table class="print-table">
+          <tr class="print-section-header"><td colspan="4">KURUMA AİT BİLGİLER</td></tr>
+          <tr>
+            <td style="width:20%;"><b>Kurum Türü:</b> Özel Öğretim Kursu</td>
+            <td style="width:30%;"><b>Kurum Adı:</b> ÖNGÖRÜ AKADEMİ</td>
+            <td style="width:25%;"><b>İli-İlçesi:</b> İSTANBUL / ARNAVUTKÖY</td>
+            <td style="width:25%;"><b>Telefon No:</b> +90 212 801 80 80</td>
+          </tr>
+          <tr>
+            <td colspan="2"><b>Adresi:</b> Arnavutköy / İstanbul</td>
+            <td colspan="2"><b>IBAN:</b> -</td>
+          </tr>
+        </table>
+
+        <table class="print-table">
+          <tr class="print-section-header"><td colspan="4">KURSİYERE AİT BİLGİLER</td></tr>
+          <tr>
+            <td style="width:35%;"><b>Adı ve Soyadı:</b> ${s.ogrAd || ''}</td>
+            <td style="width:25%;"><b>T.C. Kimlik No:</b> ${s.ogrTc || ''}</td>
+            <td style="width:20%;"><b>Doğum Tarihi:</b> ${s.ogrDogum || ''}</td>
+            <td style="width:20%;"><b>Öğrenim Durumu:</b> ${s.ogrDurum || ''}</td>
+          </tr>
+          <tr>
+            <td colspan="3"><b>Adresi:</b> ${s.ogrAdres || ''}</td>
+            <td><b>Telefon No:</b> ${s.ogrTel || ''}</td>
+          </tr>
+        </table>
+
+        <table class="print-table">
+          <tr class="print-section-header"><td colspan="4">KURSİYER VELİ / VASİ BİLGİLERİ (BULUNMASI HALİNDE)</td></tr>
+          <tr>
+            <td style="width:40%;"><b>Adı ve Soyadı:</b> ${s.veliAd || ''}</td>
+            <td style="width:30%;"><b>T.C. Kimlik No:</b> ${s.veliTc || ''}</td>
+            <td style="width:30%;"><b>Telefon No:</b> ${s.veliTel || ''}</td>
+          </tr>
+          <tr>
+            <td colspan="4"><b>Adresi:</b> ${s.veliAdres || s.ogrAdres || ''}</td>
+          </tr>
+        </table>
+
+        <table class="print-table">
+          <tr class="print-section-header"><td colspan="4">KAYIT OLUNACAK KURS PROGRAMI</td></tr>
+          <tr>
+            <td colspan="2"><b>Kayıt Olunacak Öğretim Programı:</b> ${s.program || ''}</td>
+            <td><b>Teorik Saat:</b> ${s.teorik || '-'}</td>
+            <td><b>Uygulama Saati:</b> ${s.uygulama || '-'}</td>
+          </tr>
+          <tr>
+            <td colspan="2"><b>Program Başlangıç Tarihi:</b> ${tarihFormat(s.baslangic)}</td>
+            <td colspan="2"><b>Program Bitiş Tarihi:</b> ${tarihFormat(s.bitis)}</td>
+          </tr>
+        </table>
+
+        <table class="print-table">
+          <tr class="print-section-header"><td colspan="4">ÜCRET VE ÖDEMEYE İLİŞKİN BİLGİLER</td></tr>
+          <tr>
+            <td style="width:50%;"><b>İlan Edilen Toplam Ücret:</b> ${Number(s.ilanUcret || 0).toLocaleString('tr-TR')} TL</td>
+            <td style="width:50%;"><b>İndirim Tutarı ve Nedeni:</b> ${Number(s.indirim || 0).toLocaleString('tr-TR')} TL</td>
+          </tr>
+          <tr>
+            <td><b>Kitap, Kırtasiye / Yayın Ücreti:</b> ${s.kitapUcret || 'Dâhil'}</td>
+            <td><b>Ödenecek Toplam Ücret:</b> ${Number(s.netUcret || 0).toLocaleString('tr-TR')} TL</td>
+          </tr>
+          <tr>
+            <td><b>Ödeme Şekli:</b> ${s.odemeSekli || ''} (${s.odemeDetay || 'Nakit'})</td>
+            <td><b>Peşinat:</b> ${Number(s.pesinat || 0).toLocaleString('tr-TR')} TL</td>
+          </tr>
+          <tr>
+            <td><b>Taksit Sayısı ve Tutarı:</b> ${s.taksitSayisi || '1'} Taksit</td>
+            <td><b>Taksit Başlangıç Tarihi:</b> ${tarihFormat(s.taksitBaslangic)}</td>
+          </tr>
+        </table>
+
+        <div style="font-size:8.5px; margin-bottom:5px; text-align:justify;">
+          1- Bu kayıt sözleşmesi özel okullar, mtsk, src, iş makineleri operatörlük kursları ile özel eğitim ve rehabilitasyon merkezleri için ücreti devlet tarafından ödenen bireyler dışındaki kurumlar için düzenlenir.<br>
+          2- Açıköğretim fakültesi, özel öğretim kursu, öğrenci etkinlik merkezi, sosyal etkinlik ve gelişim merkezlerine yapılacak kayıtlarda ilgili program ya da e-okul kayıtları istenir.
+        </div>
+
+        <div class="print-articles">
+          <div style="font-weight:bold; margin-bottom:2px;">GENEL HUSUSLAR</div>
+          <ol>
+            <li>Bu sözleşme, öğrenci/kursiyerler ile kurum yetkilisi tarafından imzalanır. 18 yaşından küçük olanlar ile 18 yaşını doldurmuş olmakla birlikte yasal olarak veli veya vasisi bulunanların adına, sözleşme veli/vasi tarafından imzalanır.</li>
+            <li>Kurumlar, öğrenci/kursiyerlerden alınacak eğitim ücreti tespiti ve ücret iadelerine ilişkin işlemleri MEB Özel Öğretim Kurumları Yönetmeliğinin 53 ve 56'ncı maddelerinde yer alan hükümler kapsamında gerçekleştirir.</li>
+            <li>Devamsızlık ya da başka bir nedenle kayıt iptali durumunda Öğrenci/kursiyer veya velisi/vasisi nin yazılı olarak başvurduğu tarih esas alınır. Kurs programı başlamadan kayıt silinirse kurs ücretinin %10'u tahsil edilerek ilişik kesilir. Eğitim dönemi sırasında kayıt sildirilirse kurs ücretinin % 10'una, Basılı Eğitim Materyalleri ve Kırtasiye Ücreti ve o güne kadar verilen hizmetin bedeli eklenerek tahsilat yapılır ve ilişik kesilir. Kursiyere Basılı Eğitim Materyalleri ve Kırtasiye kurs başında teslim edildiğinden Basılı Eğitim Materyalleri ve Kırtasiye Ücretinin iadesi yapılmaz.</li>
+            <li>Kurumlar; kurum binası ve internet sayfalarında ilan ettikleri ve MEBBİS'te yayınladıkları eğitim ücreti ve diğer ücretlerden fazla ücret talep edemez ancak indirim uygulayabilirler. Yapılacak indirim oranı ilan edilen öğrenim ücretinin %50'sinden fazla olamaz. Ancak aynı kurucuya ait kurumlarda görev yapan personel çocuklarına % 50'den fazla indirim uygulanabilir.</li>
+            <li>Kurumlar bu sözleşmenin "Ücret ve Ödemeye İlişkin Bilgiler" bölümünde yer alan ücretler dışında öğrenci/kursiyerlerden beceri eğitimi, uygulama eğitimi, sınav ücreti veya herhangi bir ad altında ayrı bir ücret talep edemezler.</li>
+            <li>Eğitim ve öğretim ücreti kurum adına açılan ve valiliğe bildirilen banka hesap numarasına yatırılarak tahsil edilir. Öğrenci/kursiyerlerden alınan ücretler e-Özel sistemine işlenir. Öğrenci/kursiyer veya velisi/vasisi, iş bu sözleşme tarihi ile eğitime başlama tarihi arasındaki vadelerdeki taksitleri ödemeyi kabul ve taahhüt eder. Belirtilen vadelerde temerrüde düşüldüğünde aylık % 3 gecikme tazminatı ödenir.</li>
+            <li>Özel Kurslar Sınav Yönergesinin 7'nci maddesinin dördüncü fıkrasına göre; kursa kayıt olan kursiyerlerin kursa devam etmeleri esastır. Teorik ve/veya uygulama derslerini tamamlayan kursiyerler sınava alınırlar. Kurs süresinin 1/5'inden fazla derse devam etmeyen kursiyerler ise kursta ilan edilen ders ücretini ödemek kaydıyla o dersin telafi eğitimine girerler.</li>
+            <li>Kurum, öğretim programında yer alan teorik ve/veya uygulama eğitimlerini eksiksiz olarak vermek, reklam ve ilanlarında belirttikleri eğitimler için eğitim personeli ve eğitim ortamlarını hazır bulundurmakla yükümlüdür. Kurs başlamadan önce kursiyere verilecek kurs hazırlık dersleri ve yardımcı aktiviteler sözleşmede verilecek eğitimden mahsup edilemez ancak eğitim hizmeti ifa edilmeye başlanmış olduğu kabul edilir.</li>
+            <li>İş bu sözleşmede yer alan hususların yerine getirilmesi ve gerekli tebligatların yapılabilmesi için kendisi/velisi- vasisi tarafından yukarıda belirtilen adresin yasal ikametgah adresi olduğu kabul edilir. Adres değişikliği durumunda 15 gün içerisinde yazılı olarak kuruma bildirilmediği takdirde bu adrese yapılacak tebligat geçerli olacaktır. Öğrenci/kursiyer kayıt sözleşmesinin tüm hükümleri kendisi/velisi-vasisi tarafından eksiksiz olarak okunmuş, anlaşılmış ve herhangi bir tereddüt olmaksızın tamamen hür irade ve arzu ile kesin olarak kabul edilmiştir.</li>
+            <li>Kursiyerin disipline aykırı tüm davranışları hakkında yürürlükteki ilgili disiplin yönetmeliği hükümleri uygulanır.</li>
+            <li>6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında tarafıma gerekli bilgilendirme yapılmıştır. Öğrenci/kursiyer veya velisi/vasisi kendisinin, eşinin ve kursiyerin telefon ve mail bilgilerinin kurs tarafından İleti Yönetim Sistemine kayıt edilmesini ve kendisine, eşine ve kursiyere Kurs tarafından SMS, MMS, Mail ve uygulamalardan mesaj gönderilmesini şimdiden kabul ederim. 6698 sayılı kanun kapsamında Öğrenci/kursiyer veya velisi/vasisi ve ÖNGÖRÜ AKADEMİ ile yapılan sözleşme gereğince belirtmiş olduğum iletişim numaralarına; her türlü kurum faaliyeti ile eğitim, reklam amaçlı ve vadesi geçen ödemelerin hatırlatılması amacıyla gönderilecek mesaj içeriklerini öğrenmiş kabul ederim ve iletişimleri şimdiden kabul ve muvafakat ederim ve şahsıma ve kursiyere ait kişisel verilerimin işlenmesine açık rıza veriyorum.</li>
+            <li>6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında tarafıma gerekli bilgilendirme yapılmıştır. Bu doğrultuda, işlendiği belirtilen bana ve ÖNGÖRÜ AKADEMİ kurumunda öğrenim gören velisi/birinci derece yakını bulunduğum <b>${s.ogrAd || ''}</b> adlı kursiyere ait görsel ve işitsel kişisel verilerimiz, eğitim ve öğretim süreçleri kapsamında düzenlenen faaliyet/etkinliklerin kamuoyu ile paylaşımı ve tanıtımı amacıyla sosyal medya hesaplarında paylaşılmasına şahsıma ve kursiyere ait kişisel verilerimin işlenmesine açık rıza veriyorum.</li>
+            <li>6698 sayılı Kişisel Verilerin Korunması Kanunu'na uygun olarak kurumunuzla yaptığım görüşmelerde elde edilen ve yine şirketiniz aracılığıyla katıldığım görüşme, organizasyon ve toplantılara ilişkin olarak tarafıma beyan edilen aydınlatma metni kapsamında kurumun işleyişi, KVKK yönlendirmesiyle izin verilen, eğitimle ilgili mevzuatın öngördüğü düzenlemelerin ifası, yine T.C mevzuatının düzenlemelerine yerine getirmek, bakanlıklardan alınacak izinler, gerçekleştirilecek organizasyonlar, seyahatler gerektiğinde adıma rezervasyon yapılması amacıyla ekteki aydınlatma metnine uygun olarak şahsıma ve kursiyere ait kişisel verilerimin işlenmesine açık rıza veriyorum.</li>
+            <li>Bu sözleşmenin uygulanmasından doğacak anlaşmazlıklar için, ARNAVUTKÖY Mahkemelerinin yetkili olduğunu beyan ederiz.</li>
+            <li>Bu sözleşme kurum müdürü ve öğrenci/kursiyer veya velisi/vasisi tarafından bütün maddeleri okunup müzakere edildikten sonra ${tarihFormat(s.tarih)} tarihinde iki nüsha olarak düzenlenerek bir nüshası kurum müdürlüğünde bir nüshası ise öğrenci/kursiyer veya velisi/vasisinde kalacaktır.</li>
+          </ol>
+        </div>
+
+        <div class="print-signatures">
+          <div class="print-sig-box">
+             Öğrenci/kursiyer veya velisi/vasisi<br>
+            <b>Adı Soyadı ve İmzası</b><br><br>
+            ${tarihFormat(s.tarih)}
+          </div>
+          <div class="print-sig-box">
+            Kurumun<br>
+            <b>(Kaşe, Mühür ve Yetkili İmzası)</b><br><br>
+            ÖNGÖRÜ AKADEMİ
+          </div>
+        </div>
+      `;
+
+      const printArea = document.getElementById('printArea');
+      printArea.innerHTML = html;
+      printArea.style.display = 'block';
+      window.print();
+      printArea.style.display = 'none';
+      printArea.innerHTML = '';
     };
 
     /* SINIF İŞLEMLERİ */
@@ -987,6 +1553,7 @@
       const ogretmenDiv = document.getElementById('ogretmenListesi');
       const ogrenciDiv = document.getElementById('ogrenciListesi');
       const dsSelect = document.getElementById('dsOgrenciSecimi');
+      const szSelect = document.getElementById('sozlesmeOgrenciSecimi');
 
       const ogrArama = (document.getElementById('ogretmenAramaInput')?.value || '').toLowerCase().trim();
       const ogrnArama = (document.getElementById('ogrenciAramaInput')?.value || '').toLowerCase().trim();
@@ -995,7 +1562,10 @@
       ogrenciDiv.innerHTML = "";
       
       const seciliDsOgrenci = dsSelect.value;
+      const seciliSzOgrenci = szSelect.value;
+
       let dsOptionsHTML = '<option value="">Öğrenci Seçiniz</option>';
+      let szOptionsHTML = '<option value="">Öğrenci Seçerek Otomatik Doldurun</option>';
 
       let ogretmenSayac = 0;
       let ogrenciSayac = 0;
@@ -1038,6 +1608,7 @@
           }
         } else if (u.rol === 'ogrenci') {
           dsOptionsHTML += `<option value="${id}">${u.adSoyad || u.kullaniciAdi} (${u.sinif || 'Sınıf Yok'})</option>`;
+          szOptionsHTML += `<option value="${id}">${u.adSoyad || u.kullaniciAdi} - T.C: ${u.kullaniciAdi || 'Yok'}</option>`;
 
           const adMatch = (u.adSoyad || '').toLowerCase().includes(ogrnArama);
           const sinifMatch = (u.sinif || '').toLowerCase().includes(ogrnArama);
@@ -1063,7 +1634,7 @@
                     <div><i class="fa-solid fa-user"></i> <b>Kullanıcı Adı / T.C.:</b> ${u.kullaniciAdi || '-'}</div>
                     <div><i class="fa-solid fa-key"></i> <b>Şifre:</b> ${u.sifre || '-'}</div>
                     <div><i class="fa-solid fa-school"></i> <b>Okul:</b> ${u.okul || '-'}</div>
-                    <div><i class="fa-solid fa-person"></i> <b>Anne Adı:</b> ${u.anneAdSoyad || '-'}</div>
+                    <div><i class="fa-solid fa-person"></i> <b>Anne / Veli Adı:</b> ${u.anneAdSoyad || '-'}</div>
                     <div><i class="fa-solid fa-phone"></i> <b>Veli Telefon:</b> ${u.cepTel || '-'}</div>
                   </div>
                   <div class="accordion-actions">
@@ -1078,6 +1649,9 @@
 
       dsSelect.innerHTML = dsOptionsHTML;
       dsSelect.value = seciliDsOgrenci;
+
+      szSelect.innerHTML = szOptionsHTML;
+      szSelect.value = seciliSzOgrenci;
 
       if (ogretmenSayac === 0) ogretmenDiv.innerHTML = "<small style='color:#888;'>Eşleşen öğretmen bulunamadı.</small>";
       if (ogrenciSayac === 0) ogrenciDiv.innerHTML = "<small style='color:#888;'>Eşleşen öğrenci bulunamadı.</small>";
@@ -1182,6 +1756,15 @@
               <td><button class="btn-danger" style="padding:4px 8px; border:none; border-radius:4px; color:#fff; cursor:pointer;" onclick="denemeSonucSil('${id}')"><i class="fa-solid fa-trash"></i> Sil</button></td>
             </tr>`;
         });
+      });
+
+      // Sözleşmeleri Canlı Dinle
+      onSnapshot(collection(db, "sozlesmeler"), (snapshot) => {
+        sozlesmeVerileri = {};
+        snapshot.forEach((docSnap) => {
+          sozlesmeVerileri[docSnap.id] = docSnap.data();
+        });
+        sozlesmeleriRenderEt();
       });
     }
 
