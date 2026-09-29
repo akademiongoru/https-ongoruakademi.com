@@ -371,6 +371,7 @@
       appearance: auto;
     }
 
+    /* CRITICAL FIX: SELECT & OPTION STYLES FOR ALL BROWSERS */
     select option {
       background-color: #12141d !important;
       color: #ffffff !important;
@@ -445,6 +446,7 @@
       justify-content: center;
       background: radial-gradient(circle, rgba(28, 32, 48, 0.6) 0%, rgba(8, 9, 13, 0.98) 100%);
       padding: 15px;
+      cursor: pointer;
     }
 
     .slide.active {
@@ -489,7 +491,101 @@
     .sol { left: 20px; }
     .sag { right: 20px; }
 
-    /* İLETİŞİM ALANI & İÇİNE GÖMÜLÜ CANLI SAYAÇ */
+    /* TAM EKRAN TAM GÖRSEL SLİDER STİLLERİ (EKLEME) */
+    .fullscreen-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      z-index: 999999;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .fullscreen-modal.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .fullscreen-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .fullscreen-img {
+      max-width: 95vw;
+      max-height: 92vh;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .fullscreen-close {
+      position: absolute;
+      top: 25px;
+      right: 35px;
+      color: #ffffff;
+      font-size: 38px;
+      cursor: pointer;
+      z-index: 1000000;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .fullscreen-close:hover {
+      background: var(--primary);
+      transform: rotate(90deg);
+    }
+
+    .fullscreen-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 24px;
+      z-index: 1000000;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .fullscreen-nav:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-50%) scale(1.15);
+      box-shadow: 0 0 25px var(--primary-glow);
+    }
+
+    .fullscreen-prev { left: 30px; }
+    .fullscreen-next { right: 30px; }
+
+    /* İLETİŞİM ALANI */
     .iletisim p {
       margin-bottom: 18px;
       font-size: 14px;
@@ -509,44 +605,6 @@
       border-radius: 10px;
       min-width: 32px;
       text-align: center;
-    }
-
-    /* SAYAÇ KUTUSU STİLLERİ */
-    .sayac-alani {
-      margin-top: auto;
-      padding-top: 18px;
-      border-top: 1px solid var(--border-color);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .sayac-kutusu {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 10px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .sayac-kutusu:hover {
-      border-color: var(--border-orange);
-      background: rgba(255, 107, 0, 0.05);
-    }
-
-    .sayac-kutusu span {
-      display: block;
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .sayac-kutusu strong {
-      font-size: 18px;
-      color: var(--primary);
-      font-weight: 800;
     }
 
     /* KARTLAR */
@@ -854,7 +912,7 @@
         <i class="fa-solid fa-circle-info"></i> Hızlı Bilgi Al
       </button>
 
-      <!-- HIZLI FORM -->
+      <!-- HIZLI FORM (EKSİKSİZ SINIF LİSTESİ DÜZELTİLDİ) -->
       <div class="hizli-form-alani" id="hizliFormAlani">
         <form id="hizliContactForm">
           <input type="text" id="hOgrenciAd" placeholder="Öğrenci Ad Soyad" minlength="3" required>
@@ -909,7 +967,6 @@
       </div>
     </div>
 
-    <!-- İLETİŞİM ALANI & İÇİNE GÖMÜLÜ SAYAÇ -->
     <div class="kutu iletisim" id="iletisim">
       <h3>
         <i class="fa-solid fa-address-book"></i> İletişim
@@ -932,20 +989,23 @@
           <i class="fa-brands fa-instagram"></i> @arnavutkoyongoruakademi
         </a>
       </p>
-
-      <!-- CANLI ZİYARETÇİ SAYACI -->
-      <div class="sayac-alani">
-        <div class="sayac-kutusu">
-          <span>Toplam Ziyaret</span>
-          <strong id="toplamZiyaret">...</strong>
-        </div>
-        <div class="sayac-kutusu">
-          <span>Tekil Ziyaretçi</span>
-          <strong id="tekilZiyaret">...</strong>
-        </div>
-      </div>
     </div>
   </section>
+
+  <!-- TAM EKRAN SLIDER MODAL (EKLEME) -->
+  <div id="fullscreenModal" class="fullscreen-modal">
+    <span class="fullscreen-close" id="fullscreenClose">&times;</span>
+    <div class="fullscreen-nav fullscreen-prev" id="fullscreenPrev">
+      <i class="fa-solid fa-chevron-left"></i>
+    </div>
+    <div class="fullscreen-content" id="fullscreenContent">
+      <img id="fullscreenImage" class="fullscreen-img" src="" alt="Tam Ekran Görsel">
+    </div>
+    <div class="fullscreen-nav fullscreen-next" id="fullscreenNext">
+      <i class="fa-solid fa-chevron-right"></i>
+    </div>
+  </div>
+
   <section class="kartlar" id="hakkimizda">
     <div class="kart">
       <h2>Misyonumuz</h2>
@@ -973,7 +1033,7 @@
     </div>
   </section>
 
-  <!-- ÖN KAYIT FORMU -->
+  <!-- ÖN KAYIT FORMU (EKSİKSİZ SINIF LİSTESİ DÜZELTİLDİ) -->
   <section class="kayit">
     <div class="kayit-alan">
       <div class="form-kutu">
@@ -1070,7 +1130,8 @@
       }, 4000);
     }
 
-    document.querySelector(".sag").onclick = function() {
+    document.querySelector(".sag").onclick = function(e) {
+      e.stopPropagation();
       sliderlar = document.querySelectorAll(".slide");
       index++;
       if (index >= sliderlar.length) {
@@ -1080,7 +1141,8 @@
       sliderBaslat();
     };
 
-    document.querySelector(".sol").onclick = function() {
+    document.querySelector(".sol").onclick = function(e) {
+      e.stopPropagation();
       sliderlar = document.querySelectorAll(".slide");
       index--;
       if (index < 0) {
@@ -1091,6 +1153,110 @@
     };
 
     sliderBaslat();
+
+    /* TAM EKRAN (LIGHTBOX) MANTIĞI VE 5 SANYE OTO-GEÇİŞ (EKLEME) */
+    let fullscreenInterval = null;
+    let fsIndex = 0;
+
+    const fullscreenModal = document.getElementById("fullscreenModal");
+    const fullscreenImage = document.getElementById("fullscreenImage");
+    const fullscreenClose = document.getElementById("fullscreenClose");
+    const fullscreenPrev = document.getElementById("fullscreenPrev");
+    const fullscreenNext = document.getElementById("fullscreenNext");
+
+    function updateFullscreenImage(i) {
+      sliderlar = document.querySelectorAll(".slide");
+      if (sliderlar.length === 0) return;
+      if (i >= sliderlar.length) i = 0;
+      if (i < 0) i = sliderlar.length - 1;
+      fsIndex = i;
+      
+      const imgInSlide = sliderlar[fsIndex].querySelector("img");
+      if (imgInSlide) {
+        fullscreenImage.src = imgInSlide.src;
+      }
+    }
+
+    function startFullscreenTimer() {
+      stopFullscreenTimer();
+      fullscreenInterval = setInterval(() => {
+        fsIndex++;
+        sliderlar = document.querySelectorAll(".slide");
+        if (fsIndex >= sliderlar.length) fsIndex = 0;
+        updateFullscreenImage(fsIndex);
+      }, 5000); // 5 saniye sonra diğer fotoya geçiş
+    }
+
+    function stopFullscreenTimer() {
+      if (fullscreenInterval) {
+        clearInterval(fullscreenInterval);
+        fullscreenInterval = null;
+      }
+    }
+
+    function openFullscreen(i) {
+      fsIndex = i;
+      updateFullscreenImage(fsIndex);
+      fullscreenModal.classList.add("active");
+      document.body.style.overflow = "hidden"; // Sayfa kaydırmayı kitle
+      startFullscreenTimer();
+    }
+
+    function closeFullscreen() {
+      fullscreenModal.classList.remove("active");
+      document.body.style.overflow = "";
+      stopFullscreenTimer();
+    }
+
+    // Slider'a/Görsele tıklandığında tam ekran yap
+    document.getElementById("mainSlider").addEventListener("click", function(e) {
+      if (e.target.closest(".ok")) return; // Ok butonlarına basıldıysa tam ekran açma
+      
+      sliderlar = document.querySelectorAll(".slide");
+      let activeIdx = 0;
+      sliderlar.forEach((s, idx) => {
+        if (s.classList.contains("active")) activeIdx = idx;
+      });
+      openFullscreen(activeIdx);
+    });
+
+    fullscreenClose.addEventListener("click", closeFullscreen);
+
+    fullscreenNext.addEventListener("click", function(e) {
+      e.stopPropagation();
+      fsIndex++;
+      updateFullscreenImage(fsIndex);
+      startFullscreenTimer(); // Manuel tıklanınca 5sn sayacı sıfırla
+    });
+
+    fullscreenPrev.addEventListener("click", function(e) {
+      e.stopPropagation();
+      fsIndex--;
+      updateFullscreenImage(fsIndex);
+      startFullscreenTimer();
+    });
+
+    fullscreenModal.addEventListener("click", function(e) {
+      if (e.target === fullscreenModal || e.target.id === "fullscreenContent") {
+        closeFullscreen();
+      }
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (fullscreenModal.classList.contains("active")) {
+        if (e.key === "Escape") closeFullscreen();
+        if (e.key === "ArrowRight") {
+          fsIndex++;
+          updateFullscreenImage(fsIndex);
+          startFullscreenTimer();
+        }
+        if (e.key === "ArrowLeft") {
+          fsIndex--;
+          updateFullscreenImage(fsIndex);
+          startFullscreenTimer();
+        }
+      }
+    });
 
     // GALERİ BÜYÜTME
     document.getElementById("anaGaleriGrid").addEventListener("click", function(e) {
@@ -1123,22 +1289,10 @@
     };
   </script>
 
-  <!-- FIREBASE VE SAYAÇ SCRİPTİ -->
+  <!-- FIREBASE SCRİPTİ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getFirestore, 
-      collection, 
-      addDoc, 
-      onSnapshot, 
-      query, 
-      where,
-      doc,
-      getDoc,
-      setDoc,
-      updateDoc,
-      increment
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB4eNZiWTGnHUPSvdtCRvbymwFoBqQtqZk",
@@ -1153,43 +1307,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
-    // ZİYARETÇİ SAYACI MANTIĞI
-    async function ziyaretciSayaciniGuncelle() {
-      const sayacRef = doc(db, "istatistikler", "ziyaretler");
-      const yeniZiyaretci = !localStorage.getItem("ongoru_ziyaretci_id");
-
-      try {
-        const docSnap = await getDoc(sayacRef);
-        if (!docSnap.exists()) {
-          await setDoc(sayacRef, { toplam: 1, tekil: 1 });
-        } else {
-          const guncellemeVerisi = { toplam: increment(1) };
-          if (yeniZiyaretci) {
-            guncellemeVerisi.tekil = increment(1);
-          }
-          await updateDoc(sayacRef, guncellemeVerisi);
-        }
-        if (yeniZiyaretci) {
-          localStorage.setItem("ongoru_ziyaretci_id", "true");
-        }
-      } catch (err) {
-        console.error("Sayaç Hatası:", err);
-      }
-
-      // CANLI ANLIK BİLGİ DİNLEME
-      onSnapshot(sayacRef, (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.data();
-          const toplamEl = document.getElementById("toplamZiyaret");
-          const tekilEl = document.getElementById("tekilZiyaret");
-          if (toplamEl) toplamEl.innerText = data.toplam || 0;
-          if (tekilEl) tekilEl.innerText = data.tekil || 0;
-        }
-      });
-    }
-
-    ziyaretciSayaciniGuncelle();
 
     // DERS PROGRAMI GÖSTERME
     window.dersProgramiGoster = function(sinifAdi) {
