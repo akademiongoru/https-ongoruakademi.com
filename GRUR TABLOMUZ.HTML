@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full bg-slate-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÖNGÖRÜ AKADEMİ PROJE OKULLARI GURUR TABLOMUZ - Başarı Sıralaması</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(71, 85, 105, 1);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        #scrollList {
+            will-change: transform;
+        }
+    </style>
+</head>
+<body class="h-full text-slate-100 flex flex-col justify-between overflow-x-hidden bg-slate-950">
+
+    <!-- HEADER -->
+    <header class="relative z-10 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md px-4 py-4 md:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-sky-400 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <i class="fa-solid font-bold fa-trophy text-slate-950 text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight text-gradient">ÖNGÖRÜ AKADEMİ GURUR TABLOMUZ</h1>
+                    <p class="text-xs text-slate-400 font-medium">Başarıya Ulaşan Öğrencilerimiz</p>
+                </div>
+            </div>
+
+            <!-- Stats Header Banner (Öğrenci sayısı kaldırıldı) -->
+            <div class="flex items-center gap-6 bg-slate-800/60 border border-slate-700/50 px-5 py-2.5 rounded-2xl text-sm">
+                <div class="text-center">
+                    <span class="block text-xs text-slate-400 font-medium">Ortalama Puan</span>
+                    <span id="avgScore" class="text-lg font-bold text-amber-400">0.00</span>
+                </div>
+                <div class="w-px h-8 bg-slate-700"></div>
+                <div class="text-center">
+                    <span class="block text-xs text-slate-400 font-medium">En Yüksek Puan</span>
+                    <span id="maxScore" class="text-lg font-bold text-emerald-400">0.00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- LEFT COLUMN: SCROLLING LIST CANVAS -->
+        <section class="lg:col-span-8 flex flex-col h-[680px] rounded-3xl glass-card overflow-hidden shadow-2xl relative border border-slate-800">
+            
+            <!-- Top Control Bar -->
+            <div class="p-4 bg-slate-900/90 border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-3 z-20">
+                
+                <!-- Search Input -->
+                <div class="relative flex-1 min-w-[200px]">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="Öğrenci veya okul ara..." 
+                        class="w-full pl-10 pr-4 py-2 bg-slate-950/60 border border-slate-700/60 rounded-xl text-sm focus:outline-none focus:border-sky-500 transition-colors text-slate-200 placeholder-slate-500">
+                </div>
+
+                <!-- Controls -->
+                <div class="flex items-center gap-2">
+                    <!-- Play/Pause -->
+                    <button id="togglePlayBtn" title="Duraklat/Başlat" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-700 transition active:scale-95">
+                        <i id="playIcon" class="fa-solid fa-pause"></i>
+                    </button>
+
+                    <!-- Direction Switch -->
+                    <button id="toggleDirectionBtn" title="Yön Değiştir" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-700 transition active:scale-95 flex items-center gap-1.5 text-xs font-semibold px-3">
+                        <i id="directionIcon" class="fa-solid fa-arrow-down-long text-sky-400"></i>
+                        <span id="directionText">Aşağı</span>
+                    </button>
+
+                    <!-- Speed Selector -->
+                    <div class="flex items-center gap-1 bg-slate-950/60 border border-slate-700/60 rounded-xl p-1 text-xs">
+                        <button class="speed-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition" data-speed="1">Yavaş</button>
+                        <button class="speed-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition active-speed bg-sky-500/20 text-sky-400 font-bold" data-speed="2">Normal</button>
+                        <button class="speed-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition" data-speed="3.5">Hızlı</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Viewport Container -->
+            <div id="scrollViewport" class="flex-1 relative overflow-hidden bg-slate-950/40 p-4">
+                
+                <!-- Fade Gradients top/bottom -->
+                <div class="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-slate-950 to-transparent z-10 pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-slate-950 to-transparent z-10 pointer-events-none"></div>
+
+                <!-- Smooth Scrolling Inner Container -->
+                <div id="scrollList" class="flex flex-col gap-3.5">
+                    <!-- Cards injected via JS -->
+                </div>
+
+                <!-- Empty State Message -->
+                <div id="emptyMessage" class="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-folder-open text-4xl mb-2"></i>
+                    <p class="text-sm">Gösterilecek kayıt bulunamadı.</p>
+                </div>
+            </div>
+
+            <!-- Footer Status (Toplam sayı kaldırıldı) -->
+            <div class="px-5 py-2.5 bg-slate-900/90 border-t border-slate-800/80 text-xs text-slate-400 flex justify-between items-center z-20">
+                <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Canlı Akış
+                </span>
+                <span class="text-slate-500 italic">Öngörü Akademi Başarı Tablosu</span>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: FORM & MANAGEMENT -->
+        <section class="lg:col-span-4 space-y-6">
+            
+            <!-- Registration Card -->
+            <div class="glass-card rounded-3xl p-6 border border-slate-800 shadow-xl">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="p-2.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-xl">
+                        <i class="fa-solid fa-user-plus text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Yeni Kayıt Ekle</h2>
+                        <p class="text-xs text-slate-400">Başarı listesine yeni öğrenci ekleyin</p>
+                    </div>
+                </div>
+
+                <form id="studentForm" class="space-y-4">
+                    <!-- Name input -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5" for="studentName">
+                            Öğrenci Adı Soyadı <span class="text-rose-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                            <input type="text" id="studentName" required placeholder="Örn: Ahmet Yılmaz"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-white placeholder-slate-600 transition">
+                        </div>
+                    </div>
+
+                    <!-- School input -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5" for="schoolName">
+                            Kazandığı Okul / Bölüm <span class="text-rose-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-graduation-cap absolute left-3.5 top-1/2 -translate-y-1/2 text-rose-400 text-sm"></i>
+                            <input type="text" id="schoolName" required placeholder="Örn: Galatasaray Lisesi"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-white placeholder-slate-600 transition">
+                        </div>
+                    </div>
+
+                    <!-- Score input -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5" for="studentScore">
+                            Puan <span class="text-rose-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-star absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400 text-sm"></i>
+                            <input type="number" step="0.01" min="0" max="500" id="studentScore" required placeholder="Örn: 492.50"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-white placeholder-slate-600 transition">
+                        </div>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="submit" 
+                        class="w-full py-3 px-4 bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500 hover:from-indigo-600 hover:to-emerald-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-indigo-500/20 active:scale-[0.98] transition flex items-center justify-center gap-2 text-sm mt-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Listeye Ekle</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Management Box & Reset -->
+            <div class="glass-card rounded-3xl p-5 border border-slate-800 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-bold text-slate-300">Örnek Verileri Yükle</h3>
+                    <p class="text-[11px] text-slate-500">Listeyi varsayılan öğrencilere sıfırla</p>
+                </div>
+                <button id="resetBtn" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> Sıfırla
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-card max-w-md w-full rounded-3xl p-6 border border-slate-700 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-xl">
+                        <i class="fa-solid fa-pen-to-square text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Kayıt Düzenle</h3>
+                        <p class="text-xs text-slate-400">Öğrenci bilgilerini güncelleyin</p>
+                    </div>
+                </div>
+                <button id="closeModalBtn" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="editStudentForm" class="space-y-4">
+                <input type="hidden" id="editStudentId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5" for="editStudentName">Öğrenci Adı Soyadı</label>
+                    <input type="text" id="editStudentName" required class="w-full px-4 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-sky-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5" for="editSchoolName">Kazandığı Okul (Kırmızı görünecektir)</label>
+                    <input type="text" id="editSchoolName" required class="w-full px-4 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-sky-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5" for="editStudentScore">Puan</label>
+                    <input type="number" step="0.01" min="0" max="500" id="editStudentScore" required class="w-full px-4 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-sky-500 transition">
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" id="cancelEditBtn" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 transition">
+                        İptal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-sky-500/20 transition">
+                        Kaydet ve Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const initialStudents = [
+            { id: 1, name: "Zeynep Kaya", school: "Galatasaray Lisesi", score: 496.85 },
+            { id: 2, name: "Mustafa Demir", school: "İstanbul Erkek Lisesi", score: 494.20 },
+            { id: 3, name: "Elif Öztürk", school: "Kabataş Erkek Lisesi", score: 491.50 },
+            { id: 4, name: "Arda Yılmaz", school: "Ankara Fen Lisesi", score: 489.90 },
+            { id: 5, name: "Sena Aydın", school: "İzmir Fen Lisesi", score: 487.40 },
+            { id: 6, name: "Kaan Çelik", school: "Cağaloğlu Anadolu Lisesi", score: 485.10 },
+            { id: 7, name: "Irmak Yıldız", school: "Kadıköy Anadolu Lisesi", score: 482.30 },
+            { id: 8, name: "Ege Arslan", school: "Atatürk Fen Lisesi", score: 480.00 }
+        ];
+
+        let students = JSON.parse(localStorage.getItem("students_list")) || [...initialStudents];
+        let isPlaying = true;
+        let direction = 1;
+        let speed = 2;
+        let translateY = 0;
+        let animationFrameId = null;
+        let filterQuery = "";
+
+        // DOM Elements
+        const scrollList = document.getElementById("scrollList");
+        const scrollViewport = document.getElementById("scrollViewport");
+        const studentForm = document.getElementById("studentForm");
+        const searchInput = document.getElementById("searchInput");
+        const togglePlayBtn = document.getElementById("togglePlayBtn");
+        const playIcon = document.getElementById("playIcon");
+        const toggleDirectionBtn = document.getElementById("toggleDirectionBtn");
+        const directionIcon = document.getElementById("directionIcon");
+        const directionText = document.getElementById("directionText");
+        const emptyMessage = document.getElementById("emptyMessage");
+        const resetBtn = document.getElementById("resetBtn");
+        
+        // Header Stat DOMs
+        const avgScore = document.getElementById("avgScore");
+        const maxScore = document.getElementById("maxScore");
+
+        // Modal DOMs
+        const editModal = document.getElementById("editModal");
+        const editStudentForm = document.getElementById("editStudentForm");
+        const editStudentId = document.getElementById("editStudentId");
+        const editStudentName = document.getElementById("editStudentName");
+        const editSchoolName = document.getElementById("editSchoolName");
+        const editStudentScore = document.getElementById("editStudentScore");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+        function renderList() {
+            const filtered = students.filter(s => 
+                s.name.toLowerCase().includes(filterQuery.toLowerCase()) || 
+                s.school.toLowerCase().includes(filterQuery.toLowerCase())
+            );
+
+            scrollList.innerHTML = "";
+
+            if (filtered.length === 0) {
+                emptyMessage.classList.remove("hidden");
+                updateStats(filtered);
+                return;
+            } else {
+                emptyMessage.classList.add("hidden");
+            }
+
+            const originalGroup = document.createElement("div");
+            originalGroup.className = "flex flex-col gap-3.5 student-group";
+            filtered.forEach(student => {
+                originalGroup.appendChild(createStudentCard(student));
+            });
+
+            const cloneGroup = originalGroup.cloneNode(true);
+            
+            bindCardActions(originalGroup);
+            bindCardActions(cloneGroup);
+
+            scrollList.appendChild(originalGroup);
+            scrollList.appendChild(cloneGroup);
+
+            updateStats(filtered);
+        }
+
+        // Student Card Generator with RED School and BIGGER Score Font
+        function createStudentCard(student) {
+            const card = document.createElement("div");
+            card.className = "group relative flex items-center justify-between p-4 bg-slate-900/80 border border-slate-800/90 rounded-2xl hover:border-slate-700 hover:bg-slate-800/80 transition-all duration-300 shadow-md hover:shadow-sky-500/5";
+
+            let badgeStyle = "bg-sky-500/10 text-sky-400 border-sky-500/20";
+            if (student.score >= 490) {
+                badgeStyle = "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-lg shadow-amber-500/10";
+            } else if (student.score >= 480) {
+                badgeStyle = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+            }
+
+            card.innerHTML = `
+                <div class="flex items-center gap-4 min-w-0 pr-2">
+                    <div class="w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 font-extrabold text-lg shrink-0 group-hover:scale-105 transition-transform">
+                        ${student.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="min-w-0">
+                        <h4 class="font-bold text-slate-100 text-sm md:text-base truncate group-hover:text-sky-400 transition-colors">${escapeHTML(student.name)}</h4>
+                        <!-- Okul İsmi Kırmızı Yapıldı -->
+                        <p class="text-xs font-semibold text-rose-500 flex items-center gap-1.5 mt-0.5 truncate">
+                            <i class="fa-solid fa-graduation-cap text-rose-500 text-[12px]"></i>
+                            <span class="truncate">${escapeHTML(student.school)}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 shrink-0">
+                    <!-- Puan Fontu Büyütüldü (text-lg md:text-xl font-black) -->
+                    <div class="px-3.5 py-2 rounded-xl border font-mono font-black text-lg md:text-xl ${badgeStyle}">
+                        ${Number(student.score).toFixed(2)} <span class="text-xs font-bold opacity-80">P</span>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="edit-btn p-2 text-slate-400 hover:text-sky-400 hover:bg-sky-500/10 rounded-lg transition-all" data-id="${student.id}" title="Düzenle">
+                            <i class="fa-solid fa-pen-to-square text-sm"></i>
+                        </button>
+                        <button class="delete-btn p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all" data-id="${student.id}" title="Sil">
+                            <i class="fa-solid fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function bindCardActions(container) {
+            // Delete Action
+            container.querySelectorAll(".delete-btn").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const id = Number(btn.getAttribute("data-id"));
+                    deleteStudent(id);
+                });
+            });
+
+            // Edit Action
+            container.querySelectorAll(".edit-btn").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const id = Number(btn.getAttribute("data-id"));
+                    openEditModal(id);
+                });
+            });
+        }
+
+        function openEditModal(id) {
+            const student = students.find(s => s.id === id);
+            if (!student) return;
+
+            editStudentId.value = student.id;
+            editStudentName.value = student.name;
+            editSchoolName.value = student.school;
+            editStudentScore.value = student.score;
+
+            editModal.classList.remove("hidden");
+            isPlaying = false;
+        }
+
+        function closeEditModal() {
+            editModal.classList.add("hidden");
+            isPlaying = true;
+        }
+
+        editStudentForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const id = Number(editStudentId.value);
+            const student = students.find(s => s.id === id);
+
+            if (student) {
+                student.name = editStudentName.value.trim();
+                student.school = editSchoolName.value.trim();
+                student.score = parseFloat(editStudentScore.value);
+
+                saveData();
+                renderList();
+                closeEditModal();
+            }
+        });
+
+        closeModalBtn.addEventListener("click", closeEditModal);
+        cancelEditBtn.addEventListener("click", closeEditModal);
+        editModal.addEventListener("click", (e) => {
+            if (e.target === editModal) closeEditModal();
+        });
+
+        function deleteStudent(id) {
+            students = students.filter(s => s.id !== id);
+            saveData();
+            renderList();
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        function updateStats(filteredData) {
+            if (students.length === 0) {
+                avgScore.textContent = "0.00";
+                maxScore.textContent = "0.00";
+                return;
+            }
+
+            const total = students.reduce((acc, curr) => acc + Number(curr.score), 0);
+            const max = Math.max(...students.map(s => Number(s.score)));
+
+            avgScore.textContent = (total / students.length).toFixed(2);
+            maxScore.textContent = max.toFixed(2);
+        }
+
+        function animate() {
+            if (isPlaying && scrollList.firstElementChild) {
+                const groupHeight = scrollList.firstElementChild.offsetHeight + 14;
+
+                if (groupHeight > 0) {
+                    if (direction === 1) {
+                        translateY += speed * 0.5;
+                        if (translateY >= 0) {
+                            translateY = -groupHeight;
+                        }
+                    } else {
+                        translateY -= speed * 0.5;
+                        if (Math.abs(translateY) >= groupHeight) {
+                            translateY = 0;
+                        }
+                    }
+                    scrollList.style.transform = `translateY(${translateY}px)`;
+                }
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        function saveData() {
+            localStorage.setItem("students_list", JSON.stringify(students));
+        }
+
+        studentForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            const nameInput = document.getElementById("studentName");
+            const schoolInput = document.getElementById("schoolName");
+            const scoreInput = document.getElementById("studentScore");
+
+            const newStudent = {
+                id: Date.now(),
+                name: nameInput.value.trim(),
+                school: schoolInput.value.trim(),
+                score: parseFloat(scoreInput.value)
+            };
+
+            students.unshift(newStudent);
+            saveData();
+
+            nameInput.value = "";
+            schoolInput.value = "";
+            scoreInput.value = "";
+
+            renderList();
+        });
+
+        searchInput.addEventListener("input", (e) => {
+            filterQuery = e.target.value.trim();
+            renderList();
+        });
+
+        togglePlayBtn.addEventListener("click", () => {
+            isPlaying = !isPlaying;
+            playIcon.className = isPlaying ? "fa-solid fa-pause" : "fa-solid fa-play text-emerald-400";
+        });
+
+        toggleDirectionBtn.addEventListener("click", () => {
+            direction = direction === 1 ? -1 : 1;
+            if (direction === 1) {
+                directionIcon.className = "fa-solid fa-arrow-down-long text-sky-400";
+                directionText.textContent = "Aşağı";
+            } else {
+                directionIcon.className = "fa-solid fa-arrow-up-long text-indigo-400";
+                directionText.textContent = "Yukarı";
+            }
+        });
+
+        document.querySelectorAll(".speed-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".speed-btn").forEach(b => {
+                    b.classList.remove("active-speed", "bg-sky-500/20", "text-sky-400", "font-bold");
+                    b.classList.add("text-slate-400");
+                });
+                btn.classList.add("active-speed", "bg-sky-500/20", "text-sky-400", "font-bold");
+                btn.classList.remove("text-slate-400");
+                speed = parseFloat(btn.getAttribute("data-speed"));
+            });
+        });
+
+        scrollViewport.addEventListener("mouseenter", () => { isPlaying = false; });
+        scrollViewport.addEventListener("mouseleave", () => { 
+            if (editModal.classList.contains("hidden")) {
+                isPlaying = true; 
+            }
+        });
+
+        resetBtn.addEventListener("click", () => {
+            students = [...initialStudents];
+            saveData();
+            renderList();
+        });
+
+        window.addEventListener("DOMContentLoaded", () => {
+            renderList();
+            animate();
+        });
+    </script>
+</body>
+</html>
