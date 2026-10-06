@@ -15,25 +15,33 @@
 
   <style>
     :root {
-      /* Modern Vibrant Orange & Deep Space Grey Palette */
-      --primary: #ff6b00;
+      /* Açık Tema: Beyaz, Turuncu ve Mavi Tonları Palette */
+      --primary: #ff6b00;            /* Turuncu */
       --primary-hover: #e05d00;
-      --primary-glow: rgba(255, 107, 0, 0.35);
-      --primary-light: rgba(255, 107, 0, 0.12);
+      --primary-glow: rgba(255, 107, 0, 0.25);
+      --primary-light: rgba(255, 107, 0, 0.1);
       
-      --bg-dark: #090a0f;         
-      --bg-card: rgba(18, 20, 29, 0.75); 
-      --bg-card-hover: rgba(28, 31, 45, 0.85);
+      --secondary: #1e40af;          /* Mavi / Lacivert */
+      --secondary-hover: #1d4ed8;
+      --secondary-light: rgba(30, 64, 175, 0.08);
+
+      --bg-light: #f8fafc;           /* Açık Arka Plan */
+      --bg-white: #ffffff;           /* Kart ve Kutular için Beyaz */
+      --bg-card-hover: #f1f5f9;
       
-      --border-color: rgba(255, 255, 255, 0.08);
+      --border-color: #e2e8f0;
       --border-orange: rgba(255, 107, 0, 0.4);
+      --border-blue: rgba(30, 64, 175, 0.3);
       
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --text-main: #0f172a;          /* Koyu Metin */
+      --text-muted: #64748b;         /* Gri/Silik Metin */
       
       --radius-sm: 12px;
       --radius-md: 20px;
       --radius-lg: 32px;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
     }
 
     * {
@@ -48,19 +56,19 @@
     }
 
     body {
-      background-color: var(--bg-dark);
+      background-color: var(--bg-light);
       color: var(--text-main);
       line-height: 1.6;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(255, 107, 0, 0.05) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(255, 107, 0, 0.03) 0%, transparent 40%);
+        radial-gradient(circle at 15% 15%, rgba(255, 107, 0, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(30, 64, 175, 0.04) 0%, transparent 40%);
       background-attachment: fixed;
     }
 
     /* HEADER */
     header {
-      background: rgba(9, 10, 15, 0.85);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       padding: 16px 8%;
@@ -71,6 +79,7 @@
       position: sticky;
       top: 0;
       z-index: 1000;
+      box-shadow: var(--shadow-sm);
       transition: all 0.3s ease;
     }
 
@@ -86,11 +95,12 @@
       background: #ffffff;
       padding: 5px;
       border-radius: var(--radius-sm);
-      box-shadow: 0 8px 25px var(--primary-glow);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
     }
 
     .logo h1 {
-      color: var(--text-main);
+      color: var(--secondary);
       font-size: 22px;
       font-weight: 800;
       letter-spacing: -0.5px;
@@ -112,7 +122,7 @@
 
     .meb img {
       width: 55px;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
       transition: transform 0.3s ease;
     }
     
@@ -122,8 +132,7 @@
 
     /* NAVIGATION BAR */
     nav {
-      background: rgba(14, 16, 23, 0.9);
-      backdrop-filter: blur(12px);
+      background: #ffffff;
       padding: 10px 8%;
       display: flex;
       justify-content: center;
@@ -132,10 +141,11 @@
       position: relative;
       z-index: 999;
       flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
     }
 
     nav a {
-      color: var(--text-muted);
+      color: var(--text-main);
       text-decoration: none;
       font-weight: 600;
       font-size: 14px;
@@ -147,8 +157,12 @@
       gap: 8px;
     }
 
+    nav a i {
+      color: var(--secondary);
+    }
+
     nav a:hover {
-      color: var(--text-main);
+      color: var(--primary);
       background: var(--primary-light);
       transform: translateY(-1px);
     }
@@ -166,15 +180,14 @@
     .dropdown-content {
       display: none;
       position: absolute;
-      background: rgba(18, 20, 29, 0.98);
-      backdrop-filter: blur(20px);
+      background: #ffffff;
       min-width: 220px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      box-shadow: var(--shadow-md);
       z-index: 9999;
       border-radius: var(--radius-md);
       top: 100%;
       left: 0;
-      border: 1px solid var(--border-orange);
+      border: 1px solid var(--border-color);
       overflow: hidden;
       padding: 8px;
     }
@@ -214,22 +227,22 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
     }
 
     .program-modal-content {
-      background: var(--bg-dark);
+      background: var(--bg-white);
       margin: 4% auto;
       padding: 35px;
-      border: 1px solid var(--border-orange);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       width: 90%;
       max-width: 850px;
       max-height: 85vh;
       overflow-y: auto;
       position: relative;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
+      box-shadow: var(--shadow-lg);
     }
 
     .program-modal-close {
@@ -260,7 +273,7 @@
       object-fit: contain;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: var(--shadow-sm);
     }
 
     /* ANA ALAN (GRID LAYOUT) */
@@ -273,18 +286,17 @@
     }
 
     .kutu {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
+      background: var(--bg-white);
       border: 1px solid var(--border-color);
       padding: 28px 24px;
       border-radius: var(--radius-lg);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
     }
 
     .kutu h3 {
-      color: var(--text-main);
+      color: var(--secondary);
       margin-bottom: 22px;
       font-size: 18px;
       font-weight: 700;
@@ -310,7 +322,7 @@
       justify-content: flex-start;
       gap: 14px;
       width: 100%;
-      background: rgba(255, 255, 255, 0.03);
+      background: #f8fafc;
       color: var(--text-main);
       text-decoration: none;
       padding: 15px 20px;
@@ -329,12 +341,12 @@
       color: #ffffff;
       border-color: transparent;
       transform: translateY(-3px);
-      box-shadow: 0 10px 25px var(--primary-glow);
+      box-shadow: 0 8px 20px var(--primary-glow);
     }
 
     .giris a i, .giris .bilgi-btn i {
       font-size: 16px;
-      color: var(--primary);
+      color: var(--secondary);
       transition: color .3s;
     }
 
@@ -345,11 +357,12 @@
     /* HIZLI FORM (TOGGLE) */
     .hizli-form-alani {
       display: none;
-      background: rgba(10, 11, 16, 0.95);
+      background: #ffffff;
       padding: 20px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-orange);
       margin-top: 15px;
+      box-shadow: var(--shadow-sm);
       animation: fadeIn 0.3s ease;
     }
 
@@ -362,10 +375,10 @@
       width: 100%;
       padding: 14px;
       margin-bottom: 14px;
-      background: #12141d !important;
+      background: #f8fafc !important;
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
-      color: #ffffff !important;
+      color: var(--text-main) !important;
       font-size: 14px;
       outline: none;
       transition: 0.3s;
@@ -373,8 +386,8 @@
     }
 
     select option {
-      background-color: #12141d !important;
-      color: #ffffff !important;
+      background-color: #ffffff !important;
+      color: var(--text-main) !important;
       padding: 12px;
       font-size: 14px;
     }
@@ -387,6 +400,7 @@
     .form-kutu textarea:focus {
       border-color: var(--primary);
       box-shadow: 0 0 10px var(--primary-glow);
+      background: #ffffff !important;
     }
 
     .hizli-form-alani textarea {
@@ -420,8 +434,8 @@
       position: relative;
       border-radius: var(--radius-lg);
       padding: 8px;
-      background: linear-gradient(135deg, rgba(255, 107, 0, 0.4) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 107, 0, 0.2) 100%);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px var(--primary-glow);
+      background: linear-gradient(135deg, rgba(255, 107, 0, 0.3) 0%, rgba(30, 64, 175, 0.1) 100%);
+      box-shadow: var(--shadow-md);
       z-index: 1;
     }
 
@@ -431,8 +445,8 @@
       position: relative;
       overflow: hidden;
       border-radius: calc(var(--radius-lg) - 6px);
-      background: #08090d;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #ffffff;
+      border: 1px solid var(--border-color);
     }
 
     .slide {
@@ -444,7 +458,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, rgba(28, 32, 48, 0.6) 0%, rgba(8, 9, 13, 0.98) 100%);
+      background: #f8fafc;
       padding: 15px;
       cursor: pointer;
     }
@@ -457,7 +471,7 @@
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
       border-radius: 16px;
     }
 
@@ -465,9 +479,8 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(14, 16, 23, 0.75);
-      backdrop-filter: blur(12px);
-      color: white;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--secondary);
       width: 52px;
       height: 52px;
       border-radius: 50%;
@@ -477,12 +490,14 @@
       cursor: pointer;
       font-size: 18px;
       z-index: 10;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .ok:hover {
       background: var(--primary);
+      color: #ffffff;
       border-color: var(--primary);
       box-shadow: 0 0 20px var(--primary-glow);
       transform: translateY(-50%) scale(1.12);
@@ -499,7 +514,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: rgba(0, 0, 0, 0.95);
+      background-color: rgba(15, 23, 42, 0.92);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       z-index: 999999;
@@ -529,7 +544,7 @@
       max-height: 92vh;
       object-fit: contain;
       border-radius: var(--radius-md);
-      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      box-shadow: 0 0 50px rgba(0,0,0,0.5);
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
@@ -546,7 +561,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       transition: all 0.3s ease;
     }
@@ -560,7 +575,7 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.2);
       color: white;
       width: 60px;
       height: 60px;
@@ -571,7 +586,7 @@
       cursor: pointer;
       font-size: 24px;
       z-index: 1000000;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       transition: all 0.3s ease;
     }
 
@@ -597,288 +612,15 @@
     }
 
     .iletisim i {
-      color: var(--primary);
+      color: var(--secondary);
       font-size: 16px;
       margin-top: 3px;
-      background: var(--primary-light);
+      background: var(--secondary-light);
       padding: 8px;
       border-radius: 10px;
       min-width: 32px;
       text-align: center;
     }
-
-    /* GURUR TABLOSU BÖLÜMÜ */
-    .gurur-section {
-      padding: 60px 6%;
-      background: rgba(10, 11, 16, 0.6);
-      border-top: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .gurur-container {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 30px;
-      align-items: start;
-    }
-
-    .gurur-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-      overflow: hidden;
-    }
-
-    .gurur-header {
-      padding: 20px 25px;
-      background: rgba(14, 16, 23, 0.9);
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .gurur-header-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .gurur-header-title i {
-      font-size: 22px;
-      color: #ffb703;
-      background: rgba(255, 183, 3, 0.12);
-      padding: 10px;
-      border-radius: 12px;
-    }
-
-    .gurur-header-title h3 {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--text-main);
-    }
-
-    .gurur-stats {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 8px 18px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-color);
-    }
-
-    .gurur-stat-item {
-      text-align: center;
-    }
-
-    .gurur-stat-item span {
-      display: block;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .gurur-stat-item strong {
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .gurur-controls {
-      padding: 15px 25px;
-      background: rgba(9, 10, 15, 0.6);
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .gurur-search {
-      flex: 1;
-      min-width: 180px;
-      position: relative;
-    }
-
-    .gurur-search i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    .gurur-search input {
-      width: 100%;
-      padding: 8px 12px 8px 34px;
-      background: #090a0f;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      color: var(--text-main);
-      font-size: 13px;
-      outline: none;
-    }
-
-    .gurur-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-
-    .gurur-btn:hover {
-      background: var(--primary-light);
-      border-color: var(--border-orange);
-      color: var(--primary);
-    }
-
-    .gurur-speed-group {
-      display: flex;
-      background: #090a0f;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 2px;
-    }
-
-    .gurur-speed-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 5px 10px;
-      font-size: 11px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .gurur-speed-btn.active {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
-    .scroll-viewport {
-      height: 480px;
-      overflow: hidden;
-      position: relative;
-      padding: 20px;
-      background: rgba(5, 6, 8, 0.4);
-    }
-
-    .scroll-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      will-change: transform;
-    }
-
-    .student-item {
-      background: rgba(18, 20, 29, 0.85);
-      border: 1px solid var(--border-color);
-      padding: 14px 18px;
-      border-radius: var(--radius-md);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.3s;
-    }
-
-    .student-item:hover {
-      border-color: var(--border-orange);
-      transform: translateX(4px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .student-info {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .student-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: var(--radius-sm);
-      background: var(--primary-light);
-      border: 1px solid var(--border-orange);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 16px;
-    }
-
-    .student-details h4 {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .student-details p {
-      font-size: 12px;
-      font-weight: 600;
-      color: #ef4444; /* Kırmızı Okul İsmi */
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 2px;
-    }
-
-    .student-score {
-      background: rgba(255, 107, 0, 0.1);
-      border: 1px solid var(--border-orange);
-      color: #ff8833;
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      font-weight: 800;
-      font-size: 16px;
-      font-family: monospace;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .student-actions {
-      display: flex;
-      gap: 6px;
-      opacity: 0;
-      transition: opacity 0.2s;
-      margin-left: 10px;
-    }
-
-    .student-item:hover .student-actions {
-      opacity: 1;
-    }
-
-    .action-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .action-btn:hover.edit { color: #38bdf8; border-color: #38bdf8; }
-    .action-btn:hover.delete { color: #ef4444; border-color: #ef4444; }
 
     /* KARTLAR */
     .kartlar {
@@ -889,22 +631,22 @@
     }
 
     .kart {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
+      background: var(--bg-white);
       border: 1px solid var(--border-color);
       padding: 35px;
       border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
       transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .kart:hover {
       transform: translateY(-6px);
       border-color: var(--border-orange);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-lg);
     }
 
     .kart h2 {
-      color: var(--text-main);
+      color: var(--secondary);
       margin-bottom: 16px;
       font-size: 20px;
       font-weight: 700;
@@ -961,7 +703,7 @@
 
     .baslik {
       text-align: center;
-      color: var(--text-main);
+      color: var(--secondary);
       font-size: 34px;
       font-weight: 800;
       margin-bottom: 40px;
@@ -987,6 +729,7 @@
       border-radius: var(--radius-md);
       cursor: pointer;
       border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
       transition: all .4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -999,7 +742,7 @@
     /* FORM VE HARİTA */
     .kayit {
       padding: 70px 6%;
-      background: rgba(10, 11, 16, 0.8);
+      background: #f1f5f9;
       border-top: 1px solid var(--border-color);
     }
 
@@ -1010,15 +753,15 @@
     }
 
     .form-kutu {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
+      background: var(--bg-white);
       border: 1px solid var(--border-color);
       padding: 40px;
       border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
     }
 
     .form-kutu h2 {
-      color: var(--text-main);
+      color: var(--secondary);
       margin-bottom: 25px;
       font-size: 24px;
       font-weight: 700;
@@ -1037,11 +780,11 @@
     }
 
     .harita {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
+      background: var(--bg-white);
       border: 1px solid var(--border-color);
       padding: 40px;
       border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
     }
@@ -1052,22 +795,22 @@
       min-height: 350px;
       border: 0;
       border-radius: var(--radius-md);
-      filter: grayscale(30%) contrast(1.1);
+      filter: contrast(1);
     }
 
     /* FOOTER */
     footer {
-      background: #050608;
+      background: #0f172a;
       padding: 50px 20px 30px;
       text-align: center;
       border-top: 1px solid var(--border-color);
       line-height: 1.8;
-      color: var(--text-muted);
+      color: #94a3b8;
       font-size: 14px;
     }
 
     footer h2 {
-      color: var(--text-main);
+      color: #ffffff;
       font-size: 22px;
       margin-bottom: 8px;
       letter-spacing: 1px;
@@ -1096,38 +839,9 @@
       transform: scale(1.1) rotate(5deg);
     }
 
-    /* EDIT MODAL */
-    .edit-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
-      z-index: 99999;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .edit-modal.active {
-      display: flex;
-    }
-
-    .edit-modal-box {
-      background: var(--bg-dark);
-      border: 1px solid var(--border-orange);
-      padding: 30px;
-      border-radius: var(--radius-lg);
-      width: 90%;
-      max-width: 450px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-    }
-
     /* RESPONSIVE */
     @media(max-width:1150px) {
-      .ana-alan, .gurur-container {
+      .ana-alan {
         grid-template-columns: 1fr;
       }
 
@@ -1162,7 +876,6 @@
   <nav>
     <a href="#"><i class="fa-solid fa-house"></i> Ana Sayfa</a>
     <a href="#hakkimizda"><i class="fa-solid fa-circle-info"></i> Hakkımızda</a>
-    <a href="#gurur-tablomuz"><i class="fa-solid fa-trophy"></i> Gurur Tablomuz</a>
     <a href="#dersler"><i class="fa-solid fa-book-open"></i> Dersler</a>
     
     <div class="dropdown">
@@ -1289,7 +1002,7 @@
 
       <p>
         <a href="https://www.instagram.com/ongoruakademi/" target="_blank" style="color: var(--text-main); text-decoration: none; display:flex; align-items:center; gap:8px;">
-          <i class="fa-brands fa-instagram"></i> @arnavutkoyongoruakademi
+          <i class="fa-brands fa-instagram" style="color:var(--primary);"></i> @arnavutkoyongoruakademi
         </a>
       </p>
     </div>
@@ -1306,101 +1019,6 @@
     </div>
     <div class="fullscreen-nav fullscreen-next" id="fullscreenNext">
       <i class="fa-solid fa-chevron-right"></i>
-    </div>
-  </div>
-
-  <!-- GURUR TABLOSU BÖLÜMÜ (ENTEGRE EDİLDİ) -->
-  <section class="gurur-section" id="gurur-tablomuz">
-    <h2 class="baslik">GURUR <span>TABLOMUZ</span></h2>
-    
-    <div class="gurur-container">
-      <!-- SOL: CANLI AKAN LİSTE -->
-      <div class="gurur-card">
-        <div class="gurur-header">
-          <div class="gurur-header-title">
-            <i class="fa-solid fa-trophy"></i>
-            <div>
-              <h3>Başarı Sıralaması</h3>
-              <p style="font-size:12px; color:var(--text-muted)">Proje Okullarını Kazanan Öğrencilerimiz</p>
-            </div>
-          </div>
-          <div class="gurur-stats">
-            <div class="gurur-stat-item">
-              <span>Ortalama Puan</span>
-              <strong id="avgScore" style="color: #ffb703;">0.00</strong>
-            </div>
-            <div style="width: 1px; height: 25px; background: var(--border-color);"></div>
-            <div class="gurur-stat-item">
-              <span>En Yüksek Puan</span>
-              <strong id="maxScore" style="color: #10b981;">0.00</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="gurur-controls">
-          <div class="gurur-search">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="Öğrenci veya okul ara...">
-          </div>
-          <button id="togglePlayBtn" class="gurur-btn"><i id="playIcon" class="fa-solid fa-pause"></i> Duraklat</button>
-          <button id="toggleDirectionBtn" class="gurur-btn"><i id="directionIcon" class="fa-solid fa-arrow-down-long" style="color:var(--primary)"></i> <span id="directionText">Aşağı</span></button>
-          <div class="gurur-speed-group">
-            <button class="gurur-speed-btn" data-speed="1">Yavaş</button>
-            <button class="gurur-speed-btn active" data-speed="2">Normal</button>
-            <button class="gurur-speed-btn" data-speed="3.5">Hızlı</button>
-          </div>
-        </div>
-
-        <div id="scrollViewport" class="scroll-viewport">
-          <div id="scrollList" class="scroll-list"></div>
-          <div id="emptyMessage" style="display:none; text-align:center; padding: 40px; color: var(--text-muted);">
-            <i class="fa-solid fa-folder-open" style="font-size: 32px; margin-bottom: 10px; display:block;"></i>
-            Gösterilecek kayıt bulunamadı.
-          </div>
-        </div>
-      </div>
-
-      <!-- SAĞ: YENİ KAYIT EKLEME FORMU -->
-      <div class="kutu" style="height: fit-content;">
-        <h3><i class="fa-solid fa-user-plus"></i> Yeni Kayıt Ekle</h3>
-        <form id="studentForm">
-          <div style="margin-bottom: 15px;">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 5px;">Öğrenci Adı Soyadı *</label>
-            <input type="text" id="studentName" placeholder="Örn: Ahmet Yılmaz" required style="width: 100%; padding: 12px; background: #12141d; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 14px; outline:none;">
-          </div>
-          <div style="margin-bottom: 15px;">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 5px;">Kazandığı Okul / Bölüm *</label>
-            <input type="text" id="schoolName" placeholder="Örn: Galatasaray Lisesi" required style="width: 100%; padding: 12px; background: #12141d; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 14px; outline:none;">
-          </div>
-          <div style="margin-bottom: 18px;">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 5px;">Puan *</label>
-            <input type="number" step="0.01" min="0" max="500" id="studentScore" placeholder="Örn: 492.50" required style="width: 100%; padding: 12px; background: #12141d; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 14px; outline:none;">
-          </div>
-          <button type="submit" style="width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px; cursor: pointer;">
-            <i class="fa-solid fa-plus"></i> Listeye Ekle
-          </button>
-        </form>
-        <button id="resetBtn" class="gurur-btn" style="margin-top:15px; width:100%; justify-center; text-align:center;">
-          <i class="fa-solid fa-rotate-right"></i> Örnek Verileri Yükle / Sıfırla
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- DÜZENLEME MODALI -->
-  <div id="editModal" class="edit-modal">
-    <div class="edit-modal-box">
-      <h3 style="color:var(--primary); margin-bottom: 15px; font-size:18px;"><i class="fa-solid fa-pen-to-square"></i> Kayıt Düzenle</h3>
-      <form id="editStudentForm">
-        <input type="hidden" id="editStudentId">
-        <input type="text" id="editStudentName" placeholder="Öğrenci Ad Soyad" required style="width: 100%; padding: 12px; margin-bottom: 12px; background: #12141d; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 14px;">
-        <input type="text" id="editSchoolName" placeholder="Kazandığı Okul" required style="width: 100%; padding: 12px; margin-bottom: 12px; background: #12141d; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 14px;">
-        <input type="number" step="0.01" min="0" max="500" id="editStudentScore" placeholder="Puan" required style="width: 100%; padding: 12px; margin-bottom: 20px; background: #12141d; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 14px;">
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button type="button" id="cancelEditBtn" class="gurur-btn">İptal</button>
-          <button type="submit" class="gurur-btn" style="background: var(--primary); color:#fff; border:none;">Kaydet</button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -1460,7 +1078,7 @@
       </div>
 
       <div class="harita">
-        <h2 style="color:var(--text-main);margin-bottom:20px;font-size:22px;">
+        <h2 style="color:var(--secondary);margin-bottom:20px;font-size:22px;">
           <i class="fa-solid fa-location-dot" style="color:var(--primary)"></i> Konumumuz
         </h2>
         <iframe src="https://maps.google.com/maps?q=Arnavutkoy%20Istanbul&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
@@ -1683,259 +1301,6 @@
         modal.style.display = "none";
       }
     };
-
-    /* GURUR TABLOSU SCRIPT ENTEGRASYONU */
-    const initialStudents = [
-      { id: 1, name: "MUSTAFA ÇETİNER", school: "İTO İBRAHİM ÇAĞLAR İHO ", score: 482.85 },
-      { id: 2, name: "POYRAZ UÇ ", school: "İTO İBRAHİM ÇAĞLAR ", score: 449 },
-      { id: 3, name: "BERRA AYDIN ", school: "ŞEHİT ONBAŞI MURAT ŞENGÖZ İHO", score: 438.50 },
-      { id: 4, name: "RABİ ERVA OKUMUŞ", school: "ŞEHİT ONBAŞI MURAT ŞENGÖZ İHO", score: 438.90 },
-      { id: 5, name: "KÜBRA POLAT ", school: "ŞEHİT ONBAŞI MURAT ŞENGÖZ İHO", score: 504 .40 },
-      { id: 6, name: "MERVE NAZ RÜVEYDA ", school: "ŞEHİT ONBAŞI MURAT ŞENGÖZ İHO", score: 505.10 },
-      { id: 7, name: "ALİ SAMİ OZBAY ", school: "İTO İBRAHİM ÇAĞLAR İHO ", score: 448.30 },
-      { id: 8, name: "MUSTAFA ÇİÇEK ", school: "İTO İBRAHİM ÇAĞLAR ", score: 427.00 }
-    ];
-
-    let students = JSON.parse(localStorage.getItem("students_list")) || [...initialStudents];
-    let isPlaying = true;
-    let direction = 1;
-    let speed = 2;
-    let translateY = 0;
-    let animationFrameId = null;
-    let filterQuery = "";
-
-    const scrollList = document.getElementById("scrollList");
-    const scrollViewport = document.getElementById("scrollViewport");
-    const studentForm = document.getElementById("studentForm");
-    const searchInput = document.getElementById("searchInput");
-    const togglePlayBtn = document.getElementById("togglePlayBtn");
-    const playIcon = document.getElementById("playIcon");
-    const toggleDirectionBtn = document.getElementById("toggleDirectionBtn");
-    const directionIcon = document.getElementById("directionIcon");
-    const directionText = document.getElementById("directionText");
-    const emptyMessage = document.getElementById("emptyMessage");
-    const resetBtn = document.getElementById("resetBtn");
-    const avgScore = document.getElementById("avgScore");
-    const maxScore = document.getElementById("maxScore");
-
-    const editModal = document.getElementById("editModal");
-    const editStudentForm = document.getElementById("editStudentForm");
-    const editStudentId = document.getElementById("editStudentId");
-    const editStudentName = document.getElementById("editStudentName");
-    const editSchoolName = document.getElementById("editSchoolName");
-    const editStudentScore = document.getElementById("editStudentScore");
-    const cancelEditBtn = document.getElementById("cancelEditBtn");
-
-    function renderGururList() {
-      const filtered = students.filter(s => 
-        s.name.toLowerCase().includes(filterQuery.toLowerCase()) || 
-        s.school.toLowerCase().includes(filterQuery.toLowerCase())
-      );
-
-      scrollList.innerHTML = "";
-
-      if (filtered.length === 0) {
-        emptyMessage.style.display = "block";
-        updateGururStats(filtered);
-        return;
-      } else {
-        emptyMessage.style.display = "none";
-      }
-
-      const group1 = document.createElement("div");
-      group1.style.display = "flex";
-      group1.style.flexDirection = "column";
-      group1.style.gap = "12px";
-
-      filtered.forEach(student => {
-        group1.appendChild(createStudentCard(student));
-      });
-
-      const group2 = group1.cloneNode(true);
-      bindGururCardActions(group1);
-      bindGururCardActions(group2);
-
-      scrollList.appendChild(group1);
-      scrollList.appendChild(group2);
-
-      updateGururStats(filtered);
-    }
-
-    function createStudentCard(student) {
-      const card = document.createElement("div");
-      card.className = "student-item";
-      card.innerHTML = `
-        <div class="student-info">
-          <div class="student-avatar">${escapeHTML(student.name.charAt(0).toUpperCase())}</div>
-          <div class="student-details">
-            <h4>${escapeHTML(student.name)}</h4>
-            <p><i class="fa-solid fa-graduation-cap"></i> ${escapeHTML(student.school)}</p>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center;">
-          <div class="student-score">
-            ${Number(student.score).toFixed(2)} <span style="font-size:10px; opacity:0.8;">P</span>
-          </div>
-          <div class="student-actions">
-            <button class="action-btn edit" data-id="${student.id}" title="Düzenle"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button class="action-btn delete" data-id="${student.id}" title="Sil"><i class="fa-solid fa-trash-can"></i></button>
-          </div>
-        </div>
-      `;
-      return card;
-    }
-
-    function bindGururCardActions(container) {
-      container.querySelectorAll(".delete").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          deleteStudent(Number(btn.getAttribute("data-id")));
-        });
-      });
-
-      container.querySelectorAll(".edit").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          openEditModal(Number(btn.getAttribute("data-id")));
-        });
-      });
-    }
-
-    function openEditModal(id) {
-      const student = students.find(s => s.id === id);
-      if (!student) return;
-      editStudentId.value = student.id;
-      editStudentName.value = student.name;
-      editSchoolName.value = student.school;
-      editStudentScore.value = student.score;
-      editModal.classList.add("active");
-      isPlaying = false;
-    }
-
-    function closeEditModal() {
-      editModal.classList.remove("active");
-      isPlaying = true;
-    }
-
-    editStudentForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const id = Number(editStudentId.value);
-      const student = students.find(s => s.id === id);
-
-      if (student) {
-        student.name = editStudentName.value.trim();
-        student.school = editSchoolName.value.trim();
-        student.score = parseFloat(editStudentScore.value);
-        saveGururData();
-        renderGururList();
-        closeEditModal();
-      }
-    });
-
-    cancelEditBtn.addEventListener("click", closeEditModal);
-
-    function deleteStudent(id) {
-      students = students.filter(s => s.id !== id);
-      saveGururData();
-      renderGururList();
-    }
-
-    function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
-    }
-
-    function updateGururStats(data) {
-      if (students.length === 0) {
-        avgScore.textContent = "0.00";
-        maxScore.textContent = "0.00";
-        return;
-      }
-      const total = students.reduce((acc, curr) => acc + Number(curr.score), 0);
-      const max = Math.max(...students.map(s => Number(s.score)));
-      avgScore.textContent = (total / students.length).toFixed(2);
-      maxScore.textContent = max.toFixed(2);
-    }
-
-    function animateGururList() {
-      if (isPlaying && scrollList.firstElementChild) {
-        const groupHeight = scrollList.firstElementChild.offsetHeight + 12;
-        if (groupHeight > 0) {
-          if (direction === 1) {
-            translateY += speed * 0.5;
-            if (translateY >= 0) translateY = -groupHeight;
-          } else {
-            translateY -= speed * 0.5;
-            if (Math.abs(translateY) >= groupHeight) translateY = 0;
-          }
-          scrollList.style.transform = `translateY(${translateY}px)`;
-        }
-      }
-      animationFrameId = requestAnimationFrame(animateGururList);
-    }
-
-    function saveGururData() {
-      localStorage.setItem("students_list", JSON.stringify(students));
-    }
-
-    studentForm.addEventListener("submit", function(e) {
-      e.preventDefault();
-      const nameInput = document.getElementById("studentName");
-      const schoolInput = document.getElementById("schoolName");
-      const scoreInput = document.getElementById("studentScore");
-
-      const newStudent = {
-        id: Date.now(),
-        name: nameInput.value.trim(),
-        school: schoolInput.value.trim(),
-        score: parseFloat(scoreInput.value)
-      };
-
-      students.unshift(newStudent);
-      saveGururData();
-
-      nameInput.value = "";
-      schoolInput.value = "";
-      scoreInput.value = "";
-      renderGururList();
-    });
-
-    searchInput.addEventListener("input", (e) => {
-      filterQuery = e.target.value.trim();
-      renderGururList();
-    });
-
-    togglePlayBtn.addEventListener("click", () => {
-      isPlaying = !isPlaying;
-      playIcon.className = isPlaying ? "fa-solid fa-pause" : "fa-solid fa-play";
-    });
-
-    toggleDirectionBtn.addEventListener("click", () => {
-      direction = direction === 1 ? -1 : 1;
-      directionIcon.className = direction === 1 ? "fa-solid fa-arrow-down-long" : "fa-solid fa-arrow-up-long";
-      directionText.textContent = direction === 1 ? "Aşağı" : "Yukarı";
-    });
-
-    document.querySelectorAll(".gurur-speed-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".gurur-speed-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        speed = parseFloat(btn.getAttribute("data-speed"));
-      });
-    });
-
-    scrollViewport.addEventListener("mouseenter", () => { isPlaying = false; });
-    scrollViewport.addEventListener("mouseleave", () => { if (!editModal.classList.contains("active")) isPlaying = true; });
-
-    resetBtn.addEventListener("click", () => {
-      students = [...initialStudents];
-      saveGururData();
-      renderGururList();
-    });
-
-    window.addEventListener("DOMContentLoaded", () => {
-      renderGururList();
-      animateGururList();
-    });
   </script>
 
   <!-- FIREBASE SCRİPTİ -->
