@@ -132,6 +132,24 @@
         .animate-error-shake {
             animation: shakeError 0.4s ease-in-out;
         }
+
+        /* Liderlik Tablosu Yukarı Kayma Animasyonu */
+        .leaderboard-row {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 60px;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        @keyframes rankUpGlow {
+            0% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); }
+            50% { box-shadow: 0 0 18px rgba(251, 191, 36, 0.75); }
+            100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); }
+        }
+        .rank-up-pulse {
+            animation: rankUpGlow 0.8s ease-out;
+        }
     </style>
 </head>
 <body class="relative flex flex-col justify-between p-2 sm:p-4">
@@ -140,7 +158,7 @@
     <div class="stars-bg"></div>
 
     <!-- Üst Bilgi Çubuğu (Header) -->
-    <header class="relative z-10 w-full max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2 bg-slate-900/80 backdrop-blur-md border-2 border-indigo-500/40 rounded-2xl px-4 py-2.5 shadow-xl">
+    <header class="relative z-10 w-full max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2 bg-slate-900/80 backdrop-blur-md border-2 border-indigo-500/40 rounded-2xl px-4 py-2.5 shadow-xl">
         <div class="flex items-center gap-2.5">
             <div class="bg-gradient-to-tr from-amber-500 to-orange-500 p-2 rounded-xl shadow-lg">
                 <span class="text-2xl">🚀</span>
@@ -172,7 +190,7 @@
     </header>
 
     <!-- ANA OYUN ALANI -->
-    <main class="relative z-10 w-full max-w-5xl mx-auto my-auto py-3 flex-1 flex flex-col justify-center">
+    <main class="relative z-10 w-full max-w-6xl mx-auto my-auto py-3 flex-1 flex flex-col justify-center">
 
         <!-- 1. GİRİŞ EKRANI (Start Screen) -->
         <section id="startScreen" class="animate-pop bg-slate-900/85 backdrop-blur-md border-2 border-indigo-400/40 rounded-3xl p-6 sm:p-10 text-center shadow-2xl max-w-2xl mx-auto">
@@ -245,103 +263,131 @@
             <p class="text-xs text-slate-400 mt-4" id="totalQuestionsBadge">Sistemde toplam 16 soru hazır bekliyor!</p>
         </section>
 
-        <!-- 2. AKTİF OYUN EKRANI (Game Screen) -->
-        <section id="gameScreen" class="hidden flex-col gap-4">
+        <!-- 2. AKTİF OYUN EKRANI (Game Screen + Yan Canlı Skor Tablosu) -->
+        <section id="gameScreen" class="hidden flex-col lg:flex-row items-start gap-4">
             
-            <!-- Üst Durum Paneli: Canlar, Skor, Kombo -->
-            <div class="grid grid-cols-3 gap-2 sm:gap-4 bg-slate-900/80 backdrop-blur-md border-2 border-indigo-500/40 rounded-2xl p-3 shadow-lg">
-                <!-- Kalkanlar / Canlar -->
-                <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-2">
-                    <span class="text-xs sm:text-sm font-bold text-indigo-300">Kalkan:</span>
-                    <div id="livesContainer" class="flex items-center gap-1 text-xl sm:text-2xl">
-                        <span>🛡️</span><span>🛡️</span><span>🛡️</span>
-                    </div>
-                </div>
-
-                <!-- Soru Sayacı & Kombo -->
-                <div class="flex flex-col items-center justify-center">
-                    <span id="questionCounter" class="text-xs sm:text-sm font-extrabold text-cyan-300 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/40">
-                        Soru 1 / 10
-                    </span>
-                    <span id="comboBadge" class="hidden text-xs font-extrabold text-amber-300 mt-1 animate-bounce">
-                        🔥 2x Kombo!
-                    </span>
-                </div>
-
-                <!-- Puan -->
-                <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-end gap-1 sm:gap-2">
-                    <span class="text-xs sm:text-sm font-bold text-indigo-300">Puan:</span>
-                    <div class="flex items-center gap-1 bg-amber-500/20 border border-amber-400/50 px-3 py-0.5 rounded-xl">
-                        <span class="text-lg">⭐</span>
-                        <span id="scoreDisplay" class="font-game font-extrabold text-lg sm:text-xl text-amber-300">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GEZEGENLER ARASI ROKET İLERLEME HARİTASI -->
-            <div class="bg-slate-900/85 backdrop-blur-md border-2 border-purple-500/40 rounded-2xl p-3 sm:p-4 shadow-xl relative overflow-hidden">
-                <div class="flex items-center justify-between text-xs font-bold text-purple-300 mb-2">
-                    <span>🌍 Dünya Üssü</span>
-                    <span id="currentPlanetLabel" class="text-amber-300">Hedef: Ay İstasyonu 🌕</span>
-                    <span>🌌 Galaksi Merkezi</span>
-                </div>
-                
-                <!-- İlerleme Yolu -->
-                <div class="relative w-full h-14 bg-slate-950/90 rounded-xl border border-indigo-500/30 flex items-center px-4">
-                    <!-- Kesikli Yörünge Çizgisi -->
-                    <div class="w-full border-t-2 border-dashed border-indigo-400/40"></div>
-                    
-                    <!-- Gezegen Noktaları (JS ile doldurulacak) -->
-                    <div id="planetsTrack" class="absolute inset-0 flex items-center justify-between px-4 sm:px-6 pointer-events-none">
+            <!-- SOL TARAF: ANA OYUN AKIŞI -->
+            <div class="w-full lg:flex-1 flex flex-col gap-4">
+                <!-- Üst Durum Paneli: Canlar, Skor, Kombo -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 bg-slate-900/80 backdrop-blur-md border-2 border-indigo-500/40 rounded-2xl p-3 shadow-lg">
+                    <!-- Kalkanlar / Canlar -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-2">
+                        <span class="text-xs sm:text-sm font-bold text-indigo-300">Kalkan:</span>
+                        <div id="livesContainer" class="flex items-center gap-1 text-xl sm:text-2xl">
+                            <span>🛡️</span><span>🛡️</span><span>🛡️</span>
+                        </div>
                     </div>
 
-                    <!-- Hareket Eden Roket -->
-                    <div id="rocketTracker" class="absolute left-4 transition-all duration-700 ease-out z-20 -ml-4" style="left: 4%;">
-                        <div id="rocketWrapper" class="rocket-idle text-3xl sm:text-4xl drop-shadow-[0_0_10px_rgba(251,191,36,0.9)]">
-                            🚀
+                    <!-- Soru Sayacı & Kombo -->
+                    <div class="flex flex-col items-center justify-center">
+                        <span id="questionCounter" class="text-xs sm:text-sm font-extrabold text-cyan-300 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/40">
+                            Soru 1 / 10
+                        </span>
+                        <span id="comboBadge" class="hidden text-xs font-extrabold text-amber-300 mt-1 animate-bounce">
+                            🔥 2x Seri!
+                        </span>
+                    </div>
+
+                    <!-- Puan -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-end gap-1 sm:gap-2">
+                        <span class="text-xs sm:text-sm font-bold text-indigo-300">Puan:</span>
+                        <div class="flex items-center gap-1 bg-amber-500/20 border border-amber-400/50 px-3 py-0.5 rounded-xl">
+                            <span class="text-lg">⭐</span>
+                            <span id="scoreDisplay" class="font-game font-extrabold text-lg sm:text-xl text-amber-300">0</span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- SORU KARTI -->
-            <div id="questionCard" class="bg-slate-900/90 backdrop-blur-md border-2 border-cyan-400/50 rounded-3xl p-5 sm:p-8 shadow-2xl transition-all">
-                <!-- Ünite Etiketi -->
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-                    <span id="questionTopicBadge" class="inline-flex items-center gap-1.5 bg-indigo-600/40 border border-indigo-400/50 text-indigo-200 text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full">
-                        📚 Birey ve Toplum
-                    </span>
-                    <span class="text-xs text-slate-400 font-semibold">Doğru şıkkı seç ve roketi ateşle!</span>
-                </div>
+                <!-- GEZEGENLER ARASI ROKET İLERLEME HARİTASI -->
+                <div class="bg-slate-900/85 backdrop-blur-md border-2 border-purple-500/40 rounded-2xl p-3 sm:p-4 shadow-xl relative overflow-hidden">
+                    <div class="flex items-center justify-between text-xs font-bold text-purple-300 mb-2">
+                        <span>🌍 Dünya Üssü</span>
+                        <span id="currentPlanetLabel" class="text-amber-300">Hedef: Ay İstasyonu 🌕</span>
+                        <span>🌌 Galaksi Merkezi</span>
+                    </div>
+                    
+                    <!-- İlerleme Yolu -->
+                    <div class="relative w-full h-14 bg-slate-950/90 rounded-xl border border-indigo-500/30 flex items-center px-4">
+                        <!-- Kesikli Yörünge Çizgisi -->
+                        <div class="w-full border-t-2 border-dashed border-indigo-400/40"></div>
+                        
+                        <!-- Gezegen Noktaları (JS ile doldurulacak) -->
+                        <div id="planetsTrack" class="absolute inset-0 flex items-center justify-between px-4 sm:px-6 pointer-events-none">
+                        </div>
 
-                <!-- Soru Metni -->
-                <h3 id="questionText" class="text-xl sm:text-2xl font-bold text-white leading-snug mb-6">
-                    Soru metni buraya gelecek...
-                </h3>
-
-                <!-- Seçenekler (2x2 Grid) -->
-                <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                    <!-- Butonlar JS ile üretilecek -->
-                </div>
-
-                <!-- Geri Bildirim ve Açıklama Alanı -->
-                <div id="feedbackBox" class="hidden mt-6 p-4 rounded-2xl border-2 animate-pop">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div class="flex items-start gap-3">
-                            <span id="feedbackIcon" class="text-3xl">🎉</span>
-                            <div>
-                                <h4 id="feedbackTitle" class="font-game font-bold text-lg">Harika! Doğru Cevap!</h4>
-                                <p id="feedbackExplanation" class="text-sm mt-0.5 opacity-95">Açıklama metni...</p>
+                        <!-- Hareket Eden Roket -->
+                        <div id="rocketTracker" class="absolute left-4 transition-all duration-700 ease-out z-20 -ml-4" style="left: 4%;">
+                            <div id="rocketWrapper" class="rocket-idle text-3xl sm:text-4xl drop-shadow-[0_0_10px_rgba(251,191,36,0.9)]">
+                                🚀
                             </div>
                         </div>
-                        <button id="nextQuestionBtn" onclick="nextQuestion()"
-                            class="btn-3d w-full sm:w-auto shrink-0 bg-amber-400 hover:bg-amber-300 text-slate-950 font-game font-extrabold px-6 py-3 rounded-xl text-base flex items-center justify-center gap-2">
-                            <span>Sonraki Gezegen</span>
-                            <span>➡️</span>
-                        </button>
+                    </div>
+                </div>
+
+                <!-- SORU KARTI -->
+                <div id="questionCard" class="bg-slate-900/90 backdrop-blur-md border-2 border-cyan-400/50 rounded-3xl p-5 sm:p-8 shadow-2xl transition-all">
+                    <!-- Ünite Etiketi -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <span id="questionTopicBadge" class="inline-flex items-center gap-1.5 bg-indigo-600/40 border border-indigo-400/50 text-indigo-200 text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full">
+                            📚 Birey ve Toplum
+                        </span>
+                        <span class="text-xs text-slate-400 font-semibold">Her doğru cevap +10 Puan!</span>
+                    </div>
+
+                    <!-- Soru Metni -->
+                    <h3 id="questionText" class="text-xl sm:text-2xl font-bold text-white leading-snug mb-6">
+                        Soru metni buraya gelecek...
+                    </h3>
+
+                    <!-- Seçenekler (2x2 Grid) -->
+                    <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <!-- Butonlar JS ile üretilecek -->
+                    </div>
+
+                    <!-- Geri Bildirim ve Açıklama Alanı -->
+                    <div id="feedbackBox" class="hidden mt-6 p-4 rounded-2xl border-2 animate-pop">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="flex items-start gap-3">
+                                <span id="feedbackIcon" class="text-3xl">🎉</span>
+                                <div>
+                                    <h4 id="feedbackTitle" class="font-game font-bold text-lg">Harika! Doğru Cevap!</h4>
+                                    <p id="feedbackExplanation" class="text-sm mt-0.5 opacity-95">Açıklama metni...</p>
+                                </div>
+                            </div>
+                            <button id="nextQuestionBtn" onclick="nextQuestion()"
+                                class="btn-3d w-full sm:w-auto shrink-0 bg-amber-400 hover:bg-amber-300 text-slate-950 font-game font-extrabold px-6 py-3 rounded-xl text-base flex items-center justify-center gap-2">
+                                <span>Sonraki Gezegen</span>
+                                <span>➡️</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- SAĞ TARAF: CANLI PUAN VE SIRALAMA PANELİ (Yukarı Doğru Kayan Liste) -->
+            <aside class="w-full lg:w-80 shrink-0 bg-slate-900/90 backdrop-blur-md border-2 border-amber-400/50 rounded-3xl p-4 shadow-2xl">
+                <div class="flex items-center justify-between border-b border-slate-700/80 pb-3 mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🏆</span>
+                        <div>
+                            <h3 class="font-game font-bold text-base text-amber-300 leading-tight">Canlı Liderlik Tablosu</h3>
+                            <p class="text-[11px] text-indigo-300">Her doğru cevap +10 Puan</p>
+                        </div>
+                    </div>
+                    <button onclick="clearLeaderboard()" title="Listeyi Sıfırla"
+                        class="text-[11px] text-slate-400 hover:text-rose-400 underline font-semibold transition">
+                        Sıfırla
+                    </button>
+                </div>
+
+                <!-- Yukarı Doğru Kayan Oyuncu Listesi Konteyneri -->
+                <div class="max-h-[420px] overflow-y-auto no-scrollbar pr-0.5">
+                    <div id="liveLeaderboardList" class="relative w-full transition-all duration-500">
+                        <!-- Oyuncular JS ile dinamik olarak konumlandırılacak -->
+                    </div>
+                </div>
+            </aside>
+
         </section>
 
         <!-- 3. OYUN SONU / SERTİFİKA EKRANI (End Screen) -->
@@ -785,7 +831,9 @@
         let combo = 0;
         let correctCount = 0;
         let playerName = "Uzay Kaşifi";
+        let currentPlayerId = null;
         let isAnswered = false;
+        let leaderboardData = [];
 
         // LocalStorage'dan soruları yükle
         function loadQuestionsFromStorage() {
@@ -816,6 +864,146 @@
             if (badge) {
                 badge.textContent = `Sistemde toplam ${allQuestions.length} soru hazır bekliyor!`;
             }
+        }
+
+        /* ==========================================================================
+           3.5 CANLI LİDERLİK TABLOSU (YUKARI KAYAN SIRALAMA SİSTEMİ)
+           ========================================================================== */
+        function loadLeaderboardFromStorage() {
+            const saved = localStorage.getItem('sosyal4_uzay_liderlik');
+            if (saved) {
+                try {
+                    leaderboardData = JSON.parse(saved);
+                    if (!Array.isArray(leaderboardData)) leaderboardData = [];
+                } catch (e) {
+                    leaderboardData = [];
+                }
+            } else {
+                leaderboardData = [];
+            }
+        }
+
+        function saveLeaderboardToStorage() {
+            localStorage.setItem('sosyal4_uzay_liderlik', JSON.stringify(leaderboardData));
+        }
+
+        function registerActivePlayer(name) {
+            currentPlayerId = 'player_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            leaderboardData.push({
+                id: currentPlayerId,
+                name: name,
+                correctCount: 0,
+                score: 0,
+                updatedAt: Date.now()
+            });
+            saveLeaderboardToStorage();
+            renderLiveLeaderboard(false);
+        }
+
+        function updateActivePlayerScore(newCorrectCount, newScore, movedUp = false) {
+            const player = leaderboardData.find(p => p.id === currentPlayerId);
+            if (player) {
+                player.correctCount = newCorrectCount;
+                player.score = newScore;
+                player.updatedAt = Date.now();
+                saveLeaderboardToStorage();
+                renderLiveLeaderboard(movedUp);
+            }
+        }
+
+        function clearLeaderboard() {
+            if (currentPlayerId) {
+                const current = leaderboardData.find(p => p.id === currentPlayerId);
+                leaderboardData = current ? [current] : [];
+            } else {
+                leaderboardData = [];
+            }
+            saveLeaderboardToStorage();
+            const container = document.getElementById('liveLeaderboardList');
+            if (container) container.innerHTML = '';
+            renderLiveLeaderboard(false);
+        }
+
+        function renderLiveLeaderboard(highlightActive = false) {
+            const container = document.getElementById('liveLeaderboardList');
+            if (!container) return;
+
+            // En çok doğru cevap veren / en yüksek puan alan en üstte olacak şekilde sırala
+            const sorted = [...leaderboardData].sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
+                return a.updatedAt - b.updatedAt;
+            });
+
+            const ROW_HEIGHT = 68; // Satır yüksekliği + boşluk
+            container.style.height = `${Math.max(sorted.length * ROW_HEIGHT, 68)}px`;
+
+            // Artık listede olmayan DOM öğelerini temizle
+            const activeIds = new Set(sorted.map(p => p.id));
+            Array.from(container.children).forEach(child => {
+                if (!activeIds.has(child.dataset.playerId)) {
+                    child.remove();
+                }
+            });
+
+            sorted.forEach((player, rankIndex) => {
+                let row = container.querySelector(`[data-player-id="${player.id}"]`);
+                const isCurrent = player.id === currentPlayerId;
+
+                if (!row) {
+                    row = document.createElement('div');
+                    row.dataset.playerId = player.id;
+                    // İlk eklenirken aşağıdan yumuşakça yerine kayması için başlangıç konumu
+                    row.style.transform = `translateY(${(rankIndex + 1) * ROW_HEIGHT}px)`;
+                    container.appendChild(row);
+                    // Reflow sonrası gerçek sırasına kaydır
+                    void row.offsetWidth;
+                }
+
+                // Madalya veya Sıra Numarası
+                let rankBadge = `<span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-600 text-slate-300 font-game font-bold text-xs flex items-center justify-center">${rankIndex + 1}</span>`;
+                if (rankIndex === 0) {
+                    rankBadge = `<span class="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 font-game font-extrabold text-sm flex items-center justify-center shadow">🥇</span>`;
+                } else if (rankIndex === 1) {
+                    rankBadge = `<span class="w-7 h-7 rounded-lg bg-slate-300 text-slate-950 font-game font-extrabold text-sm flex items-center justify-center shadow">🥈</span>`;
+                } else if (rankIndex === 2) {
+                    rankBadge = `<span class="w-7 h-7 rounded-lg bg-amber-700 text-white font-game font-extrabold text-sm flex items-center justify-center shadow">🥉</span>`;
+                }
+
+                row.className = `leaderboard-row rounded-2xl px-3 py-2 border flex items-center justify-between gap-2 ${
+                    isCurrent 
+                        ? 'bg-indigo-900/90 border-amber-400 shadow-lg z-10' 
+                        : 'bg-slate-800/75 border-slate-700/80 z-0'
+                }`;
+
+                if (isCurrent && highlightActive) {
+                    row.classList.remove('rank-up-pulse');
+                    void row.offsetWidth;
+                    row.classList.add('rank-up-pulse');
+                }
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        ${rankBadge}
+                        <div class="truncate">
+                            <div class="font-bold text-sm text-white truncate flex items-center gap-1.5">
+                                <span>${player.name}</span>
+                                ${isCurrent ? '<span class="text-[10px] bg-amber-400 text-slate-950 font-extrabold px-1.5 py-0.2 rounded">SEN</span>' : ''}
+                            </div>
+                            <div class="text-[11px] text-cyan-300 font-semibold">
+                                ✅ ${player.correctCount} Doğru Cevap
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shrink-0 text-right bg-slate-950/70 border border-amber-400/40 px-2.5 py-1 rounded-xl">
+                        <span class="font-game font-extrabold text-sm text-amber-300">${player.score}</span>
+                        <span class="text-[10px] text-amber-200/80 block leading-none">PUAN</span>
+                    </div>
+                `;
+
+                // Y koordinatını güncel sıraya kaydır (Yukarı doğru kayma efekti)
+                row.style.transform = `translateY(${rankIndex * ROW_HEIGHT}px)`;
+            });
         }
 
         /* ==========================================================================
@@ -860,6 +1048,9 @@
             document.getElementById('endScreen').classList.add('hidden');
             document.getElementById('gameScreen').classList.remove('hidden');
             document.getElementById('gameScreen').classList.add('flex');
+
+            // Oyuncuyu canlı liderlik tablosuna kaydet
+            registerActivePlayer(playerName);
 
             renderPlanetsTrack();
             updateHUD();
@@ -927,7 +1118,7 @@
             // Kombo
             const comboBadge = document.getElementById('comboBadge');
             if (combo >= 2) {
-                comboBadge.textContent = `🔥 ${combo}x Kombo!`;
+                comboBadge.textContent = `🔥 ${combo} Doğru Seri!`;
                 comboBadge.classList.remove('hidden');
             } else {
                 comboBadge.classList.add('hidden');
@@ -983,7 +1174,7 @@
             buttons.forEach(b => b.disabled = true);
 
             if (selectedIndex === q.correct) {
-                // DOĞRU CEVAP
+                // DOĞRU CEVAP (Her soruya sabit +10 puan)
                 playCorrectSound();
                 setTimeout(playRocketLaunchSound, 250);
 
@@ -992,16 +1183,15 @@
 
                 combo++;
                 correctCount++;
-                const bonus = combo >= 2 ? (combo * 5) : 0;
-                score += (10 + bonus);
+                score += 10;
 
+                // Canlı liderlik tablosunu güncelle ve yukarı kaydır
+                updateActivePlayerScore(correctCount, score, true);
                 updateRocketPosition();
 
                 feedbackBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-emerald-950/90 border-emerald-400 text-emerald-100 animate-pop';
                 feedbackIcon.textContent = '🚀';
-                feedbackTitle.textContent = combo >= 2 
-                    ? `Süpersin ${playerName}! (${combo}x Kombo +${10 + bonus} Puan)` 
-                    : `Harika ${playerName}! Roket İlerledi! (+10 Puan)`;
+                feedbackTitle.textContent = `Harika ${playerName}! Roket İlerledi! (+10 Puan)`;
                 feedbackExplanation.textContent = q.explanation || "Doğru cevabı bularak roketine yakıt sağladın!";
 
             } else {
@@ -1223,9 +1413,10 @@
             });
         }
 
-        // Sayfa yüklendiğinde soruları hazırla
+        // Sayfa yüklendiğinde soruları ve liderlik tablosunu hazırla
         window.onload = function() {
             loadQuestionsFromStorage();
+            loadLeaderboardFromStorage();
         };
     </script>
 </body>
