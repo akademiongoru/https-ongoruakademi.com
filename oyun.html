@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Sınıf Sosyal Bilgiler: Uzay Macerası 🚀</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Çocuk dostu Google Font: Fredoka & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Özel Oyun Stilleri ve Animasyonlar */
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        h1, h2, h3, .font-game {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Yıldızlı Arka Plan Animasyonu */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffeaa7, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 90px 40px, #74b9ff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #fab1a0, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 4s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* Roket Animasyonları */
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateY(0px) rotate(45deg); }
+            50% { transform: translateY(-6px) rotate(45deg); }
+        }
+
+        @keyframes rocketShake {
+            0%, 100% { transform: translateX(0) rotate(45deg); }
+            20% { transform: translateX(-8px) rotate(35deg); }
+            40% { transform: translateX(8px) rotate(55deg); }
+            60% { transform: translateX(-8px) rotate(35deg); }
+            80% { transform: translateX(8px) rotate(55deg); }
+        }
+
+        @keyframes flameFlicker {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.25); opacity: 1; }
+        }
+
+        .rocket-idle {
+            animation: rocketFloat 2s ease-in-out infinite;
+        }
+
+        .rocket-shake {
+            animation: rocketShake 0.5s ease-in-out;
+        }
+
+        .flame {
+            transform-origin: center;
+            animation: flameFlicker 0.2s infinite;
+        }
+
+        /* 3D Görünümlü Oyun Butonları */
+        .btn-3d {
+            transition: all 0.15s ease;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+        }
+        .btn-3d:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+        }
+
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 0 #1e293b;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #1e293b;
+        }
+        .option-btn:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #1e293b;
+        }
+
+        /* Gezegen Yörüngesi Kaydırma Çubuğu Gizleme */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Konfeti / Yıldız Parlaması */
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col justify-between p-2 sm:p-4">
+
+    <!-- Yıldızlı Arka Plan -->
+    <div class="stars-bg"></div>
+
+    <!-- Üst Bilgi Çubuğu (Header) -->
+    <header class="relative z-10 w-full max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2 bg-slate-900/80 backdrop-blur-md border-2 border-indigo-500/40 rounded-2xl px-4 py-2.5 shadow-xl">
+        <div class="flex items-center gap-2.5">
+            <div class="bg-gradient-to-tr from-amber-500 to-orange-500 p-2 rounded-xl shadow-lg">
+                <span class="text-2xl">🚀</span>
+            </div>
+            <div>
+                <h1 class="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-cyan-300 leading-tight">
+                    Sosyal Bilgiler: Uzay Macerası
+                </h1>
+                <p class="text-xs text-indigo-300 font-semibold">4. Sınıf Galaktik Bilgi Yarışması</p>
+            </div>
+        </div>
+
+        <!-- Sağ Kontrol Butonları -->
+        <div class="flex items-center gap-2">
+            <!-- Ses Aç/Kapat -->
+            <button id="soundToggleBtn" onclick="toggleSound()" title="Sesi Aç / Kapat"
+                class="btn-3d bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl font-bold flex items-center gap-1.5 text-sm">
+                <span id="soundIcon" class="text-lg">🔊</span>
+                <span class="hidden sm:inline">Ses</span>
+            </button>
+
+            <!-- Soru Ekle / Düzenle Butonu -->
+            <button onclick="openQuestionModal()"
+                class="btn-3d bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2.5 rounded-xl font-bold flex items-center gap-1.5 text-sm">
+                <span class="text-lg">➕</span>
+                <span>Soru Ekle / Yönet</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ANA OYUN ALANI -->
+    <main class="relative z-10 w-full max-w-5xl mx-auto my-auto py-3 flex-1 flex flex-col justify-center">
+
+        <!-- 1. GİRİŞ EKRANI (Start Screen) -->
+        <section id="startScreen" class="animate-pop bg-slate-900/85 backdrop-blur-md border-2 border-indigo-400/40 rounded-3xl p-6 sm:p-10 text-center shadow-2xl max-w-2xl mx-auto">
+            <div class="inline-block bg-indigo-950/90 border border-indigo-500/50 rounded-full px-4 py-1.5 text-cyan-300 text-sm font-bold mb-4">
+                🪐 4. Sınıf Müfredatına Tam Uyumlu
+            </div>
+            
+            <!-- Büyük Roket İllüstrasyonu -->
+            <div class="my-4 flex justify-center">
+                <svg class="w-28 h-28 sm:w-32 sm:h-32 rocket-idle drop-shadow-[0_0_18px_rgba(251,191,36,0.6)]" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Alev -->
+                    <path class="flame" d="M48 92C48 92 42 112 60 118C78 112 72 92 72 92H48Z" fill="#F97316"/>
+                    <path class="flame" d="M53 92C53 92 50 105 60 110C70 105 67 92 67 92H53Z" fill="#FDE047"/>
+                    <!-- Kanatlar -->
+                    <path d="M38 68L20 88L38 86V68Z" fill="#EF4444"/>
+                    <path d="M82 68L100 88L82 86V68Z" fill="#EF4444"/>
+                    <!-- Gövde -->
+                    <path d="M60 12C42 32 38 62 38 88H82C82 62 78 32 60 12Z" fill="#F8FAFC"/>
+                    <!-- Burun -->
+                    <path d="M60 12C51 22 46 32 43 42H77C74 32 69 22 60 12Z" fill="#EF4444"/>
+                    <!-- Pencere -->
+                    <circle cx="60" cy="58" r="13" fill="#38BDF8" stroke="#1E293B" stroke-width="4"/>
+                    <circle cx="56" cy="54" r="4" fill="#FFFFFF" opacity="0.8"/>
+                    <!-- Alt Egzoz -->
+                    <rect x="46" y="88" width="28" height="6" rx="2" fill="#475569"/>
+                </svg>
+            </div>
+
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                Galaksiyi Keşfetmeye Hazır Mısın?
+            </h2>
+            <p class="text-indigo-200 text-base sm:text-lg mb-6 max-w-lg mx-auto leading-relaxed">
+                Sosyal Bilgiler sorularını doğru cevapla, roketine yakıt doldur ve <span class="text-amber-300 font-bold">Dünya'dan başlayıp Güneş Sisteminin ötesine</span> yolculuk et!
+            </p>
+
+            <!-- Kaşif İsmi Girişi -->
+            <div class="max-w-sm mx-auto mb-6">
+                <label for="playerNameInput" class="block text-left text-sm font-bold text-cyan-300 mb-1.5 ml-1">
+                    👩‍🚀 Astronot Adın:
+                </label>
+                <input type="text" id="playerNameInput" placeholder="Adını buraya yaz (Örn: Efe, Zeynep)" maxlength="20"
+                    class="w-full px-4 py-3 rounded-2xl bg-slate-800 border-2 border-indigo-500/60 text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 text-center font-bold text-lg">
+            </div>
+
+            <!-- Konu / Ünite Seçimi -->
+            <div class="max-w-md mx-auto mb-7">
+                <label for="topicSelect" class="block text-left text-sm font-bold text-cyan-300 mb-1.5 ml-1">
+                    📚 Hangi Üniteden Sorular Gelsin?
+                </label>
+                <select id="topicSelect"
+                    class="w-full px-4 py-3 rounded-2xl bg-slate-800 border-2 border-indigo-500/60 text-white focus:outline-none focus:border-amber-400 font-bold text-base cursor-pointer">
+                    <option value="ALL">🌟 Tüm Üniteler (Karışık Macera)</option>
+                    <option value="Birey ve Toplum">🪪 1. Ünite: Birey ve Toplum</option>
+                    <option value="Kültür ve Miras">🏛️ 2. Ünite: Kültür ve Miras</option>
+                    <option value="İnsanlar, Yerler ve Çevreler">🧭 3. Ünite: İnsanlar, Yerler ve Çevreler</option>
+                    <option value="Bilim, Teknoloji ve Toplum">🔬 4. Ünite: Bilim, Teknoloji ve Toplum</option>
+                    <option value="Üretim, Dağıtım ve Tüketim">💰 5. Ünite: Üretim, Dağıtım ve Tüketim</option>
+                    <option value="Etkin Vatandaşlık">🇹🇷 6. Ünite: Etkin Vatandaşlık</option>
+                    <option value="Küresel Bağlantılar">🌍 7. Ünite: Küresel Bağlantılar</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button onclick="startGame()"
+                    class="btn-3d w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-game font-extrabold text-xl px-10 py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg">
+                    <span>MACERAYA BAŞLA</span>
+                    <span class="text-2xl">🚀</span>
+                </button>
+            </div>
+            <p class="text-xs text-slate-400 mt-4" id="totalQuestionsBadge">Sistemde toplam 16 soru hazır bekliyor!</p>
+        </section>
+
+        <!-- 2. AKTİF OYUN EKRANI (Game Screen) -->
+        <section id="gameScreen" class="hidden flex-col gap-4">
+            
+            <!-- Üst Durum Paneli: Canlar, Skor, Kombo -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-4 bg-slate-900/80 backdrop-blur-md border-2 border-indigo-500/40 rounded-2xl p-3 shadow-lg">
+                <!-- Kalkanlar / Canlar -->
+                <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-2">
+                    <span class="text-xs sm:text-sm font-bold text-indigo-300">Kalkan:</span>
+                    <div id="livesContainer" class="flex items-center gap-1 text-xl sm:text-2xl">
+                        <span>🛡️</span><span>🛡️</span><span>🛡️</span>
+                    </div>
+                </div>
+
+                <!-- Soru Sayacı & Kombo -->
+                <div class="flex flex-col items-center justify-center">
+                    <span id="questionCounter" class="text-xs sm:text-sm font-extrabold text-cyan-300 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/40">
+                        Soru 1 / 10
+                    </span>
+                    <span id="comboBadge" class="hidden text-xs font-extrabold text-amber-300 mt-1 animate-bounce">
+                        🔥 2x Kombo!
+                    </span>
+                </div>
+
+                <!-- Puan -->
+                <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-end gap-1 sm:gap-2">
+                    <span class="text-xs sm:text-sm font-bold text-indigo-300">Puan:</span>
+                    <div class="flex items-center gap-1 bg-amber-500/20 border border-amber-400/50 px-3 py-0.5 rounded-xl">
+                        <span class="text-lg">⭐</span>
+                        <span id="scoreDisplay" class="font-game font-extrabold text-lg sm:text-xl text-amber-300">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GEZEGENLER ARASI ROKET İLERLEME HARİTASI -->
+            <div class="bg-slate-900/85 backdrop-blur-md border-2 border-purple-500/40 rounded-2xl p-3 sm:p-4 shadow-xl relative overflow-hidden">
+                <div class="flex items-center justify-between text-xs font-bold text-purple-300 mb-2">
+                    <span>🌍 Dünya Üssü</span>
+                    <span id="currentPlanetLabel" class="text-amber-300">Hedef: Ay İstasyonu 🌕</span>
+                    <span>🌌 Galaksi Merkezi</span>
+                </div>
+                
+                <!-- İlerleme Yolu -->
+                <div class="relative w-full h-14 bg-slate-950/90 rounded-xl border border-indigo-500/30 flex items-center px-4">
+                    <!-- Kesikli Yörünge Çizgisi -->
+                    <div class="w-full border-t-2 border-dashed border-indigo-400/40"></div>
+                    
+                    <!-- Gezegen Noktaları (JS ile doldurulacak) -->
+                    <div id="planetsTrack" class="absolute inset-0 flex items-center justify-between px-4 sm:px-6 pointer-events-none">
+                    </div>
+
+                    <!-- Hareket Eden Roket -->
+                    <div id="rocketTracker" class="absolute left-4 transition-all duration-700 ease-out z-20 -ml-4" style="left: 4%;">
+                        <div id="rocketWrapper" class="rocket-idle text-3xl sm:text-4xl drop-shadow-[0_0_10px_rgba(251,191,36,0.9)]">
+                            🚀
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SORU KARTI -->
+            <div id="questionCard" class="bg-slate-900/90 backdrop-blur-md border-2 border-cyan-400/50 rounded-3xl p-5 sm:p-8 shadow-2xl transition-all">
+                <!-- Ünite Etiketi -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <span id="questionTopicBadge" class="inline-flex items-center gap-1.5 bg-indigo-600/40 border border-indigo-400/50 text-indigo-200 text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full">
+                        📚 Birey ve Toplum
+                    </span>
+                    <span class="text-xs text-slate-400 font-semibold">Doğru şıkkı seç ve roketi ateşle!</span>
+                </div>
+
+                <!-- Soru Metni -->
+                <h3 id="questionText" class="text-xl sm:text-2xl font-bold text-white leading-snug mb-6">
+                    Soru metni buraya gelecek...
+                </h3>
+
+                <!-- Seçenekler (2x2 Grid) -->
+                <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <!-- Butonlar JS ile üretilecek -->
+                </div>
+
+                <!-- Geri Bildirim ve Açıklama Alanı -->
+                <div id="feedbackBox" class="hidden mt-6 p-4 rounded-2xl border-2 animate-pop">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="flex items-start gap-3">
+                            <span id="feedbackIcon" class="text-3xl">🎉</span>
+                            <div>
+                                <h4 id="feedbackTitle" class="font-game font-bold text-lg">Harika! Doğru Cevap!</h4>
+                                <p id="feedbackExplanation" class="text-sm mt-0.5 opacity-95">Açıklama metni...</p>
+                            </div>
+                        </div>
+                        <button id="nextQuestionBtn" onclick="nextQuestion()"
+                            class="btn-3d w-full sm:w-auto shrink-0 bg-amber-400 hover:bg-amber-300 text-slate-950 font-game font-extrabold px-6 py-3 rounded-xl text-base flex items-center justify-center gap-2">
+                            <span>Sonraki Gezegen</span>
+                            <span>➡️</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. OYUN SONU / SERTİFİKA EKRANI (End Screen) -->
+        <section id="endScreen" class="hidden animate-pop bg-slate-900/90 backdrop-blur-md border-2 border-amber-400/60 rounded-3xl p-6 sm:p-10 text-center shadow-2xl max-w-2xl mx-auto">
+            <div id="endBadgeEmoji" class="text-6xl sm:text-7xl mb-3 animate-bounce">🏆</div>
+            <div class="inline-block bg-amber-500/20 border border-amber-400 text-amber-300 font-bold text-xs sm:text-sm px-4 py-1 rounded-full mb-2">
+                GALAKTİK BAŞARI SERTİFİKASI
+            </div>
+            <h2 id="endTitle" class="text-3xl sm:text-4xl font-extrabold text-white mb-2">
+                Tebrikler Uzay Kaşifi!
+            </h2>
+            <p id="endSubtitle" class="text-indigo-200 text-base sm:text-lg mb-6">
+                Görevi başarıyla tamamladın!
+            </p>
+
+            <!-- İstatistik Kartları -->
+            <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-7">
+                <div class="bg-slate-800/90 border border-indigo-500/40 rounded-2xl p-3">
+                    <div class="text-xs text-indigo-300 font-bold">Toplam Puan</div>
+                    <div id="finalScore" class="font-game text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">0</div>
+                </div>
+                <div class="bg-slate-800/90 border border-emerald-500/40 rounded-2xl p-3">
+                    <div class="text-xs text-emerald-300 font-bold">Doğru Sayısı</div>
+                    <div id="finalCorrect" class="font-game text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">0/0</div>
+                </div>
+                <div class="bg-slate-800/90 border border-cyan-500/40 rounded-2xl p-3">
+                    <div class="text-xs text-cyan-300 font-bold">Ulaşılan Yer</div>
+                    <div id="finalPlanet" class="font-game text-base sm:text-lg font-extrabold text-cyan-300 mt-2">Mars 🔴</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button onclick="startGame()"
+                    class="btn-3d w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-game font-extrabold text-lg px-8 py-3.5 rounded-2xl flex items-center justify-center gap-2">
+                    <span>🔄</span>
+                    <span>Tekrar Oyna</span>
+                </button>
+                <button onclick="returnToMenu()"
+                    class="btn-3d w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-game font-bold text-lg px-8 py-3.5 rounded-2xl flex items-center justify-center gap-2">
+                    <span>🏠</span>
+                    <span>Ana Menü</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 4. SORU EKLEME VE YÖNETİM MODALI (Öğretmen / Veli Modu) -->
+    <div id="questionModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 border-2 border-indigo-400/60 rounded-3xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl animate-pop">
+            
+            <!-- Modal Başlık -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-2xl">📝</span>
+                    <div>
+                        <h3 class="font-game text-xl font-bold text-white">Soru Ekle ve Yönet</h3>
+                        <p class="text-xs text-indigo-300">Kendi sorularını ekle, çocukların hemen çözsün!</p>
+                    </div>
+                </div>
+                <button onclick="closeQuestionModal()" class="bg-slate-800 hover:bg-rose-600 text-white w-9 h-9 rounded-xl font-bold flex items-center justify-center transition">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Modal İçerik (Kaydırılabilir) -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-6">
+                
+                <!-- Yeni Soru Ekleme Formu -->
+                <form id="addQuestionForm" onsubmit="handleAddQuestion(event)" class="bg-slate-800/70 border border-indigo-500/30 rounded-2xl p-4 space-y-4">
+                    <h4 class="font-game font-bold text-amber-300 text-base flex items-center gap-1.5">
+                        <span>✨ Yeni Soru Oluştur</span>
+                    </h4>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-indigo-200 mb-1">Ünite Seçimi</label>
+                            <select id="newTopic" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm font-semibold focus:border-amber-400 focus:outline-none">
+                                <option value="Birey ve Toplum">Birey ve Toplum</option>
+                                <option value="Kültür ve Miras">Kültür ve Miras</option>
+                                <option value="İnsanlar, Yerler ve Çevreler">İnsanlar, Yerler ve Çevreler</option>
+                                <option value="Bilim, Teknoloji ve Toplum">Bilim, Teknoloji ve Toplum</option>
+                                <option value="Üretim, Dağıtım ve Tüketim">Üretim, Dağıtım ve Tüketim</option>
+                                <option value="Etkin Vatandaşlık">Etkin Vatandaşlık</option>
+                                <option value="Küresel Bağlantılar">Küresel Bağlantılar</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-emerald-300 mb-1">Doğru Cevap Hangisi?</label>
+                            <select id="newCorrectIndex" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-emerald-500/50 text-emerald-300 text-sm font-bold focus:border-amber-400 focus:outline-none">
+                                <option value="0">A Şıkkı Doğru</option>
+                                <option value="1">B Şıkkı Doğru</option>
+                                <option value="2">C Şıkkı Doğru</option>
+                                <option value="3">D Şıkkı Doğru</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-indigo-200 mb-1">Soru Metni</label>
+                        <textarea id="newQuestionText" rows="2" required placeholder="Örn: Türkiye Cumhuriyeti'nin kurucusu kimdir?"
+                            class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-amber-400 focus:outline-none"></textarea>
+                    </div>
+
+                    <!-- Şıklar -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">A Şıkkı</label>
+                            <input type="text" id="opt0" required placeholder="A seçeneği" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-amber-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">B Şıkkı</label>
+                            <input type="text" id="opt1" required placeholder="B seçeneği" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-amber-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">C Şıkkı</label>
+                            <input type="text" id="opt2" required placeholder="C seçeneği" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-amber-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">D Şıkkı</label>
+                            <input type="text" id="opt3" required placeholder="D seçeneği" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-amber-400 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-cyan-300 mb-1">Kısa Açıklama / İpucu (Cevap sonrası görünür)</label>
+                        <input type="text" id="newExplanation" placeholder="Örn: Mustafa Kemal Atatürk, 29 Ekim 1923'te Cumhuriyeti ilan etmiştir."
+                            class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-amber-400 focus:outline-none">
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <span id="formStatusMsg" class="text-xs font-bold text-emerald-400"></span>
+                        <button type="submit" class="btn-3d bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-1.5">
+                            <span>💾 Soruyu Kaydet</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Kayıtlı Sorular Listesi -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-game font-bold text-indigo-200 text-base">
+                            📚 Mevcut Sorular (<span id="modalQuestionCount">0</span>)
+                        </h4>
+                        <button onclick="resetToDefaultQuestions()" class="text-xs text-rose-400 hover:text-rose-300 underline font-semibold">
+                            Varsayılan Sorulara Dön
+                        </button>
+                    </div>
+                    <div id="questionListContainer" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                        <!-- Mevcut sorular JS ile listelenecek -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Alt Bilgi (Footer) -->
+    <footer class="relative z-10 text-center text-xs text-slate-400 py-2">
+        4. Sınıf Sosyal Bilgiler Eğitici Uzay Oyunu • İyi Dersler ve İyi Eğlenceler! 🌟
+    </footer>
+
+    <!-- JAVASCRIPT OYUN MANTIĞI VE SES MOTORU -->
+    <script>
+        /* ==========================================================================
+           1. WEB AUDIO API SES MOTORU (Harici dosya olmadan eğlenceli sesler)
+           ========================================================================== */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            icon.textContent = soundEnabled ? '🔊' : '🔇';
+            if (soundEnabled) {
+                initAudio();
+                playTone(523.25, 'sine', 0.1, 0.1);
+            }
+        }
+
+        function playTone(freq, type, duration, volume = 0.15, delay = 0) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+
+                gain.gain.setValueAtTime(volume, audioCtx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(audioCtx.currentTime + delay);
+                osc.stop(audioCtx.currentTime + delay + duration);
+            } catch (e) {
+                // Tarayıcı ses kısıtlaması durumunda sessizce devam et
+            }
+        }
+
+        // Doğru cevap melodisi (Neşeli yükselen arpej)
+        function playCorrectSound() {
+            playTone(523.25, 'triangle', 0.15, 0.2, 0);     // Do
+            playTone(659.25, 'triangle', 0.15, 0.2, 0.1);   // Mi
+            playTone(783.99, 'triangle', 0.15, 0.2, 0.2);   // Sol
+            playTone(1046.50, 'triangle', 0.35, 0.25, 0.3); // İnce Do
+        }
+
+        // Yanlış cevap sesi (Komik alçalan ses)
+        function playWrongSound() {
+            playTone(300, 'sawtooth', 0.2, 0.15, 0);
+            playTone(220, 'sawtooth', 0.35, 0.15, 0.18);
+        }
+
+        // Roket kalkış / ilerleme sesi
+        function playRocketLaunchSound() {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(620, audioCtx.currentTime + 0.45);
+
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.45);
+            } catch (e) {}
+        }
+
+        // Zafer fanfarı
+        function playVictorySound() {
+            const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+            const times = [0, 0.12, 0.24, 0.36, 0.52, 0.65];
+            notes.forEach((n, i) => playTone(n, 'triangle', 0.25, 0.22, times[i]));
+        }
+
+        /* ==========================================================================
+           2. 4. SINIF SOSYAL BİLGİLER MÜFREDAT SORULARI (16 Hazır Soru)
+           ========================================================================== */
+        const DEFAULT_QUESTIONS = [
+            {
+                id: 1,
+                topic: "Birey ve Toplum",
+                question: "Türkiye Cumhuriyeti Kimlik Kartımızın ön yüzünde aşağıdakilerden hangisi yer ALMAZ?",
+                options: ["T.C. Kimlik Numarası", "Doğum Tarihi", "Okul Numaramız", "Adımız ve Soyadımız"],
+                correct: 2,
+                explanation: "Kimlik kartımızda T.C. kimlik no, ad, soyad, doğum tarihi ve fotoğraf gibi resmi bilgiler yer alır; okul numaramız yer almaz."
+            },
+            {
+                id: 2,
+                topic: "Birey ve Toplum",
+                question: "Olayları oluş sırasına göre tarih belirterek alt alta sıralamaya ne ad verilir?",
+                options: ["Kronoloji", "Biyografi", "Coğrafya", "Empati"],
+                correct: 0,
+                explanation: "Olayların meydana geliş zamanına göre sıraya konulmasına 'Kronoloji' denir."
+            },
+            {
+                id: 3,
+                topic: "Birey ve Toplum",
+                question: "Kendimizi karşımızdaki kişinin yerine koyarak onun duygularını anlamaya çalışmamıza ne denir?",
+                options: ["Hoşgörü", "Empati", "Sorumluluk", "Dayanışma"],
+                correct: 1,
+                explanation: "Başkalarının duygularını ve düşüncelerini anlamak için kendimizi onun yerine koymaya 'Empati' denir."
+            },
+            {
+                id: 4,
+                topic: "Kültür ve Miras",
+                question: "Kurtuluş Savaşı'nda Güney Cephesi'nde Fransızlara karşı şehri kahramanca savunduğu için 'Gazi' unvanı alan ilimiz hangisidir?",
+                options: ["Şanlıurfa", "Kahramanmaraş", "Gaziantep", "İzmir"],
+                correct: 2,
+                explanation: "Antep halkının eşsiz savunması nedeniyle TBMM tarafından şehre 1921 yılında 'Gazi' unvanı verilmiştir."
+            },
+            {
+                id: 5,
+                topic: "Kültür ve Miras",
+                question: "Aşağıdakilerden hangisi milli kültürümüzü yansıtan geleneksel çocuk oyunlarımızdan biridir?",
+                options: ["Bilgisayar oyunları", "Körebe ve Saklambaç", "Bowling", "Beyzbol"],
+                correct: 1,
+                explanation: "Körebe, saklambaç, seksek ve topaç çevirme geçmişten günümüze gelen geleneksel çocuk oyunlarımızdır."
+            },
+            {
+                id: 6,
+                topic: "Kültür ve Miras",
+                question: "Mustafa Kemal Atatürk, 19 Mayıs 1919'da hangi şehrimize çıkarak Kurtuluş Savaşı'nı başlatmıştır?",
+                options: ["Ankara", "Samsun", "Erzurum", "Sivas"],
+                correct: 1,
+                explanation: "Atatürk, Bandırma Vapuru ile 19 Mayıs 1919'da Samsun'a çıkarak Milli Mücadele meşalesini yakmıştır."
+            },
+            {
+                id: 7,
+                topic: "İnsanlar, Yerler ve Çevreler",
+                question: "Sabah güneşin doğduğu yöne sağ kolumuzu uzattığımızda, sol kolumuz hangi yönü gösterir?",
+                options: ["Kuzey", "Güney", "Batı", "Doğu"],
+                correct: 2,
+                explanation: "Sağ kolumuz Doğu'yu gösteriyorsa, tam tersi olan sol kolumuz Batı'yı gösterir."
+            },
+            {
+                id: 8,
+                topic: "İnsanlar, Yerler ve Çevreler",
+                question: "Bir yerin kuş bakışı görünümünün kabataslak (ölçüsüz) olarak çizilmesine ne ad verilir?",
+                options: ["Harita", "Kroki", "Pusula", "Plan"],
+                correct: 1,
+                explanation: "Ölçü kullanılmadan, kabataslak yapılan kuş bakışı çizimlere 'Kroki' denir."
+            },
+            {
+                id: 9,
+                topic: "İnsanlar, Yerler ve Çevreler",
+                question: "Aşağıdakilerden hangisi insanlar tarafından yapılmış 'beşeri unsur'lara örnektir?",
+                options: ["Ağrı Dağı", "Van Gölü", "Boğaziçi Köprüsü", "Manavgat Şelalesi"],
+                correct: 2,
+                explanation: "Dağ, göl ve şelale doğal unsurdur; köprüler ise insanlar tarafından yapıldığı için beşeri unsurdur."
+            },
+            {
+                id: 10,
+                topic: "Bilim, Teknoloji ve Toplum",
+                question: "Aşağıdaki teknolojik ürünlerden hangisi 'iletişim' alanında kullandığımız araçlardan biridir?",
+                options: ["Akıllı Telefon", "Buzdolabı", "Çamaşır Makinesi", "Elektrikli Süpürge"],
+                correct: 0,
+                explanation: "Akıllı telefon haberleşme ve iletişim amacıyla kullanılır; diğerleri ev işlerini kolaylaştıran araçlardır."
+            },
+            {
+                id: 11,
+                topic: "Bilim, Teknoloji ve Toplum",
+                question: "Teknolojik ürünleri kullanırken aşağıdakilerden hangisini yapmamız DOĞRU olur?",
+                options: ["Ekran başında saatlerce ara vermeden oturmak", "Kullanım kılavuzunu okuyarak güvenlik kurallarına uymak", "Kişisel şifrelerimizi herkesle paylaşmak", "Bozulan pilleri normal çöp kutusuna atmak"],
+                correct: 1,
+                explanation: "Teknolojik cihazları güvenli ve verimli kullanmak için kullanım kılavuzundaki talimatlara uymalıyız."
+            },
+            {
+                id: 12,
+                topic: "Üretim, Dağıtım ve Tüketim",
+                question: "Bilinçli bir tüketici alışveriş yaparken aşağıdakilerden hangisine dikkat etmelidir?",
+                options: ["Sadece reklamı çok yapılan ürünleri almaya", "Ürünlerin son kullanma tarihine ve TSE damgasına bakmaya", "İhtiyacı olmasa bile indirimdeki her şeyi almaya", "Alışveriş fişi veya faturası almamaya"],
+                correct: 1,
+                explanation: "Bilinçli tüketici; bütçesine uygun hareket eder, TSE damgasına ve son kullanma tarihine mutlaka bakar."
+            },
+            {
+                id: 13,
+                topic: "Üretim, Dağıtım ve Tüketim",
+                question: "Aşağıdakilerden hangisi temel ihtiyaçlarımızdan biridir?",
+                options: ["Oyun konsolu", "Beslenme ve barınma", "Bisiklet", "Sinema bileti"],
+                correct: 1,
+                explanation: "Beslenme, barınma ve giyinme yaşamımızı sürdürebilmek için zorunlu olan temel ihtiyaçlarımızdır."
+            },
+            {
+                id: 14,
+                topic: "Etkin Vatandaşlık",
+                question: "Çocuk haklarını korumak amacıyla Birleşmiş Milletler bünyesinde kurulan yardım kuruluşu hangisidir?",
+                options: ["UNICEF", "TEMA", "Kızılay", "YEŞİLAY"],
+                correct: 0,
+                explanation: "UNICEF (Birleşmiş Milletler Çocuklara Yardım Fonu), dünya genelindeki çocukların haklarını korur."
+            },
+            {
+                id: 15,
+                topic: "Etkin Vatandaşlık",
+                question: "Aşağıdakilerden hangisi 18 yaşına kadar her çocuğun sahip olduğu haklardan biri DEĞİLDİR?",
+                options: ["Eğitim hakkı", "Oyun oynama hakkı", "Ağır işlerde çalıştırılma", "Sağlık hizmetlerinden yararlanma"],
+                correct: 2,
+                explanation: "Çocukların ekonomik olarak sömürülmesi ve ağır işlerde çalıştırılması yasaktır; çocukların yeri okuldur."
+            },
+            {
+                id: 16,
+                topic: "Küresel Bağlantılar",
+                question: "Japonya'nın geleneksel kıyafeti olan ve özel günlerde giyilen giysiye ne ad verilir?",
+                options: ["Kimono", "Ponço", "Kilt", "Sari"],
+                correct: 0,
+                explanation: "Kimono, Japon kültürünün en bilinen geleneksel kıyafetidir."
+            }
+        ];
+
+        /* ==========================================================================
+           3. OYUN DURUMU VE GEZEGENLER
+           ========================================================================== */
+        const PLANETS = [
+            { name: "Dünya", emoji: "🌍" },
+            { name: "Ay Üssü", emoji: "🌕" },
+            { name: "Mars", emoji: "🔴" },
+            { name: "Jüpiter", emoji: "🟠" },
+            { name: "Satürn", emoji: "🪐" },
+            { name: "Uranüs", emoji: "🔵" },
+            { name: "Neptün", emoji: "🟣" },
+            { name: "Yıldız Üssü", emoji: "🌟" }
+        ];
+
+        let allQuestions = [];
+        let gameQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let lives = 3;
+        let combo = 0;
+        let correctCount = 0;
+        let playerName = "Uzay Kaşifi";
+        let isAnswered = false;
+
+        // LocalStorage'dan soruları yükle
+        function loadQuestionsFromStorage() {
+            const saved = localStorage.getItem('sosyal4_uzay_sorular');
+            if (saved) {
+                try {
+                    allQuestions = JSON.parse(saved);
+                    if (!Array.isArray(allQuestions) || allQuestions.length === 0) {
+                        allQuestions = [...DEFAULT_QUESTIONS];
+                    }
+                } catch (e) {
+                    allQuestions = [...DEFAULT_QUESTIONS];
+                }
+            } else {
+                allQuestions = [...DEFAULT_QUESTIONS];
+                saveQuestionsToStorage();
+            }
+            updateQuestionCountUI();
+        }
+
+        function saveQuestionsToStorage() {
+            localStorage.setItem('sosyal4_uzay_sorular', JSON.stringify(allQuestions));
+            updateQuestionCountUI();
+        }
+
+        function updateQuestionCountUI() {
+            const badge = document.getElementById('totalQuestionsBadge');
+            if (badge) {
+                badge.textContent = `Sistemde toplam ${allQuestions.length} soru hazır bekliyor!`;
+            }
+        }
+
+        /* ==========================================================================
+           4. OYUN AKIŞ FONKSİYONLARI
+           ========================================================================== */
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startGame() {
+            initAudio();
+            playRocketLaunchSound();
+
+            const nameInput = document.getElementById('playerNameInput').value.trim();
+            playerName = nameInput || "Uzay Kaşifi";
+
+            const selectedTopic = document.getElementById('topicSelect').value;
+            let filtered = selectedTopic === "ALL" 
+                ? [...allQuestions] 
+                : allQuestions.filter(q => q.topic === selectedTopic);
+
+            // Eğer seçilen ünitede soru yoksa tüm soruları kullan
+            if (filtered.length === 0) {
+                filtered = [...allQuestions];
+            }
+
+            // En fazla 10 soruluk heyecanlı bir tur oluştur
+            gameQuestions = shuffleArray(filtered).slice(0, 10);
+            currentIndex = 0;
+            score = 0;
+            lives = 3;
+            combo = 0;
+            correctCount = 0;
+
+            // Ekran geçişleri
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('endScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('gameScreen').classList.add('flex');
+
+            renderPlanetsTrack();
+            updateHUD();
+            renderQuestion();
+        }
+
+        function returnToMenu() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('flex');
+            document.getElementById('endScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+
+        function renderPlanetsTrack() {
+            const track = document.getElementById('planetsTrack');
+            track.innerHTML = '';
+            PLANETS.forEach((planet, idx) => {
+                const el = document.createElement('div');
+                el.className = 'flex flex-col items-center';
+                el.innerHTML = `
+                    <span class="text-lg sm:text-2xl filter drop-shadow">${planet.emoji}</span>
+                `;
+                track.appendChild(el);
+            });
+            updateRocketPosition();
+        }
+
+        function updateRocketPosition() {
+            const total = gameQuestions.length;
+            const progressRatio = total > 0 ? (correctCount / total) : 0;
+            // %4 ile %92 arasında roketi ilerlet
+            const leftPercent = 4 + (progressRatio * 88);
+            const tracker = document.getElementById('rocketTracker');
+            tracker.style.left = `${leftPercent}%`;
+
+            // Hedef gezegen adını güncelle
+            const planetIndex = Math.min(
+                PLANETS.length - 1,
+                Math.floor(progressRatio * (PLANETS.length - 1)) + 1
+            );
+            document.getElementById('currentPlanetLabel').textContent = 
+                `Hedef: ${PLANETS[planetIndex].name} ${PLANETS[planetIndex].emoji}`;
+        }
+
+        function updateHUD() {
+            // Canlar
+            const livesContainer = document.getElementById('livesContainer');
+            let heartsHTML = '';
+            for (let i = 0; i < 3; i++) {
+                if (i < lives) {
+                    heartsHTML += '<span class="transition-transform transform scale-100">🛡️</span>';
+                } else {
+                    heartsHTML += '<span class="opacity-25 grayscale">🛡️</span>';
+                }
+            }
+            livesContainer.innerHTML = heartsHTML;
+
+            // Soru Sayacı
+            document.getElementById('questionCounter').textContent = 
+                `Soru ${currentIndex + 1} / ${gameQuestions.length}`;
+
+            // Skor
+            document.getElementById('scoreDisplay').textContent = score;
+
+            // Kombo
+            const comboBadge = document.getElementById('comboBadge');
+            if (combo >= 2) {
+                comboBadge.textContent = `🔥 ${combo}x Kombo!`;
+                comboBadge.classList.remove('hidden');
+            } else {
+                comboBadge.classList.add('hidden');
+            }
+        }
+
+        function renderQuestion() {
+            isAnswered = false;
+            const q = gameQuestions[currentIndex];
+
+            document.getElementById('questionTopicBadge').textContent = `📚 ${q.topic}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('feedbackBox').classList.add('hidden');
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            const badgeColors = [
+                'bg-amber-500 text-slate-950',
+                'bg-cyan-500 text-slate-950',
+                'bg-purple-500 text-white',
+                'bg-pink-500 text-white'
+            ];
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left bg-slate-800 hover:bg-slate-750 border-2 border-slate-600/80 rounded-2xl p-3.5 sm:p-4 flex items-center gap-3.5 font-bold text-base sm:text-lg text-white';
+                btn.onclick = () => selectAnswer(idx, btn);
+                btn.innerHTML = `
+                    <span class="w-9 h-9 shrink-0 rounded-xl ${badgeColors[idx]} font-game font-extrabold flex items-center justify-center text-base shadow">
+                        ${letters[idx]}
+                    </span>
+                    <span class="leading-snug">${optText}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(selectedIndex, clickedBtn) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const q = gameQuestions[currentIndex];
+            const buttons = document.getElementById('optionsContainer').querySelectorAll('button');
+            const feedbackBox = document.getElementById('feedbackBox');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackExplanation = document.getElementById('feedbackExplanation');
+            const rocketWrapper = document.getElementById('rocketWrapper');
+
+            // Tüm butonları devre dışı bırak
+            buttons.forEach(b => b.disabled = true);
+
+            if (selectedIndex === q.correct) {
+                // DOĞRU CEVAP
+                playCorrectSound();
+                setTimeout(playRocketLaunchSound, 250);
+
+                clickedBtn.classList.remove('bg-slate-800', 'border-slate-600/80');
+                clickedBtn.classList.add('bg-emerald-600/90', 'border-emerald-300', 'ring-4', 'ring-emerald-400/30');
+
+                combo++;
+                correctCount++;
+                const bonus = combo >= 2 ? (combo * 5) : 0;
+                score += (10 + bonus);
+
+                updateRocketPosition();
+
+                feedbackBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-emerald-950/90 border-emerald-400 text-emerald-100 animate-pop';
+                feedbackIcon.textContent = '🚀';
+                feedbackTitle.textContent = combo >= 2 
+                    ? `Süpersin ${playerName}! (${combo}x Kombo +${10 + bonus} Puan)` 
+                    : `Harika ${playerName}! Roket İlerledi! (+10 Puan)`;
+                feedbackExplanation.textContent = q.explanation || "Doğru cevabı bularak roketine yakıt sağladın!";
+
+            } else {
+                // YANLIŞ CEVAP
+                playWrongSound();
+
+                clickedBtn.classList.remove('bg-slate-800', 'border-slate-600/80');
+                clickedBtn.classList.add('bg-rose-600/90', 'border-rose-300');
+
+                // Doğru şıkkı yeşil ile göster
+                buttons[q.correct].classList.remove('bg-slate-800', 'border-slate-600/80');
+                buttons[q.correct].classList.add('bg-emerald-600/80', 'border-emerald-300');
+
+                // Roketi sars
+                rocketWrapper.classList.remove('rocket-idle');
+                void rocketWrapper.offsetWidth; // Reflow tetikle
+                rocketWrapper.classList.add('rocket-shake');
+                setTimeout(() => {
+                    rocketWrapper.classList.remove('rocket-shake');
+                    rocketWrapper.classList.add('rocket-idle');
+                }, 550);
+
+                combo = 0;
+                lives--;
+
+                feedbackBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-rose-950/90 border-rose-400 text-rose-100 animate-pop';
+                feedbackIcon.textContent = '🛸';
+                feedbackTitle.textContent = `Dikkat Meteor! Doğru Cevap: ${['A', 'B', 'C', 'D'][q.correct]} Şıkkı`;
+                feedbackExplanation.textContent = q.explanation || "Bir sonraki soruda kalkanını koruyabilirsin!";
+            }
+
+            updateHUD();
+
+            // Sonraki buton metni
+            const nextBtn = document.getElementById('nextQuestionBtn');
+            if (lives <= 0 || currentIndex === gameQuestions.length - 1) {
+                nextBtn.innerHTML = '<span>Sonuçları Gör</span> <span>🏆</span>';
+            } else {
+                nextBtn.innerHTML = '<span>Sonraki Soru</span> <span>➡️</span>';
+            }
+
+            feedbackBox.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            if (lives <= 0 || currentIndex >= gameQuestions.length - 1) {
+                finishGame();
+            } else {
+                currentIndex++;
+                updateHUD();
+                renderQuestion();
+            }
+        }
+
+        function finishGame() {
+            playVictorySound();
+
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('flex');
+            document.getElementById('endScreen').classList.remove('hidden');
+
+            const ratio = correctCount / gameQuestions.length;
+            const planetIdx = Math.min(PLANETS.length - 1, Math.floor(ratio * (PLANETS.length - 1)));
+            const reachedPlanet = PLANETS[planetIdx];
+
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalCorrect').textContent = `${correctCount} / ${gameQuestions.length}`;
+            document.getElementById('finalPlanet').textContent = `${reachedPlanet.name} ${reachedPlanet.emoji}`;
+
+            if (lives <= 0) {
+                document.getElementById('endBadgeEmoji').textContent = '🛰️';
+                document.getElementById('endTitle').textContent = `İyi Denemeydi, ${playerName}!`;
+                document.getElementById('endSubtitle').textContent = 'Kalkanların tükendi ama harika bilgiler öğrendin. Tekrar deneyip tüm galaksiyi geçebilirsin!';
+            } else if (ratio >= 0.8) {
+                document.getElementById('endBadgeEmoji').textContent = '🏆';
+                document.getElementById('endTitle').textContent = `Efsane Uzay Kaptanı ${playerName}!`;
+                document.getElementById('endSubtitle').textContent = 'Sosyal Bilgiler bilginle galaksinin en parlak yıldızı oldun!';
+            } else {
+                document.getElementById('endBadgeEmoji').textContent = '🌟';
+                document.getElementById('endTitle').textContent = `Tebrikler Kaşif ${playerName}!`;
+                document.getElementById('endSubtitle').textContent = 'Uzay yolculuğunu başarıyla tamamladın. Puanını daha da yükseltmek ister misin?';
+            }
+        }
+
+        /* ==========================================================================
+           5. SORU EKLEME VE YÖNETİM PANELİ (MODAL)
+           ========================================================================== */
+        function openQuestionModal() {
+            document.getElementById('questionModal').classList.remove('hidden');
+            renderModalQuestionList();
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('questionModal').classList.add('hidden');
+            document.getElementById('formStatusMsg').textContent = '';
+        }
+
+        function handleAddQuestion(event) {
+            event.preventDefault();
+
+            const topic = document.getElementById('newTopic').value;
+            const questionText = document.getElementById('newQuestionText').value.trim();
+            const opt0 = document.getElementById('opt0').value.trim();
+            const opt1 = document.getElementById('opt1').value.trim();
+            const opt2 = document.getElementById('opt2').value.trim();
+            const opt3 = document.getElementById('opt3').value.trim();
+            const correct = parseInt(document.getElementById('newCorrectIndex').value, 10);
+            const explanation = document.getElementById('newExplanation').value.trim();
+
+            if (!questionText || !opt0 || !opt1 || !opt2 || !opt3) return;
+
+            const newQ = {
+                id: Date.now(),
+                topic: topic,
+                question: questionText,
+                options: [opt0, opt1, opt2, opt3],
+                correct: correct,
+                explanation: explanation || `Doğru cevap: ${[opt0, opt1, opt2, opt3][correct]}`
+            };
+
+            allQuestions.unshift(newQ); // En başa ekle
+            saveQuestionsToStorage();
+            renderModalQuestionList();
+
+            // Formu temizle
+            document.getElementById('addQuestionForm').reset();
+            const statusMsg = document.getElementById('formStatusMsg');
+            statusMsg.textContent = '✅ Soru başarıyla eklendi!';
+            playCorrectSound();
+
+            setTimeout(() => {
+                statusMsg.textContent = '';
+            }, 3000);
+        }
+
+        function deleteQuestion(id) {
+            if (allQuestions.length <= 1) {
+                const statusMsg = document.getElementById('formStatusMsg');
+                statusMsg.textContent = '⚠️ En az 1 soru kalmalıdır!';
+                return;
+            }
+            allQuestions = allQuestions.filter(q => q.id !== id);
+            saveQuestionsToStorage();
+            renderModalQuestionList();
+        }
+
+        function resetToDefaultQuestions() {
+            allQuestions = [...DEFAULT_QUESTIONS];
+            saveQuestionsToStorage();
+            renderModalQuestionList();
+            const statusMsg = document.getElementById('formStatusMsg');
+            statusMsg.textContent = '🔄 Varsayılan 16 soru geri yüklendi!';
+            setTimeout(() => { statusMsg.textContent = ''; }, 3000);
+        }
+
+        function renderModalQuestionList() {
+            const container = document.getElementById('questionListContainer');
+            document.getElementById('modalQuestionCount').textContent = allQuestions.length;
+            container.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+
+            allQuestions.forEach((q, index) => {
+                const item = document.createElement('div');
+                item.className = 'bg-slate-800/90 border border-slate-700 rounded-xl p-3 flex items-start justify-between gap-3';
+                item.innerHTML = `
+                    <div class="text-sm">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-bold bg-indigo-900 text-indigo-200 px-2 py-0.5 rounded-md">${q.topic}</span>
+                            <span class="text-xs font-bold text-emerald-400">Doğru: ${letters[q.correct]} (${q.options[q.correct]})</span>
+                        </div>
+                        <p class="font-semibold text-white">${index + 1}. ${q.question}</p>
+                    </div>
+                    <button onclick="deleteQuestion(${q.id})" title="Soruyu Sil"
+                        class="shrink-0 bg-rose-500/20 hover:bg-rose-600 text-rose-300 hover:text-white p-2 rounded-lg text-xs font-bold transition">
+                        🗑️ Sil
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Sayfa yüklendiğinde soruları hazırla
+        window.onload = function() {
+            loadQuestionsFromStorage();
+        };
+    </script>
+</body>
+</html>
