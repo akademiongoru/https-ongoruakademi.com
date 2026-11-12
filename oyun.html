@@ -122,6 +122,16 @@
         .animate-pop {
             animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
+
+        /* Hatalı Şifre Titreme Animasyonu */
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .animate-error-shake {
+            animation: shakeError 0.4s ease-in-out;
+        }
     </style>
 </head>
 <body class="relative flex flex-col justify-between p-2 sm:p-4">
@@ -152,10 +162,10 @@
                 <span class="hidden sm:inline">Ses</span>
             </button>
 
-            <!-- Soru Ekle / Düzenle Butonu -->
-            <button onclick="openQuestionModal()"
+            <!-- Soru Ekle / Düzenle Butonu (Şifre Korumalı) -->
+            <button onclick="requestAdminAccess()"
                 class="btn-3d bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2.5 rounded-xl font-bold flex items-center gap-1.5 text-sm">
-                <span class="text-lg">➕</span>
+                <span class="text-lg">🔒</span>
                 <span>Soru Ekle / Yönet</span>
             </button>
         </div>
@@ -378,6 +388,37 @@
         </section>
 
     </main>
+
+    <!-- ŞİFRE DOĞRULAMA MODALI (Öğretmen / Yönetici Girişi) -->
+    <div id="passwordModal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="passwordModalBox" class="bg-slate-900 border-2 border-amber-400/60 rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl animate-pop">
+            <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-3xl">
+                🔐
+            </div>
+            <h3 class="font-game text-xl font-bold text-white mb-1">Yönetici Girişi</h3>
+            <p class="text-xs text-indigo-300 mb-4">Soru eklemek veya düzenlemek için 4 haneli şifreyi girin.</p>
+
+            <form onsubmit="verifyAdminPassword(event)" class="space-y-4">
+                <input type="password" id="adminPasswordInput" inputmode="numeric" maxlength="10" placeholder="••••" required
+                    class="w-full px-4 py-3 rounded-2xl bg-slate-800 border-2 border-indigo-500/60 text-white text-center font-game font-extrabold text-2xl tracking-[0.5em] focus:outline-none focus:border-amber-400">
+                
+                <p id="passwordErrorMsg" class="hidden text-xs font-bold text-rose-400 bg-rose-950/70 border border-rose-500/40 py-2 px-3 rounded-xl">
+                    ❌ Hatalı şifre! Lütfen tekrar deneyin.
+                </p>
+
+                <div class="flex items-center gap-2.5 pt-1">
+                    <button type="button" onclick="closePasswordModal()"
+                        class="btn-3d flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 rounded-xl text-sm">
+                        İptal
+                    </button>
+                    <button type="submit"
+                        class="btn-3d flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-sm">
+                        Giriş Yap
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- 4. SORU EKLEME VE YÖNETİM MODALI (Öğretmen / Veli Modu) -->
     <div id="questionModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
@@ -723,6 +764,8 @@
         /* ==========================================================================
            3. OYUN DURUMU VE GEZEGENLER
            ========================================================================== */
+        const ADMIN_PASSWORD = "1637";
+
         const PLANETS = [
             { name: "Dünya", emoji: "🌍" },
             { name: "Ay Üssü", emoji: "🌕" },
@@ -1044,8 +1087,47 @@
         }
 
         /* ==========================================================================
-           5. SORU EKLEME VE YÖNETİM PANELİ (MODAL)
+           5. ŞİFRE DOĞRULAMA VE SORU EKLEME / YÖNETİM PANELİ (MODAL)
            ========================================================================== */
+        function requestAdminAccess() {
+            const input = document.getElementById('adminPasswordInput');
+            const errorMsg = document.getElementById('passwordErrorMsg');
+            
+            input.value = '';
+            errorMsg.classList.add('hidden');
+            document.getElementById('passwordModal').classList.remove('hidden');
+            
+            setTimeout(() => input.focus(), 50);
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.add('hidden');
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('passwordErrorMsg').classList.add('hidden');
+        }
+
+        function verifyAdminPassword(event) {
+            event.preventDefault();
+            const input = document.getElementById('adminPasswordInput');
+            const errorMsg = document.getElementById('passwordErrorMsg');
+            const modalBox = document.getElementById('passwordModalBox');
+
+            if (input.value.trim() === ADMIN_PASSWORD) {
+                playCorrectSound();
+                closePasswordModal();
+                openQuestionModal();
+            } else {
+                playWrongSound();
+                errorMsg.classList.remove('hidden');
+                input.value = '';
+                input.focus();
+
+                modalBox.classList.remove('animate-error-shake');
+                void modalBox.offsetWidth;
+                modalBox.classList.add('animate-error-shake');
+            }
+        }
+
         function openQuestionModal() {
             document.getElementById('questionModal').classList.remove('hidden');
             renderModalQuestionList();
