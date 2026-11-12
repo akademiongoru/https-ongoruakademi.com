@@ -260,7 +260,7 @@
                     <span class="text-2xl">🚀</span>
                 </button>
             </div>
-            <p class="text-xs text-slate-400 mt-4" id="totalQuestionsBadge">Sistemde toplam 16 soru hazır bekliyor!</p>
+            <p class="text-xs text-slate-400 mt-4" id="totalQuestionsBadge">Sistemde toplam 20 soru hazır bekliyor!</p>
         </section>
 
         <!-- 2. AKTİF OYUN EKRANI (Game Screen + Yan Canlı Skor Tablosu) -->
@@ -364,14 +364,14 @@
                 </div>
             </div>
 
-            <!-- SAĞ TARAF: CANLI PUAN VE SIRALAMA PANELİ (Yukarı Doğru Kayan Liste) -->
+            <!-- SAĞ TARAF: CANLI PUAN VE SIRALAMA PANELİ (Kalıcı ve Yukarı Kayan Liste) -->
             <aside class="w-full lg:w-80 shrink-0 bg-slate-900/90 backdrop-blur-md border-2 border-amber-400/50 rounded-3xl p-4 shadow-2xl">
                 <div class="flex items-center justify-between border-b border-slate-700/80 pb-3 mb-3">
                     <div class="flex items-center gap-2">
                         <span class="text-2xl">🏆</span>
                         <div>
                             <h3 class="font-game font-bold text-base text-amber-300 leading-tight">Canlı Liderlik Tablosu</h3>
-                            <p class="text-[11px] text-indigo-300">Her doğru cevap +10 Puan</p>
+                            <p class="text-[11px] text-indigo-300">Her doğru +10 Puan (Kalıcı)</p>
                         </div>
                     </div>
                     <button onclick="clearLeaderboard()" title="Listeyi Sıfırla"
@@ -674,7 +674,7 @@
         }
 
         /* ==========================================================================
-           2. 4. SINIF SOSYAL BİLGİLER MÜFREDAT SORULARI (16 Hazır Soru)
+           2. 4. SINIF SOSYAL BİLGİLER MÜFREDAT SORULARI (20 Hazır Soru)
            ========================================================================== */
         const DEFAULT_QUESTIONS = [
             {
@@ -804,6 +804,38 @@
                 options: ["Kimono", "Ponço", "Kilt", "Sari"],
                 correct: 0,
                 explanation: "Kimono, Japon kültürünün en bilinen geleneksel kıyafetidir."
+            },
+            {
+                id: 17,
+                topic: "Birey ve Toplum",
+                question: "Aşağıdakilerden hangisi kişisel gelişimimiz için ilgi ve yeteneklerimize uygun bir kursa gitmemizin sağladığı faydalardan biridir?",
+                options: ["Zamanımızı boşa harcamamızı sağlar", "Becerilerimizi geliştirip yeni yetenekler kazanmamızı sağlar", "Sadece ders çalışmaktan uzaklaştırır", "Hiçbir faydası yoktur"],
+                correct: 1,
+                explanation: "İlgi ve yeteneklerimize uygun kurslar kendimizi geliştirmemize ve yeni beceriler kazanmamıza katkı sağlar."
+            },
+            {
+                id: 18,
+                topic: "Kültür ve Miras",
+                question: "Milli Mücadele döneminde milletimizin bağımsızlık sevgisini ve kahramanlığını simgeleyen milli marşımız kim tarafından yazılmıştır?",
+                options: ["Mehmet Akif Ersoy", "Mustafa Kemal Atatürk", "Ziya Gökalp", "Kazım Karabekir"],
+                correct: 0,
+                explanation: "İstiklal Marşı'mızın şairi Mehmet Akif Ersoy'dur."
+            },
+            {
+                id: 19,
+                topic: "İnsanlar, Yerler ve Çevreler",
+                question: "Hava olaylarını inceleyen ve günlük hava tahminleri yapan bilim insanlarına ne ad verilir?",
+                options: ["Astronot", "Meteorolog", "Jeolog", "Arkeolog"],
+                correct: 1,
+                explanation: "Atmosferdeki hava olaylarını inceleyen uzmanlara meteorolog denir."
+            },
+            {
+                id: 20,
+                topic: "Üretim, Dağıtım ve Tüketim",
+                question: "Topraklarımızı korumak ve erozyonla mücadele etmek amacıyla kurulan ünlü sivil toplum kuruluşumuz hangisidir?",
+                options: ["TEMA Vakfı", "AKUT", "Kızılay", "LÖSEV"],
+                correct: 0,
+                explanation: "TEMA (Türkiye Erozyonla Mücadele, Ağaçlandırma ve Doğal Varlıklarını Koruma Vakfı) erozyonla mücadele eder."
             }
         ];
 
@@ -867,7 +899,7 @@
         }
 
         /* ==========================================================================
-           3.5 CANLI LİDERLİK TABLOSU (YUKARI KAYAN SIRALAMA SİSTEMİ)
+           3.5 KALICI CANLI LİDERLİK TABLOSU (TEKİL İSİM & YUKARI KAYMA SİSTEMİ)
            ========================================================================== */
         function loadLeaderboardFromStorage() {
             const saved = localStorage.getItem('sosyal4_uzay_liderlik');
@@ -881,6 +913,7 @@
             } else {
                 leaderboardData = [];
             }
+            renderLiveLeaderboard(false);
         }
 
         function saveLeaderboardToStorage() {
@@ -888,14 +921,21 @@
         }
 
         function registerActivePlayer(name) {
-            currentPlayerId = 'player_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-            leaderboardData.push({
-                id: currentPlayerId,
-                name: name,
-                correctCount: 0,
-                score: 0,
-                updatedAt: Date.now()
-            });
+            // Aynı isimden varsa onu bul, yoksa yeni oluştur (Aynı isimden 2 tane olmaması kuralı)
+            let existing = leaderboardData.find(p => p.name.toLowerCase() === name.toLowerCase());
+            
+            if (existing) {
+                currentPlayerId = existing.id;
+            } else {
+                currentPlayerId = 'player_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                leaderboardData.push({
+                    id: currentPlayerId,
+                    name: name,
+                    correctCount: 0,
+                    score: 0,
+                    updatedAt: Date.now()
+                });
+            }
             saveLeaderboardToStorage();
             renderLiveLeaderboard(false);
         }
@@ -903,21 +943,19 @@
         function updateActivePlayerScore(newCorrectCount, newScore, movedUp = false) {
             const player = leaderboardData.find(p => p.id === currentPlayerId);
             if (player) {
-                player.correctCount = newCorrectCount;
-                player.score = newScore;
-                player.updatedAt = Date.now();
+                // Eğer yeni skor veya doğru sayısı daha yüksekse güncelle
+                if (newScore >= player.score) {
+                    player.correctCount = newCorrectCount;
+                    player.score = newScore;
+                    player.updatedAt = Date.now();
+                }
                 saveLeaderboardToStorage();
                 renderLiveLeaderboard(movedUp);
             }
         }
 
         function clearLeaderboard() {
-            if (currentPlayerId) {
-                const current = leaderboardData.find(p => p.id === currentPlayerId);
-                leaderboardData = current ? [current] : [];
-            } else {
-                leaderboardData = [];
-            }
+            leaderboardData = [];
             saveLeaderboardToStorage();
             const container = document.getElementById('liveLeaderboardList');
             if (container) container.innerHTML = '';
@@ -928,17 +966,16 @@
             const container = document.getElementById('liveLeaderboardList');
             if (!container) return;
 
-            // En çok doğru cevap veren / en yüksek puan alan en üstte olacak şekilde sırala
+            // DAİMA EN YÜKSEK PUAN (Yüksek skor -> Çok doğru -> En güncel) EN ÜSTTE
             const sorted = [...leaderboardData].sort((a, b) => {
                 if (b.score !== a.score) return b.score - a.score;
                 if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
-                return a.updatedAt - b.updatedAt;
+                return b.updatedAt - a.updatedAt;
             });
 
-            const ROW_HEIGHT = 68; // Satır yüksekliği + boşluk
+            const ROW_HEIGHT = 68;
             container.style.height = `${Math.max(sorted.length * ROW_HEIGHT, 68)}px`;
 
-            // Artık listede olmayan DOM öğelerini temizle
             const activeIds = new Set(sorted.map(p => p.id));
             Array.from(container.children).forEach(child => {
                 if (!activeIds.has(child.dataset.playerId)) {
@@ -953,14 +990,11 @@
                 if (!row) {
                     row = document.createElement('div');
                     row.dataset.playerId = player.id;
-                    // İlk eklenirken aşağıdan yumuşakça yerine kayması için başlangıç konumu
                     row.style.transform = `translateY(${(rankIndex + 1) * ROW_HEIGHT}px)`;
                     container.appendChild(row);
-                    // Reflow sonrası gerçek sırasına kaydır
                     void row.offsetWidth;
                 }
 
-                // Madalya veya Sıra Numarası
                 let rankBadge = `<span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-600 text-slate-300 font-game font-bold text-xs flex items-center justify-center">${rankIndex + 1}</span>`;
                 if (rankIndex === 0) {
                     rankBadge = `<span class="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 font-game font-extrabold text-sm flex items-center justify-center shadow">🥇</span>`;
@@ -1001,7 +1035,7 @@
                     </div>
                 `;
 
-                // Y koordinatını güncel sıraya kaydır (Yukarı doğru kayma efekti)
+                // Yukarı doğru yumuşak kayma animasyonu
                 row.style.transform = `translateY(${rankIndex * ROW_HEIGHT}px)`;
             });
         }
@@ -1030,12 +1064,11 @@
                 ? [...allQuestions] 
                 : allQuestions.filter(q => q.topic === selectedTopic);
 
-            // Eğer seçilen ünitede soru yoksa tüm soruları kullan
             if (filtered.length === 0) {
                 filtered = [...allQuestions];
             }
 
-            // En fazla 10 soruluk heyecanlı bir tur oluştur
+            // 10 soruluk heyecanlı macera turu
             gameQuestions = shuffleArray(filtered).slice(0, 10);
             currentIndex = 0;
             score = 0;
@@ -1043,13 +1076,11 @@
             combo = 0;
             correctCount = 0;
 
-            // Ekran geçişleri
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('endScreen').classList.add('hidden');
             document.getElementById('gameScreen').classList.remove('hidden');
             document.getElementById('gameScreen').classList.add('flex');
 
-            // Oyuncuyu canlı liderlik tablosuna kaydet
             registerActivePlayer(playerName);
 
             renderPlanetsTrack();
@@ -1062,6 +1093,7 @@
             document.getElementById('gameScreen').classList.remove('flex');
             document.getElementById('endScreen').classList.add('hidden');
             document.getElementById('startScreen').classList.remove('hidden');
+            loadLeaderboardFromStorage();
         }
 
         function renderPlanetsTrack() {
@@ -1081,12 +1113,10 @@
         function updateRocketPosition() {
             const total = gameQuestions.length;
             const progressRatio = total > 0 ? (correctCount / total) : 0;
-            // %4 ile %92 arasında roketi ilerlet
             const leftPercent = 4 + (progressRatio * 88);
             const tracker = document.getElementById('rocketTracker');
             tracker.style.left = `${leftPercent}%`;
 
-            // Hedef gezegen adını güncelle
             const planetIndex = Math.min(
                 PLANETS.length - 1,
                 Math.floor(progressRatio * (PLANETS.length - 1)) + 1
@@ -1096,7 +1126,6 @@
         }
 
         function updateHUD() {
-            // Canlar
             const livesContainer = document.getElementById('livesContainer');
             let heartsHTML = '';
             for (let i = 0; i < 3; i++) {
@@ -1108,14 +1137,11 @@
             }
             livesContainer.innerHTML = heartsHTML;
 
-            // Soru Sayacı
             document.getElementById('questionCounter').textContent = 
                 `Soru ${currentIndex + 1} / ${gameQuestions.length}`;
 
-            // Skor
             document.getElementById('scoreDisplay').textContent = score;
 
-            // Kombo
             const comboBadge = document.getElementById('comboBadge');
             if (combo >= 2) {
                 comboBadge.textContent = `🔥 ${combo} Doğru Seri!`;
@@ -1170,11 +1196,10 @@
             const feedbackExplanation = document.getElementById('feedbackExplanation');
             const rocketWrapper = document.getElementById('rocketWrapper');
 
-            // Tüm butonları devre dışı bırak
             buttons.forEach(b => b.disabled = true);
 
             if (selectedIndex === q.correct) {
-                // DOĞRU CEVAP (Her soruya sabit +10 puan)
+                // DOĞRU CEVAP (+10 Puan)
                 playCorrectSound();
                 setTimeout(playRocketLaunchSound, 250);
 
@@ -1185,7 +1210,7 @@
                 correctCount++;
                 score += 10;
 
-                // Canlı liderlik tablosunu güncelle ve yukarı kaydır
+                // Liderlik tablosunu güncelle ve yukarı kaydır
                 updateActivePlayerScore(correctCount, score, true);
                 updateRocketPosition();
 
@@ -1201,13 +1226,11 @@
                 clickedBtn.classList.remove('bg-slate-800', 'border-slate-600/80');
                 clickedBtn.classList.add('bg-rose-600/90', 'border-rose-300');
 
-                // Doğru şıkkı yeşil ile göster
                 buttons[q.correct].classList.remove('bg-slate-800', 'border-slate-600/80');
                 buttons[q.correct].classList.add('bg-emerald-600/80', 'border-emerald-300');
 
-                // Roketi sars
                 rocketWrapper.classList.remove('rocket-idle');
-                void rocketWrapper.offsetWidth; // Reflow tetikle
+                void rocketWrapper.offsetWidth;
                 rocketWrapper.classList.add('rocket-shake');
                 setTimeout(() => {
                     rocketWrapper.classList.remove('rocket-shake');
@@ -1225,7 +1248,6 @@
 
             updateHUD();
 
-            // Sonraki buton metni
             const nextBtn = document.getElementById('nextQuestionBtn');
             if (lives <= 0 || currentIndex === gameQuestions.length - 1) {
                 nextBtn.innerHTML = '<span>Sonuçları Gör</span> <span>🏆</span>';
@@ -1351,11 +1373,10 @@
                 explanation: explanation || `Doğru cevap: ${[opt0, opt1, opt2, opt3][correct]}`
             };
 
-            allQuestions.unshift(newQ); // En başa ekle
+            allQuestions.unshift(newQ);
             saveQuestionsToStorage();
             renderModalQuestionList();
 
-            // Formu temizle
             document.getElementById('addQuestionForm').reset();
             const statusMsg = document.getElementById('formStatusMsg');
             statusMsg.textContent = '✅ Soru başarıyla eklendi!';
@@ -1382,7 +1403,7 @@
             saveQuestionsToStorage();
             renderModalQuestionList();
             const statusMsg = document.getElementById('formStatusMsg');
-            statusMsg.textContent = '🔄 Varsayılan 16 soru geri yüklendi!';
+            statusMsg.textContent = '🔄 Varsayılan 20 soru geri yüklendi!';
             setTimeout(() => { statusMsg.textContent = ''; }, 3000);
         }
 
@@ -1413,7 +1434,7 @@
             });
         }
 
-        // Sayfa yüklendiğinde soruları ve liderlik tablosunu hazırla
+        // Sayfa yüklendiğinde hafızadaki verileri yükle
         window.onload = function() {
             loadQuestionsFromStorage();
             loadLeaderboardFromStorage();
