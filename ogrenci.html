@@ -9,22 +9,38 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
     body { background:#2f2f2f; color:white; padding:20px; min-height:100vh; }
-    header { background:#1f1f1f; padding:20px; border-bottom:3px solid #ff7a00; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; }
+    header { background:#1f1f1f; padding:20px; border-bottom:3px solid #ff7a00; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
     header h1 { color:#ff7a00; font-size:24px; }
     header a, .cikis-btn { color:white; text-decoration:none; background:#ff7a00; padding:8px 15px; border-radius:8px; font-weight:bold; border:none; cursor:pointer; font-size:14px; display:inline-flex; align-items:center; gap:8px; }
-    
+
     .giris-kutu { max-width:400px; margin:80px auto; background:#383838; padding:30px; border-radius:15px; border-top:4px solid #ff7a00; text-align:center; }
     .giris-kutu h2 { color:#ff7a00; margin-bottom:20px; }
-    
+
     input, select, button { width:100%; padding:12px; margin-bottom:12px; background:#2f2f2f; border:1px solid #444; border-radius:8px; color:white; font-size:14px; outline:none; }
+    input[type="number"] { margin-bottom:0; padding:8px; text-align:center; }
     button { background:#ff7a00; font-weight:bold; cursor:pointer; transition:.3s; border:none; }
     button:hover { opacity:0.9; }
-    
-    .panel { display:none; max-width:900px; margin:0 auto; }
+
+    .panel { display:none; max-width:950px; margin:0 auto; }
     .kutu { background:#383838; padding:25px; border-radius:15px; border-top:4px solid #ff7a00; margin-bottom:20px; }
     .kutu h2 { color:#ff7a00; margin-bottom:15px; font-size:20px; display:flex; align-items:center; gap:10px; }
-    
-    .test-kart { background: #252525; padding: 15px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #ff7a00; display:flex; justify-content:space-between; align-items:center; }
+
+    .eokul-ust { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:15px; background:#252525; padding:15px; border-radius:10px; }
+    .eokul-ust label { display:block; font-size:12px; color:#ccc; margin-bottom:5px; }
+    .eokul-ust select, .eokul-ust input { margin-bottom:0; }
+
+    .not-tablo-wrap { overflow-x:auto; background:#252525; border-radius:10px; padding:10px; }
+    table.not-tablo { width:100%; border-collapse:collapse; min-width:620px; }
+    table.not-tablo th, table.not-tablo td { border-bottom:1px solid #3a3a3a; padding:10px 8px; text-align:left; font-size:13px; }
+    table.not-tablo th { color:#ff7a00; font-weight:700; background:#1f1f1f; }
+    table.not-tablo tr:last-child td { border-bottom:none; }
+    .ders-adi { font-weight:600; color:#f3f3f3; }
+    .ort-hucre { font-weight:700; color:#ff7a00; text-align:center !important; }
+
+    .kayitli-not-ozet { margin-top:15px; background:#222222; border:1px solid #444; border-radius:10px; padding:15px; }
+    .kayitli-not-ozet h3 { color:#22c55e; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+
+    .test-kart { background: #252525; padding: 15px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #ff7a00; display:flex; justify-content:space-between; align-items:center; gap:10px; }
     .deneme-kart { background: #252525; padding: 18px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #ff7a00; }
     .deneme-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #3d3d3d; padding-bottom:10px; margin-bottom:12px; }
     .deneme-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:10px; text-align:center; background:#1e1e1e; padding:12px; border-radius:8px; }
@@ -63,7 +79,70 @@
 </div>
 
 <div class="panel" id="panelAlani">
-  
+
+  <!-- E-OKUL NOT GİRİŞİ KUTUSU -->
+  <div class="kutu" id="eokulNotKutusu">
+    <h2><i class="fa-solid fa-graduation-cap"></i> E-Okul Not Girişim</h2>
+    <p style="font-size:13px; color:#ccc; margin-bottom:14px;">
+      E-Okul'daki ders notlarını buradan girebilir veya güncelleyebilirsin. Kaydettiğin notlar yönetici panelinde sınıf bazlı olarak görünür.
+    </p>
+
+    <form id="eokulNotForm">
+      <div class="eokul-ust">
+        <div>
+          <label for="eokulSinif">Sınıfınız</label>
+          <select id="eokulSinif" required>
+            <option value="">Sınıf Seçin</option>
+            <option value="1. Sınıf">1. Sınıf</option>
+            <option value="2. Sınıf">2. Sınıf</option>
+            <option value="3. Sınıf">3. Sınıf</option>
+            <option value="4. Sınıf">4. Sınıf</option>
+            <option value="5. Sınıf">5. Sınıf</option>
+            <option value="6. Sınıf">6. Sınıf</option>
+            <option value="7. Sınıf">7. Sınıf</option>
+            <option value="8. Sınıf">8. Sınıf</option>
+            <option value="Mezun / KPSS">Mezun / KPSS</option>
+          </select>
+        </div>
+        <div>
+          <label for="eokulDonem">Dönem</label>
+          <select id="eokulDonem" required>
+            <option value="1. Dönem">1. Dönem</option>
+            <option value="2. Dönem">2. Dönem</option>
+          </select>
+        </div>
+        <div>
+          <label for="eokulAciklama">Not / Dönem Bilgisi (Opsiyonel)</label>
+          <input type="text" id="eokulAciklama" placeholder="Örn: Kasım 2026 Yazılıları">
+        </div>
+      </div>
+
+      <div class="not-tablo-wrap">
+        <table class="not-tablo">
+          <thead>
+            <tr>
+              <th>Ders Adı</th>
+              <th style="width:110px; text-align:center;">1. Yazılı</th>
+              <th style="width:110px; text-align:center;">2. Yazılı</th>
+              <th style="width:120px; text-align:center;">Performans / Sözlü</th>
+              <th style="width:100px; text-align:center;">Ortalama</th>
+            </tr>
+          </thead>
+          <tbody id="eokulDersSatirlari"></tbody>
+        </table>
+      </div>
+
+      <button type="submit" id="eokulKaydetBtn" style="margin-top:15px; background:#22c55e;">
+        <i class="fa-solid fa-floppy-disk"></i> E-Okul Notlarımı Kaydet
+      </button>
+    </form>
+
+    <div class="kayitli-not-ozet" id="kayitliEokulOzet">
+      <h3><i class="fa-solid fa-list-check"></i> Kayıtlı E-Okul Notlarım</h3>
+      <div id="kayitliEokulListesi" style="font-size:13px; color:#ccc;">Yükleniyor...</div>
+    </div>
+  </div>
+
   <!-- KURUMSAL DENEME SINAVI SONUÇLARI KUTUSU -->
   <div class="kutu">
     <h2><i class="fa-solid fa-chart-column"></i> Kurumsal Deneme Sınavı Sonuçlarım</h2>
@@ -93,7 +172,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, updateDoc, doc, getDocs, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB4eNZiWTGnHUPSvdtCRvbymwFoBqQtqZk",
@@ -104,6 +183,16 @@
     measurementId: "G-P80RPZCSE7"
   };
 
+  const DERS_LISTESI = [
+    { key: "turkce", ad: "Türkçe" },
+    { key: "matematik", ad: "Matematik" },
+    { key: "fen_bilimleri", ad: "Fen Bilimleri" },
+    { key: "sosyal_bilgiler", ad: "Sosyal Bilgiler (T.C. İnkılap Tarihi ve Atatürkçülük)" },
+    { key: "ingilizce", ad: "Yabancı Dil (İngilizce)" },
+    { key: "din_kulturu", ad: "Din Kültürü ve Ahlak Bilgisi" },
+    { key: "bilisim", ad: "Bilişim Teknolojileri ve Yazılım" }
+  ];
+
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
@@ -112,13 +201,250 @@
   let seciliTestDocId = null;
   let cozulenTestIds = [];
   let tumTestlerCache = [];
+  let mevcutKayitliNotlar = [];
 
   function escapeHtml(text) {
-    if (!text) return "";
-    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    if (text === null || text === undefined) return "";
+    return String(text).replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'");
+  }
+
+  function normalizeSinif(sinifDegeri) {
+    if (!sinifDegeri) return "";
+    const temiz = String(sinifDegeri).trim();
+    const rakamMatch = temiz.match(/^([1-8])(\.\s*sınıf|sınıf)?$/i);
+    if (rakamMatch) return `${rakamMatch[1]}. Sınıf`;
+    return temiz;
+  }
+
+  function eokulTablosunuOlustur() {
+    const tbody = document.getElementById("eokulDersSatirlari");
+    tbody.innerHTML = "";
+
+    DERS_LISTESI.forEach(ders => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="ders-adi">${escapeHtml(ders.ad)}</td>
+        <td><input type="number" min="0" max="100" step="0.01" class="not-girdi" data-ders="${ders.key}" data-alan="yazili1" placeholder="-"></td>
+        <td><input type="number" min="0" max="100" step="0.01" class="not-girdi" data-ders="${ders.key}" data-alan="yazili2" placeholder="-"></td>
+        <td><input type="number" min="0" max="100" step="0.01" class="not-girdi" data-ders="${ders.key}" data-alan="performans" placeholder="-"></td>
+        <td class="ort-hucre" id="ort_${ders.key}">-</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll(".not-girdi").forEach(input => {
+      input.addEventListener("input", () => {
+        if (input.value !== "") {
+          let val = parseFloat(input.value);
+          if (val < 0) input.value = 0;
+          if (val > 100) input.value = 100;
+        }
+        satirOrtalamasiniGuncelle(input.dataset.ders);
+      });
+    });
+  }
+
+  function satirOrtalamasiniGuncelle(dersKey) {
+    const y1El = document.querySelector(`.not-girdi[data-ders="${dersKey}"][data-alan="yazili1"]`);
+    const y2El = document.querySelector(`.not-girdi[data-ders="${dersKey}"][data-alan="yazili2"]`);
+    const pEl  = document.querySelector(`.not-girdi[data-ders="${dersKey}"][data-alan="performans"]`);
+    const ortEl = document.getElementById(`ort_${dersKey}`);
+
+    const notlar = [];
+    [y1El, y2El, pEl].forEach(el => {
+      if (el && el.value !== "" && !isNaN(parseFloat(el.value))) {
+        notlar.push(parseFloat(el.value));
+      }
+    });
+
+    if (notlar.length === 0) {
+      ortEl.innerText = "-";
+      return null;
+    }
+
+    const toplam = notlar.reduce((acc, n) => acc + n, 0);
+    const ort = Number((toplam / notlar.length).toFixed(2));
+    ortEl.innerText = ort.toFixed(2);
+    return ort;
+  }
+
+  function formdakiNotlariTopla() {
+    const dersNotlari = {};
+    let enAzBirNotVar = false;
+
+    DERS_LISTESI.forEach(ders => {
+      const y1Raw = document.querySelector(`.not-girdi[data-ders="${ders.key}"][data-alan="yazili1"]`).value;
+      const y2Raw = document.querySelector(`.not-girdi[data-ders="${ders.key}"][data-alan="yazili2"]`).value;
+      const pRaw  = document.querySelector(`.not-girdi[data-ders="${ders.key}"][data-alan="performans"]`).value;
+
+      const yazili1 = y1Raw !== "" ? Number(parseFloat(y1Raw).toFixed(2)) : null;
+      const yazili2 = y2Raw !== "" ? Number(parseFloat(y2Raw).toFixed(2)) : null;
+      const performans = pRaw !== "" ? Number(parseFloat(pRaw).toFixed(2)) : null;
+      const ortalama = satirOrtalamasiniGuncelle(ders.key);
+
+      if (yazili1 !== null || yazili2 !== null || performans !== null) {
+        enAzBirNotVar = true;
+      }
+
+      dersNotlari[ders.key] = {
+        dersAd: ders.ad,
+        yazili1,
+        yazili2,
+        performans,
+        ortalama
+      };
+    });
+
+    return { dersNotlari, enAzBirNotVar };
+  }
+
+  function mevcutNotlariFormaDoldur(kayit) {
+    if (!kayit || !kayit.dersNotlari) return;
+    if (kayit.sinif) {
+      const sinifSelect = document.getElementById("eokulSinif");
+      const norm = normalizeSinif(kayit.sinif);
+      const secenekVar = Array.from(sinifSelect.options).some(o => o.value === norm);
+      if (secenekVar) sinifSelect.value = norm;
+    }
+    if (kayit.donem) {
+      document.getElementById("eokulDonem").value = kayit.donem;
+    }
+    if (kayit.aciklama !== undefined) {
+      document.getElementById("eokulAciklama").value = kayit.aciklama || "";
+    }
+
+    DERS_LISTESI.forEach(ders => {
+      const d = kayit.dersNotlari[ders.key] || {};
+      const y1El = document.querySelector(`.not-girdi[data-ders="${ders.key}"][data-alan="yazili1"]`);
+      const y2El = document.querySelector(`.not-girdi[data-ders="${ders.key}"][data-alan="yazili2"]`);
+      const pEl  = document.querySelector(`.not-girdi[data-ders="${ders.key}"][data-alan="performans"]`);
+
+      if (y1El) y1El.value = (d.yazili1 !== null && d.yazili1 !== undefined) ? d.yazili1 : "";
+      if (y2El) y2El.value = (d.yazili2 !== null && d.yazili2 !== undefined) ? d.yazili2 : "";
+      if (pEl)  pEl.value  = (d.performans !== null && d.performans !== undefined) ? d.performans : "";
+      satirOrtalamasiniGuncelle(ders.key);
+    });
+  }
+
+  document.getElementById("eokulDonem").addEventListener("change", () => {
+    const seciliDonem = document.getElementById("eokulDonem").value;
+    const eslesen = mevcutKayitliNotlar.find(k => k.donem === seciliDonem);
+    if (eslesen) {
+      mevcutNotlariFormaDoldur(eslesen);
+    }
+  });
+
+  document.getElementById("eokulNotForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!aktifOgrenci) return;
+
+    const sinif = normalizeSinif(document.getElementById("eokulSinif").value);
+    const donem = document.getElementById("eokulDonem").value;
+    const aciklama = document.getElementById("eokulAciklama").value.trim();
+
+    if (!sinif) {
+      alert("Lütfen sınıfınızı seçin!");
+      return;
+    }
+
+    const { dersNotlari, enAzBirNotVar } = formdakiNotlariTopla();
+    if (!enAzBirNotVar) {
+      alert("Lütfen en az bir ders için not girin!");
+      return;
+    }
+
+    const btn = document.getElementById("eokulKaydetBtn");
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor...`;
+
+    const ogrenciAd = aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad || "İsimsiz Öğrenci";
+    const payload = {
+      ogrenciId: aktifOgrenci.id,
+      ogrenciAd: ogrenciAd,
+      kullaniciAdi: aktifOgrenci.kullaniciAdi || aktifOgrenci.tc || "",
+      sinif: sinif,
+      donem: donem,
+      aciklama: aciklama,
+      dersNotlari: dersNotlari,
+      guncellenmeTarihi: new Date().toLocaleString("tr-TR"),
+      guncellenmeMs: Date.now()
+    };
+
+    try {
+      const ayniDonemKayit = mevcutKayitliNotlar.find(k => k.donem === donem);
+      if (ayniDonemKayit && ayniDonemKayit.id) {
+        await updateDoc(doc(db, "eokul_notlari", ayniDonemKayit.id), payload);
+      } else {
+        await addDoc(collection(db, "eokul_notlari"), payload);
+      }
+
+      alert("E-Okul notlarınız başarıyla kaydedildi!");
+    } catch (err) {
+      alert("Not kaydedilirken hata oluştu: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> E-Okul Notlarımı Kaydet`;
+    }
+  });
+
+  function kayitliEokulListesiniCiz() {
+    const div = document.getElementById("kayitliEokulListesi");
+    if (!mevcutKayitliNotlar.length) {
+      div.innerHTML = "<p style='color:#aaa;'>Henüz kayıtlı E-Okul notunuz bulunmuyor.</p>";
+      return;
+    }
+
+    div.innerHTML = "";
+    mevcutKayitliNotlar.forEach(kayit => {
+      const satilarHtml = DERS_LISTESI.map(ders => {
+        const d = (kayit.dersNotlari && kayit.dersNotlari[ders.key]) || {};
+        const y1 = (d.yazili1 !== null && d.yazili1 !== undefined) ? d.yazili1 : "-";
+        const y2 = (d.yazili2 !== null && d.yazili2 !== undefined) ? d.yazili2 : "-";
+        const pf = (d.performans !== null && d.performans !== undefined) ? d.performans : "-";
+        const ort = (d.ortalama !== null && d.ortalama !== undefined) ? Number(d.ortalama).toFixed(2) : "-";
+        return `
+          <tr>
+            <td class="ders-adi">${escapeHtml(ders.ad)}</td>
+            <td style="text-align:center;">${escapeHtml(y1)}</td>
+            <td style="text-align:center;">${escapeHtml(y2)}</td>
+            <td style="text-align:center;">${escapeHtml(pf)}</td>
+            <td class="ort-hucre">${escapeHtml(ort)}</td>
+          </tr>
+        `;
+      }).join("");
+
+      const kart = document.createElement("div");
+      kart.style.cssText = "background:#1b1b1b; border-radius:8px; padding:12px; margin-bottom:10px; border-left:4px solid #22c55e;";
+      kart.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+          <div>
+            <strong style="color:#ff7a00;">${escapeHtml(kayit.sinif || "")}</strong> -
+            <strong style="color:#22c55e;">${escapeHtml(kayit.donem || "")}</strong>
+            ${kayit.aciklama ? `<span style="color:#bbb; margin-left:8px;">(${escapeHtml(kayit.aciklama)})</span>` : ""}
+          </div>
+          <small style="color:#888;">Son Güncelleme: ${escapeHtml(kayit.guncellenmeTarihi || "-")}</small>
+        </div>
+        <div class="not-tablo-wrap" style="padding:0;">
+          <table class="not-tablo" style="min-width:520px;">
+            <thead>
+              <tr>
+                <th>Ders</th>
+                <th style="text-align:center;">1. Yazılı</th>
+                <th style="text-align:center;">2. Yazılı</th>
+                <th style="text-align:center;">Performans</th>
+                <th style="text-align:center;">Ortalama</th>
+              </tr>
+            </thead>
+            <tbody>${satilarHtml}</tbody>
+          </table>
+        </div>
+      `;
+      div.appendChild(kart);
+    });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    eokulTablosunuOlustur();
     const kayitli = localStorage.getItem("ongoru_ogrenci");
     if (kayitli) {
       try {
@@ -141,10 +467,10 @@
 
       for (const kol of koleksiyonlar) {
         const snapshot = await getDocs(collection(db, kol));
-        
+
         snapshot.forEach(docSnap => {
           const data = docSnap.data();
-          
+
           const dbKullanici = String(data.kullaniciAdi || data.kullanici_adi || data.tc || data.adSoyad || "").trim();
           const dbSifre = String(data.sifre || data.password || "").trim();
 
@@ -167,10 +493,10 @@
         alert("Kullanıcı adı veya şifre hatalı!");
       }
 
-    } catch (err) { 
-      alert("Giriş Hatası: " + err.message); 
-    } finally { 
-      btn.disabled = false; btn.innerText = "Giriş Yap"; 
+    } catch (err) {
+      alert("Giriş Hatası: " + err.message);
+    } finally {
+      btn.disabled = false; btn.innerText = "Giriş Yap";
     }
   });
 
@@ -178,7 +504,14 @@
     document.getElementById("girisAlani").style.display = "none";
     document.getElementById("panelAlani").style.display = "block";
     document.getElementById("cikisBtn").style.display = "inline-block";
-    document.getElementById("ogrenciIsmi").innerText = "Hoş geldin, " + escapeHtml(aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad);
+    document.getElementById("ogrenciIsmi").innerText = "Hoş geldin, " + (aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad || "");
+
+    const ogrenciSinif = normalizeSinif(aktifOgrenci.sinif || aktifOgrenci.sinifi || aktifOgrenci.className || "");
+    if (ogrenciSinif) {
+      const sinifSelect = document.getElementById("eokulSinif");
+      const varMi = Array.from(sinifSelect.options).some(o => o.value === ogrenciSinif);
+      if (varMi) sinifSelect.value = ogrenciSinif;
+    }
 
     canliVerileriBaslat();
   }
@@ -189,6 +522,23 @@
   });
 
   function canliVerileriBaslat() {
+    // 0. E-Okul Notlarını Dinle
+    const qEokul = query(collection(db, "eokul_notlari"), where("ogrenciId", "==", aktifOgrenci.id));
+    onSnapshot(qEokul, (snapshot) => {
+      mevcutKayitliNotlar = [];
+      snapshot.forEach(docSnap => {
+        mevcutKayitliNotlar.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      mevcutKayitliNotlar.sort((a, b) => (b.guncellenmeMs || 0) - (a.guncellenmeMs || 0));
+      kayitliEokulListesiniCiz();
+
+      const aktifDonem = document.getElementById("eokulDonem").value;
+      const eslesenDonemKaydi = mevcutKayitliNotlar.find(k => k.donem === aktifDonem) || mevcutKayitliNotlar[0];
+      if (eslesenDonemKaydi) {
+        mevcutNotlariFormaDoldur(eslesenDonemKaydi);
+      }
+    });
+
     // 1. Online Testleri Dinle
     onSnapshot(collection(db, "testler"), (snapshot) => {
       tumTestlerCache = [];
@@ -275,14 +625,14 @@
 
     tumTestlerCache.forEach(t => {
       const testId = t.id;
-      constHerkese = t.hedefTuru === "hepsi";
-      const Sinifa = t.hedefTuru === "sinif" && t.hedefSinif === aktifOgrenci.sinif;
-      const Kisiye = t.hedefTuru === "ogrenci" && t.hedefOgrenciId === aktifOgrenci.id;
+      const herkese = t.hedefTuru === "hepsi";
+      const sinifa = t.hedefTuru === "sinif" && t.hedefSinif === aktifOgrenci.sinif;
+      const kisiye = t.hedefTuru === "ogrenci" && t.hedefOgrenciId === aktifOgrenci.id;
 
-      if (constHerkese || Sinifa || Kisiye) {
+      if (herkese || sinifa || kisiye) {
         testVar = true;
         const zatenCozuldu = cozulenTestIds.includes(testId) || cozulenTestIds.includes(t.baslik);
-        
+
         const elem = document.createElement("div");
         elem.className = "test-kart";
 
@@ -321,7 +671,7 @@
     document.getElementById("aktifTestBaslik").innerText = testData.baslik;
     const container = document.getElementById("sorularContainer");
     container.innerHTML = "";
-    
+
     document.getElementById("sinavFormu").style.display = "block";
     document.getElementById("sonucKutusu").style.display = "none";
 
@@ -348,8 +698,8 @@
 
     try {
       const qCheck = query(
-        collection(db, "test_sonuclari"), 
-        where("ogrenciId", "==", aktifOgrenci.id), 
+        collection(db, "test_sonuclari"),
+        where("ogrenciId", "==", aktifOgrenci.id),
         where("testId", "==", seciliTestDocId)
       );
       const checkSnap = await getDocs(qCheck);
