@@ -10,7 +10,7 @@
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
     body { background:#2f2f2f; color:white; padding:20px; min-height:100vh; }
     
-    header { background:#1f1f1f; padding:20px; border-bottom:3px solid #ff7a00; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; }
+    header { background:#1f1f1f; padding:20px; border-bottom:3px solid #ff7a00; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
     header h1 { color:#ff7a00; font-size:24px; }
     header a, .cikis-btn { color:white; text-decoration:none; background:#ff7a00; padding:8px 15px; border-radius:8px; font-weight:bold; border:none; cursor:pointer; font-size:14px; display:inline-flex; align-items:center; gap:8px; }
 
@@ -57,6 +57,21 @@
     .rapor-tablo { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
     .rapor-tablo th, .rapor-tablo td { border: 1px solid #444; padding: 10px; text-align: left; }
     .rapor-tablo th { background: #1f1f1f; color: #ff7a00; }
+
+    /* E-OKUL NOT GÖRÜNTÜLEME ALANI */
+    .eokul-ogretmen-kutu { grid-column: 1 / -1; background:#383838; padding:25px; border-radius:15px; border-top:4px solid #ff7a00; }
+    .eokul-filtre-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; background:#252525; padding:15px; border-radius:10px; margin-bottom:15px; }
+    .eokul-filtre-grid label { display:block; font-size:12px; color:#ccc; margin-bottom:5px; }
+    .eokul-filtre-grid input, .eokul-filtre-grid select { margin-bottom:0; }
+    .eokul-ogr-satir { cursor:pointer; transition:background 0.2s; }
+    .eokul-ogr-satir:hover { background:#2b2b2b; }
+    .eokul-ogr-satir.secili { background:#3d2b1c; }
+    .eokul-detay-panel { display:none; margin-top:18px; background:#222222; border:1px solid #ff7a00; border-radius:10px; padding:18px; }
+    .eokul-detay-panel.active { display:block; }
+    .not-gor-btn { width:auto; margin:0; padding:6px 12px; font-size:12px; background:#007aff; color:white; border-radius:6px; }
+    .not-gor-btn:hover { background:#005fc4; color:white; }
+    .kapat-btn { width:auto; margin:0; padding:6px 12px; font-size:12px; background:#ff3333; color:white; border-radius:6px; }
+    .kapat-btn:hover { background:#cc0000; color:white; }
   </style>
 </head>
 <body>
@@ -189,6 +204,82 @@
     </div>
   </div>
 
+  <!-- TAM GENİŞLİK BÖLÜM: ÖĞRENCİ E-OKUL NOTLARI (SINIF BAZLI) -->
+  <div class="eokul-ogretmen-kutu" id="eokulOgretmenBolumu">
+    <h2><i class="fa-solid fa-graduation-cap"></i> Öğrenci E-Okul Notları (Sınıf Bazlı)</h2>
+
+    <div class="eokul-filtre-grid">
+      <div>
+        <label for="ogrEokulSinifSec">Sınıf Seçin:</label>
+        <select id="ogrEokulSinifSec">
+          <option value="TUMU">Tüm Sınıflar</option>
+          <option value="1. Sınıf">1. Sınıf</option>
+          <option value="2. Sınıf">2. Sınıf</option>
+          <option value="3. Sınıf">3. Sınıf</option>
+          <option value="4. Sınıf Proje OKULLARI">4. Sınıf Proje OKULLARI</option>
+          <option value="5. Sınıf">5. Sınıf</option>
+          <option value="6. Sınıf">6. Sınıf</option>
+          <option value="7. Sınıf">7. Sınıf</option>
+          <option value="8. Sınıf LGS">8. Sınıf LGS</option>
+        </select>
+      </div>
+      <div>
+        <label for="ogrEokulDonemSec">Dönem Seçin:</label>
+        <select id="ogrEokulDonemSec">
+          <option value="TUMU">Tüm Dönemler</option>
+          <option value="1. Dönem">1. Dönem</option>
+          <option value="2. Dönem">2. Dönem</option>
+        </select>
+      </div>
+      <div>
+        <label for="ogrEokulArama">Öğrenci Adı ile Ara:</label>
+        <input type="text" id="ogrEokulArama" placeholder="Öğrenci adı yazın...">
+      </div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="rapor-tablo" style="margin-top:0;">
+        <thead>
+          <tr>
+            <th>Sınıf</th>
+            <th>Öğrenci Ad Soyad</th>
+            <th>Dönem</th>
+            <th>Güncelleme</th>
+            <th>Detay</th>
+          </tr>
+        </thead>
+        <tbody id="ogrEokulListeBody">
+          <tr><td colspan="5" style="text-align:center; color:#aaa;">E-Okul notları yükleniyor...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="ogrEokulDetayPanel" class="eokul-detay-panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+        <div>
+          <h3 id="ogrEokulDetayBaslik" style="color:#ff7a00; font-size:16px;"></h3>
+          <small id="ogrEokulDetayAlt" style="color:#aaa;"></small>
+        </div>
+        <button type="button" class="kapat-btn" id="ogrEokulDetayKapatBtn"><i class="fa-solid fa-xmark"></i> Kapat</button>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="rapor-tablo" style="margin-top:0;">
+          <thead>
+            <tr>
+              <th>Ders</th>
+              <th style="text-align:center;">1. Yazılı</th>
+              <th style="text-align:center;">2. Yazılı</th>
+              <th style="text-align:center;">Performans</th>
+              <th style="text-align:center;">Ortalama</th>
+            </tr>
+          </thead>
+          <tbody id="ogrEokulDetayTabloBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- FIREBASE UYGULAMASI -->
@@ -205,20 +296,201 @@
     measurementId: "G-P80RPZCSE7"
   };
 
+  const EOKUL_DERSLERI = [
+    { key: "turkce", ad: "Türkçe" },
+    { key: "matematik", ad: "Matematik" },
+    { key: "fen_bilimleri", ad: "Fen Bilimleri" },
+    { key: "sosyal_bilgiler", ad: "Sosyal Bilgiler (T.C. İnkılap Tarihi ve Atatürkçülük)" },
+    { key: "ingilizce", ad: "Yabancı Dil (İngilizce)" },
+    { key: "din_kulturu", ad: "Din Kültürü ve Ahlak Bilgisi" },
+    { key: "bilisim", ad: "Bilişim Teknolojileri ve Yazılım" }
+  ];
+
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   let aktifOgretmen = null;
+  let eokulKayitlari = {};
+  let ogrenciKayitlari = {};
+  let seciliEokulKayitId = null;
 
   function escapeHtml(text) {
-    if (!text) return "";
+    if (text === null || text === undefined) return "";
     return String(text)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(/&/g, "&")
+      .replace(/</g, "<")
+      .replace(/>/g, ">")
+      .replace(/"/g, """)
+      .replace(/'/g, "'");
   }
+
+  function sinifEslesirMi(seciliSinif, kayitSinif) {
+    if (!seciliSinif || seciliSinif === "TUMU") return true;
+    const a = String(seciliSinif || "").trim().toLocaleLowerCase("tr-TR");
+    const b = String(kayitSinif || "").trim().toLocaleLowerCase("tr-TR");
+    if (a === b) return true;
+    const rakamA = a.match(/^([1-8])(\.|\s|$)/);
+    const rakamB = b.match(/^([1-8])(\.|\s|$)/);
+    if (rakamA && rakamB && rakamA[1] === rakamB[1]) return true;
+    return false;
+  }
+
+  function ogretmenEokulListesiniCiz() {
+    const tbody = document.getElementById("ogrEokulListeBody");
+    if (!tbody) return;
+
+    const seciliSinif = document.getElementById("ogrEokulSinifSec")?.value || "TUMU";
+    const seciliDonem = document.getElementById("ogrEokulDonemSec")?.value || "TUMU";
+    const arama = (document.getElementById("ogrEokulArama")?.value || "").toLowerCase().trim();
+
+    const liste = Object.keys(eokulKayitlari)
+      .map(id => ({ id, ...eokulKayitlari[id] }))
+      .filter(item => {
+        const ogr = item.ogrenciId && ogrenciKayitlari[item.ogrenciId] ? ogrenciKayitlari[item.ogrenciId] : null;
+        const sinifAdi = item.sinif || (ogr ? ogr.sinif : "") || "-";
+        const ogrenciAdi = item.ogrenciAd || (ogr ? ogr.adSoyad : "") || "İsimsiz Öğrenci";
+        const donemAdi = item.donem || "-";
+
+        const sinifOk = sinifEslesirMi(seciliSinif, sinifAdi);
+        const donemOk = (seciliDonem === "TUMU") || (donemAdi === seciliDonem);
+        const aramaOk = !arama || ogrenciAdi.toLowerCase().includes(arama) || sinifAdi.toLowerCase().includes(arama);
+
+        return sinifOk && donemOk && aramaOk;
+      })
+      .sort((a, b) => (b.guncellenmeMs || 0) - (a.guncellenmeMs || 0));
+
+    tbody.innerHTML = "";
+    if (!liste.length) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#aaa;">Seçili sınıfa/döneme ait E-Okul not kaydı bulunamadı.</td></tr>`;
+      return;
+    }
+
+    liste.forEach(item => {
+      const ogr = item.ogrenciId && ogrenciKayitlari[item.ogrenciId] ? ogrenciKayitlari[item.ogrenciId] : null;
+      const sinifAdi = item.sinif || (ogr ? ogr.sinif : "") || "-";
+      const ogrenciAdi = item.ogrenciAd || (ogr ? ogr.adSoyad : "") || "İsimsiz Öğrenci";
+      const aktif = seciliEokulKayitId === item.id;
+
+      const tr = document.createElement("tr");
+      tr.className = "eokul-ogr-satir" + (aktif ? " secili" : "");
+      tr.innerHTML = `
+        <td><strong style="color:#ff7a00;">${escapeHtml(sinifAdi)}</strong></td>
+        <td><strong>${escapeHtml(ogrenciAdi)}</strong></td>
+        <td>${escapeHtml(item.donem || "-")}</td>
+        <td>${escapeHtml(item.guncellenmeTarihi || "-")}</td>
+        <td><button type="button" class="not-gor-btn"><i class="fa-solid fa-eye"></i> Notları Gör</button></td>
+      `;
+
+      tr.addEventListener("click", () => ogretmenEokulDetayAc(item.id));
+      tr.querySelector(".not-gor-btn").addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        ogretmenEokulDetayAc(item.id);
+      });
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function ogretmenEokulDetayAc(id) {
+    const kayit = eokulKayitlari[id];
+    if (!kayit) return;
+    seciliEokulKayitId = id;
+    ogretmenEokulListesiniCiz();
+
+    const ogr = kayit.ogrenciId && ogrenciKayitlari[kayit.ogrenciId] ? ogrenciKayitlari[kayit.ogrenciId] : null;
+    const sinifAdi = kayit.sinif || (ogr ? ogr.sinif : "") || "-";
+    const ogrenciAdi = kayit.ogrenciAd || (ogr ? ogr.adSoyad : "") || "İsimsiz Öğrenci";
+
+    document.getElementById("ogrEokulDetayBaslik").innerText = `${ogrenciAdi} (${sinifAdi}) - E-Okul Ders Notları`;
+    document.getElementById("ogrEokulDetayAlt").innerText =
+      `Dönem: ${kayit.donem || "-"}${kayit.aciklama ? " | Açıklama: " + kayit.aciklama : ""} | Güncelleme: ${kayit.guncellenmeTarihi || "-"}`;
+
+    const detayBody = document.getElementById("ogrEokulDetayTabloBody");
+    detayBody.innerHTML = "";
+    const dersNotlari = kayit.dersNotlari || {};
+
+    EOKUL_DERSLERI.forEach(ders => {
+      const d = dersNotlari[ders.key] || {};
+      const y1 = (d.yazili1 !== null && d.yazili1 !== undefined) ? d.yazili1 : "-";
+      const y2 = (d.yazili2 !== null && d.yazili2 !== undefined) ? d.yazili2 : "-";
+      const pf = (d.performans !== null && d.performans !== undefined) ? d.performans : "-";
+      let ort = (d.ortalama !== null && d.ortalama !== undefined) ? Number(d.ortalama).toFixed(2) : null;
+
+      if (ort === null) {
+        const sayilar = [y1, y2, pf].map(v => parseFloat(v)).filter(v => !isNaN(v));
+        ort = sayilar.length ? (sayilar.reduce((a, b) => a + b, 0) / sayilar.length).toFixed(2) : "-";
+      }
+
+      detayBody.innerHTML += `
+        <tr>
+          <td><strong style="color:#fff;">${escapeHtml(ders.ad)}</strong></td>
+          <td style="text-align:center;">${escapeHtml(y1)}</td>
+          <td style="text-align:center;">${escapeHtml(y2)}</td>
+          <td style="text-align:center;">${escapeHtml(pf)}</td>
+          <td style="text-align:center; color:#ff7a00; font-weight:bold;">${escapeHtml(ort)}</td>
+        </tr>
+      `;
+    });
+
+    const panel = document.getElementById("ogrEokulDetayPanel");
+    panel.classList.add("active");
+    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function ogretmenEokulNotlariniIzle() {
+    onSnapshot(collection(db, "kullanicilar"), (snap) => {
+      ogrenciKayitlari = {};
+      snap.forEach(docSnap => {
+        const u = docSnap.data();
+        if (u.rol === "ogrenci") ogrenciKayitlari[docSnap.id] = u;
+      });
+      ogretmenEokulListesiniCiz();
+      if (seciliEokulKayitId && eokulKayitlari[seciliEokulKayitId]) {
+        ogretmenEokulDetayAc(seciliEokulKayitId);
+      }
+    });
+
+    onSnapshot(collection(db, "siniflar"), (snap) => {
+      const sinifSec = document.getElementById("ogrEokulSinifSec");
+      if (!sinifSec) return;
+      const onceki = sinifSec.value || "TUMU";
+      const varsayilanlar = [
+        "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf Proje OKULLARI",
+        "5. Sınıf", "6. Sınıf", "7. Sınıf", "8. Sınıf LGS"
+      ];
+      const ekstra = [];
+      snap.forEach(docSnap => {
+        const ad = (docSnap.data().ad || "").trim();
+        if (ad && !varsayilanlar.includes(ad) && !ekstra.includes(ad)) ekstra.push(ad);
+      });
+      let html = '<option value="TUMU">Tüm Sınıflar</option>';
+      [...varsayilanlar, ...ekstra].forEach(s => {
+        html += `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`;
+      });
+      sinifSec.innerHTML = html;
+      sinifSec.value = onceki;
+    });
+
+    onSnapshot(collection(db, "eokul_notlari"), (snap) => {
+      eokulKayitlari = {};
+      snap.forEach(docSnap => {
+        eokulKayitlari[docSnap.id] = docSnap.data();
+      });
+      ogretmenEokulListesiniCiz();
+      if (seciliEokulKayitId && eokulKayitlari[seciliEokulKayitId]) {
+        ogretmenEokulDetayAc(seciliEokulKayitId);
+      }
+    });
+  }
+
+  document.getElementById("ogrEokulSinifSec").addEventListener("change", ogretmenEokulListesiniCiz);
+  document.getElementById("ogrEokulDonemSec").addEventListener("change", ogretmenEokulListesiniCiz);
+  document.getElementById("ogrEokulArama").addEventListener("input", ogretmenEokulListesiniCiz);
+  document.getElementById("ogrEokulDetayKapatBtn").addEventListener("click", () => {
+    seciliEokulKayitId = null;
+    document.getElementById("ogrEokulDetayPanel").classList.remove("active");
+    ogretmenEokulListesiniCiz();
+  });
 
   function soruInputlariniOlustur() {
     const container = document.getElementById("soruBuilderAlani");
@@ -321,6 +593,7 @@
     ogrencileriYukle();
     paylasimlariCanliIzle();
     raporlariCanliIzle();
+    ogretmenEokulNotlariniIzle();
   }
 
   function cikisYap() {
