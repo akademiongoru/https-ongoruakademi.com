@@ -413,6 +413,40 @@
       font-size: 14px;
     }
 
+    /* E-OKUL NOT GÖRÜNTÜLEME STİLLERİ */
+    .eokul-filtre-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      margin-bottom: 15px;
+    }
+
+    .eokul-not-detay-kutu {
+      display: none;
+      margin-top: 20px;
+      background: #181818;
+      border: 1px solid var(--orange);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .eokul-not-detay-kutu.active {
+      display: block;
+    }
+
+    .eokul-ogr-satir:hover {
+      background: #232323;
+      cursor: pointer;
+    }
+
+    .eokul-ogr-satir.secili {
+      background: #2f2216;
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -531,6 +565,76 @@
     </div>
 
     <div class="admin-container">
+
+      <!-- ÖĞRENCİ E-OKUL NOTLARI (SINIF BAZLI GÖRÜNTÜLEME) -->
+      <div class="admin-card" id="eokulNotlariAdminCard">
+        <h2><i class="fa-solid fa-graduation-cap"></i> Öğrenci E-Okul Notları (Sınıf Bazlı)</h2>
+
+        <div class="eokul-filtre-bar">
+          <div class="form-group">
+            <label for="eokulAdminSinifSecimi">Sınıf Seçin:</label>
+            <select id="eokulAdminSinifSecimi" onchange="eokulNotListesiniRenderEt()">
+              <option value="TUMU">Tüm Sınıflar</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="eokulAdminDonemSecimi">Dönem Seçin:</label>
+            <select id="eokulAdminDonemSecimi" onchange="eokulNotListesiniRenderEt()">
+              <option value="TUMU">Tüm Dönemler</option>
+              <option value="1. Dönem">1. Dönem</option>
+              <option value="2. Dönem">2. Dönem</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="eokulAdminAramaInput">Öğrenci Adı ile Ara:</label>
+            <input type="text" id="eokulAdminAramaInput" placeholder="Öğrenci adı yazın..." oninput="eokulNotListesiniRenderEt()">
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Sınıf</th>
+                <th>Öğrenci Ad Soyad</th>
+                <th>Dönem</th>
+                <th>Son Güncelleme</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="eokulOgrenciListesiBody">
+              <tr><td colspan="5" style="text-align:center; color:#888;">E-Okul not kayıtları yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="eokulNotDetayKutu" class="eokul-not-detay-kutu">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div>
+              <h3 id="eokulDetayBaslik" style="color:var(--orange); font-size:16px;"></h3>
+              <small id="eokulDetayAltBilgi" style="color:#aaa;"></small>
+            </div>
+            <button type="button" class="btn-nav btn-danger" style="padding:6px 12px; font-size:12px;" onclick="eokulDetayKapat()">
+              <i class="fa-solid fa-xmark"></i> Kapat
+            </button>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="custom-table" style="margin-top:0;">
+              <thead>
+                <tr>
+                  <th>Ders</th>
+                  <th style="text-align:center;">1. Yazılı</th>
+                  <th style="text-align:center;">2. Yazılı</th>
+                  <th style="text-align:center;">Performans</th>
+                  <th style="text-align:center;">Ortalama</th>
+                </tr>
+              </thead>
+              <tbody id="eokulDetayDersTablosu"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
       <!-- ÖĞRENCİ SÖZLEŞME VE KAYIT MODÜLÜ -->
       <div class="admin-card">
@@ -973,6 +1077,16 @@
     window.doc = doc;
     window.onSnapshot = onSnapshot;
 
+    const EOKUL_DERSLER = [
+      { key: "turkce", ad: "Türkçe" },
+      { key: "matematik", ad: "Matematik" },
+      { key: "fen_bilimleri", ad: "Fen Bilimleri" },
+      { key: "sosyal_bilgiler", ad: "Sosyal Bilgiler (T.C. İnkılap Tarihi ve Atatürkçülük)" },
+      { key: "ingilizce", ad: "Yabancı Dil (İngilizce)" },
+      { key: "din_kulturu", ad: "Din Kültürü ve Ahlak Bilgisi" },
+      { key: "bilisim", ad: "Bilişim Teknolojileri ve Yazılım" }
+    ];
+
     const sabitSiniflar = [
       { id: "s1", ad: "1. Sınıf", isStatic: true },
       { id: "s2", ad: "2. Sınıf", isStatic: true },
@@ -987,7 +1101,138 @@
     let dinamikSiniflar = [];
     let kullaniciVerileri = {};
     let sozlesmeVerileri = {};
+    let eokulNotKayitlari = {};
+    let seciliEokulKayitId = null;
     const YONETICI_SIFRESI = "Ongoru34+";
+
+    function sinifKarsilastir(secilenSinif, kayitSinif) {
+      if (!secilenSinif || secilenSinif === "TUMU") return true;
+      const a = String(secilenSinif || "").trim().toLocaleLowerCase("tr-TR");
+      const b = String(kayitSinif || "").trim().toLocaleLowerCase("tr-TR");
+      if (a === b) return true;
+      const rakamA = a.match(/^([1-8])(\.|\s|$)/);
+      const rakamB = b.match(/^([1-8])(\.|\s|$)/);
+      if (rakamA && rakamB && rakamA[1] === rakamB[1]) return true;
+      return false;
+    }
+
+    function eokulSinifSecenekleriniGuncelle(tumSiniflar) {
+      const sel = document.getElementById("eokulAdminSinifSecimi");
+      if (!sel) return;
+      const onceki = sel.value || "TUMU";
+      let html = '<option value="TUMU">Tüm Sınıflar</option>';
+      tumSiniflar.forEach(s => {
+        html += `<option value="${s.ad}">${s.ad}</option>`;
+      });
+      sel.innerHTML = html;
+      sel.value = onceki;
+    }
+
+    window.eokulNotListesiniRenderEt = function() {
+      const tbody = document.getElementById("eokulOgrenciListesiBody");
+      if (!tbody) return;
+
+      const seciliSinif = document.getElementById("eokulAdminSinifSecimi")?.value || "TUMU";
+      const seciliDonem = document.getElementById("eokulAdminDonemSecimi")?.value || "TUMU";
+      const arama = (document.getElementById("eokulAdminAramaInput")?.value || "").toLowerCase().trim();
+
+      const liste = Object.keys(eokulNotKayitlari)
+        .map(id => ({ id, ...eokulNotKayitlari[id] }))
+        .filter(item => {
+          const ogrenciKaydi = item.ogrenciId && kullaniciVerileri[item.ogrenciId] ? kullaniciVerileri[item.ogrenciId] : null;
+          const sinifEtiketi = item.sinif || (ogrenciKaydi ? ogrenciKaydi.sinif : "") || "-";
+          const ogrenciAdi = item.ogrenciAd || (ogrenciKaydi ? ogrenciKaydi.adSoyad : "") || "İsimsiz Öğrenci";
+          const donemEtiketi = item.donem || "-";
+
+          const sinifUyuyor = sinifKarsilastir(seciliSinif, sinifEtiketi);
+          const donemUyuyor = (seciliDonem === "TUMU") || (donemEtiketi === seciliDonem);
+          const aramaUyuyor = !arama || ogrenciAdi.toLowerCase().includes(arama) || sinifEtiketi.toLowerCase().includes(arama);
+
+          return sinifUyuyor && donemUyuyor && aramaUyuyor;
+        })
+        .sort((a, b) => (b.guncellenmeMs || 0) - (a.guncellenmeMs || 0));
+
+      tbody.innerHTML = "";
+      if (!liste.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">Seçili kriterlere uygun E-Okul not kaydı bulunamadı.</td></tr>`;
+        return;
+      }
+
+      liste.forEach(item => {
+        const ogrenciKaydi = item.ogrenciId && kullaniciVerileri[item.ogrenciId] ? kullaniciVerileri[item.ogrenciId] : null;
+        const sinifEtiketi = item.sinif || (ogrenciKaydi ? ogrenciKaydi.sinif : "") || "-";
+        const ogrenciAdi = item.ogrenciAd || (ogrenciKaydi ? ogrenciKaydi.adSoyad : "") || "İsimsiz Öğrenci";
+        const aktifMi = seciliEokulKayitId === item.id;
+
+        const tr = document.createElement("tr");
+        tr.className = "eokul-ogr-satir" + (aktifMi ? " secili" : "");
+        tr.onclick = () => eokulNotDetayGoster(item.id);
+        tr.innerHTML = `
+          <td><strong style="color:var(--orange);">${sinifEtiketi}</strong></td>
+          <td><strong>${ogrenciAdi}</strong></td>
+          <td>${item.donem || "-"}</td>
+          <td>${item.guncellenmeTarihi || "-"}</td>
+          <td>
+            <button type="button" class="btn-edit" onclick="event.stopPropagation(); eokulNotDetayGoster('${item.id}')">
+              <i class="fa-solid fa-eye"></i> Notları Gör
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    };
+
+    window.eokulNotDetayGoster = function(id) {
+      const kayit = eokulNotKayitlari[id];
+      if (!kayit) return;
+      seciliEokulKayitId = id;
+      eokulNotListesiniRenderEt();
+
+      const ogrenciKaydi = kayit.ogrenciId && kullaniciVerileri[kayit.ogrenciId] ? kullaniciVerileri[kayit.ogrenciId] : null;
+      const ogrenciAdi = kayit.ogrenciAd || (ogrenciKaydi ? ogrenciKaydi.adSoyad : "") || "İsimsiz Öğrenci";
+      const sinifEtiketi = kayit.sinif || (ogrenciKaydi ? ogrenciKaydi.sinif : "") || "-";
+
+      document.getElementById("eokulDetayBaslik").innerText = `${ogrenciAdi} (${sinifEtiketi}) - E-Okul Ders Notları`;
+      document.getElementById("eokulDetayAltBilgi").innerText =
+        `Dönem: ${kayit.donem || "-"}${kayit.aciklama ? " | Açıklama: " + kayit.aciklama : ""} | Güncelleme: ${kayit.guncellenmeTarihi || "-"}`;
+
+      const dersTablosu = document.getElementById("eokulDetayDersTablosu");
+      dersTablosu.innerHTML = "";
+      const notlarMap = kayit.dersNotlari || {};
+
+      EOKUL_DERSLER.forEach(ders => {
+        const d = notlarMap[ders.key] || {};
+        const y1 = (d.yazili1 !== null && d.yazili1 !== undefined) ? d.yazili1 : "-";
+        const y2 = (d.yazili2 !== null && d.yazili2 !== undefined) ? d.yazili2 : "-";
+        const pf = (d.performans !== null && d.performans !== undefined) ? d.performans : "-";
+        let ort = (d.ortalama !== null && d.ortalama !== undefined) ? Number(d.ortalama).toFixed(2) : null;
+
+        if (ort === null) {
+          const sayilar = [y1, y2, pf].map(v => parseFloat(v)).filter(v => !isNaN(v));
+          ort = sayilar.length ? (sayilar.reduce((a, b) => a + b, 0) / sayilar.length).toFixed(2) : "-";
+        }
+
+        dersTablosu.innerHTML += `
+          <tr>
+            <td><strong style="color:#fff;">${ders.ad}</strong></td>
+            <td style="text-align:center;">${y1}</td>
+            <td style="text-align:center;">${y2}</td>
+            <td style="text-align:center;">${pf}</td>
+            <td style="text-align:center; color:var(--orange); font-weight:700;">${ort}</td>
+          </tr>
+        `;
+      });
+
+      const detayKutu = document.getElementById("eokulNotDetayKutu");
+      detayKutu.classList.add("active");
+      detayKutu.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+
+    window.eokulDetayKapat = function() {
+      seciliEokulKayitId = null;
+      document.getElementById("eokulNotDetayKutu").classList.remove("active");
+      eokulNotListesiniRenderEt();
+    };
 
     document.getElementById('sifreToggle').addEventListener('click', function() {
       const input = document.getElementById('sifreInput');
@@ -1459,6 +1704,8 @@
 
       dpSelect.value = dpSecilen;
       ogrenciSelect.value = ogrSecilen;
+
+      eokulSinifSecenekleriniGuncelle(tumSiniflar);
     }
 
     /* DENEME SINAVI VERİ İŞLEMLERİ */
@@ -1658,6 +1905,17 @@
     };
 
     function canliDinleyiciler() {
+      onSnapshot(collection(db, "eokul_notlari"), (snapshot) => {
+        eokulNotKayitlari = {};
+        snapshot.forEach(docSnap => {
+          eokulNotKayitlari[docSnap.id] = docSnap.data();
+        });
+        eokulNotListesiniRenderEt();
+        if (seciliEokulKayitId && eokulNotKayitlari[seciliEokulKayitId]) {
+          eokulNotDetayGoster(seciliEokulKayitId);
+        }
+      });
+
       onSnapshot(collection(db, "siniflar"), (snapshot) => {
         dinamikSiniflar = [];
         snapshot.forEach(docSnap => {
@@ -1732,6 +1990,7 @@
         });
 
         kullaniciListele();
+        eokulNotListesiniRenderEt();
       });
 
       // Kurumsal Deneme Sonuçlarını Yönetici Paneline Canlı Yansıt
