@@ -30,7 +30,7 @@
     .eokul-ust select, .eokul-ust input { margin-bottom:0; }
 
     .not-tablo-wrap { overflow-x:auto; background:#252525; border-radius:10px; padding:10px; }
-    table.not-tablo { width:100%; border-collapse:collapse; min-width:620px; }
+    table.not-tablo { width:100%; border-collapse:collapse; min-width:640px; }
     table.not-tablo th, table.not-tablo td { border-bottom:1px solid #3a3a3a; padding:10px 8px; text-align:left; font-size:13px; }
     table.not-tablo th { color:#ff7a00; font-weight:700; background:#1f1f1f; }
     table.not-tablo tr:last-child td { border-bottom:none; }
@@ -84,7 +84,7 @@
   <div class="kutu" id="eokulNotKutusu">
     <h2><i class="fa-solid fa-graduation-cap"></i> E-Okul Not Girişim</h2>
     <p style="font-size:13px; color:#ccc; margin-bottom:14px;">
-      E-Okul'daki ders notlarını buradan girebilir veya güncelleyebilirsin. Kaydettiğin notlar yönetici panelinde sınıf bazlı olarak görünür.
+      E-Okul ders notlarını buradan girebilir veya güncelleyebilirsin. Kaydettiğin notlar yönetici panelinde sınıfına göre listelenir.
     </p>
 
     <form id="eokulNotForm">
@@ -112,8 +112,8 @@
           </select>
         </div>
         <div>
-          <label for="eokulAciklama">Not / Dönem Bilgisi (Opsiyonel)</label>
-          <input type="text" id="eokulAciklama" placeholder="Örn: Kasım 2026 Yazılıları">
+          <label for="eokulAciklama">Not / Dönem Açıklaması (Opsiyonel)</label>
+          <input type="text" id="eokulAciklama" placeholder="Örn: 1. Yazılı Haftası">
         </div>
       </div>
 
@@ -124,7 +124,7 @@
               <th>Ders Adı</th>
               <th style="width:110px; text-align:center;">1. Yazılı</th>
               <th style="width:110px; text-align:center;">2. Yazılı</th>
-              <th style="width:120px; text-align:center;">Performans / Sözlü</th>
+              <th style="width:120px; text-align:center;">Performans</th>
               <th style="width:100px; text-align:center;">Ortalama</th>
             </tr>
           </thead>
@@ -205,7 +205,7 @@
 
   function escapeHtml(text) {
     if (text === null || text === undefined) return "";
-    return String(text).replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'");
+    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
   function normalizeSinif(sinifDegeri) {
@@ -504,7 +504,7 @@
     document.getElementById("girisAlani").style.display = "none";
     document.getElementById("panelAlani").style.display = "block";
     document.getElementById("cikisBtn").style.display = "inline-block";
-    document.getElementById("ogrenciIsmi").innerText = "Hoş geldin, " + (aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad || "");
+    document.getElementById("ogrenciIsmi").innerText = "Hoş geldin, " + escapeHtml(aktifOgrenci.adSoyad || aktifOgrenci.kullaniciAdi || aktifOgrenci.ad || "");
 
     const ogrenciSinif = normalizeSinif(aktifOgrenci.sinif || aktifOgrenci.sinifi || aktifOgrenci.className || "");
     if (ogrenciSinif) {
