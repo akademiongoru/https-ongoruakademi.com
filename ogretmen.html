@@ -324,10 +324,14 @@
       .replace(/'/g, "'");
   }
 
+  function normalizeTr(val) {
+    return String(val || "").trim().toLocaleLowerCase("tr-TR");
+  }
+
   function sinifEslesirMi(seciliSinif, kayitSinif) {
     if (!seciliSinif || seciliSinif === "TUMU") return true;
-    const a = String(seciliSinif || "").trim().toLocaleLowerCase("tr-TR");
-    const b = String(kayitSinif || "").trim().toLocaleLowerCase("tr-TR");
+    const a = normalizeTr(seciliSinif);
+    const b = normalizeTr(kayitSinif);
     if (a === b) return true;
     const rakamA = a.match(/^([1-8])(\.|\s|$)/);
     const rakamB = b.match(/^([1-8])(\.|\s|$)/);
@@ -341,7 +345,7 @@
 
     const seciliSinif = document.getElementById("ogrEokulSinifSec")?.value || "TUMU";
     const seciliDonem = document.getElementById("ogrEokulDonemSec")?.value || "TUMU";
-    const arama = (document.getElementById("ogrEokulArama")?.value || "").toLowerCase().trim();
+    const arama = normalizeTr(document.getElementById("ogrEokulArama")?.value || "");
 
     const liste = Object.keys(eokulKayitlari)
       .map(id => ({ id, ...eokulKayitlari[id] }))
@@ -353,7 +357,7 @@
 
         const sinifOk = sinifEslesirMi(seciliSinif, sinifAdi);
         const donemOk = (seciliDonem === "TUMU") || (donemAdi === seciliDonem);
-        const aramaOk = !arama || ogrenciAdi.toLowerCase().includes(arama) || sinifAdi.toLowerCase().includes(arama);
+        const aramaOk = !arama || normalizeTr(ogrenciAdi).includes(arama) || normalizeTr(sinifAdi).includes(arama);
 
         return sinifOk && donemOk && aramaOk;
       })
@@ -552,8 +556,8 @@
     if (kayitli) {
       try {
         aktifOgretmen = JSON.parse(kayitli);
-        if(aktifOgretmen && (aktifOgretmen.id || aktifOgretmen.kullaniciAdi)) paneliAc();
-      } catch(e) { cikisYap(); }
+        if (aktifOgretmen && (aktifOgretmen.id || aktifOgretmen.kullaniciAdi)) paneliAc();
+      } catch (e) { cikisYap(); }
     }
   });
 
@@ -562,15 +566,17 @@
     const gBtn = document.getElementById("girisBtn");
     gBtn.disabled = true; gBtn.innerText = "Giriş Yapılıyor...";
 
-    const kAdi = document.getElementById("kullaniciAdi").value.toLowerCase().trim();
-    const sifre = document.getElementById("sifre").value.trim();
+    const kAdi = normalizeTr(document.getElementById("kullaniciAdi").value);
+    const sifre = String(document.getElementById("sifre").value || "").trim();
 
     try {
       const snap = await getDocs(collection(db, "kullanicilar"));
       let eslesenUser = null;
       snap.forEach(docSnap => {
         const u = docSnap.data();
-        if ((u.kullaniciAdi && u.kullaniciAdi.toLowerCase() === kAdi) && u.sifre === sifre && u.rol === "ogretmen") {
+        const dbKadi = normalizeTr(u.kullaniciAdi);
+        const dbSifre = String(u.sifre || "").trim();
+        if (dbKadi && dbKadi === kAdi && dbSifre === sifre && u.rol === "ogretmen") {
           eslesenUser = { id: docSnap.id, ...u };
         }
       });
@@ -649,7 +655,7 @@
       alert("Test başarıyla hedeflenen öğrenciye/sınıfa gönderildi!");
       document.getElementById("testBasligi").value = "";
       soruInputlariniOlustur();
-    } catch(err) {
+    } catch (err) {
       alert("Hata: " + err.message);
     } finally {
       btn.disabled = false; btn.innerText = "Testi Belirtilen Hedefe Gönder";
@@ -677,7 +683,6 @@
             <td><button class="sil-btn test-sonuc-sil-btn" title="Sonucu Sil"><i class="fa-solid fa-trash"></i> Sil</button></td>
           `;
 
-          // Öğrencinin Test Sonucunu Silme Olayı
           tr.querySelector(".test-sonuc-sil-btn").addEventListener("click", async () => {
             if (confirm(`${r.ogrenciAd} isimli öğrencinin "${r.testBaslik}" test sonucunu silmek istediğinize emin misiniz?`)) {
               try {
@@ -708,7 +713,7 @@
       const snap = await getDocs(collection(db, "kullanicilar"));
       snap.forEach(docSnap => {
         const u = docSnap.data();
-        if(u.rol === "ogrenci") {
+        if (u.rol === "ogrenci") {
           const opt = `<option value="${docSnap.id}">${escapeHtml(u.adSoyad || u.kullaniciAdi)} (${escapeHtml(u.sinif || 'Sınıfsız')})</option>`;
           s1.innerHTML += opt;
           s2.innerHTML += opt;
@@ -763,7 +768,7 @@
   });
 
   function paylasimlariCanliIzle() {
-    if(!aktifOgretmen) return;
+    if (!aktifOgretmen) return;
     const ogretmenId = aktifOgretmen.id || aktifOgretmen.kullaniciAdi;
 
     onSnapshot(collection(db, "paylasimlar"), (snapshot) => {
