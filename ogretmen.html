@@ -301,8 +301,7 @@
   let seciliEokulKayitId = null;
 
 function escapeHtml(text) {
-  if (text === null || text === undefined) return "";
-  return String(text);
+  return text == null ? "" : String(text);
 }
 
   function normalizeTr(val) {
