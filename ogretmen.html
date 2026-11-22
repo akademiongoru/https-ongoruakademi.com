@@ -9,12 +9,11 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
     body { background:#2f2f2f; color:white; padding:20px; min-height:100vh; }
-    
+
     header { background:#1f1f1f; padding:20px; border-bottom:3px solid #ff7a00; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
     header h1 { color:#ff7a00; font-size:24px; }
     header a, .cikis-btn { color:white; text-decoration:none; background:#ff7a00; padding:8px 15px; border-radius:8px; font-weight:bold; border:none; cursor:pointer; font-size:14px; display:inline-flex; align-items:center; gap:8px; }
 
-    /* GİRİŞ EKRANI */
     .giris-kutu { max-width:400px; margin:80px auto; background:#383838; padding:30px; border-radius:15px; border-top:4px solid #ff7a00; text-align:center; }
     .giris-kutu h2 { color:#ff7a00; margin-bottom:20px; }
 
@@ -23,33 +22,29 @@
     button { background:#ff7a00; font-weight:bold; cursor:pointer; transition:.3s; border:none; }
     button:hover { background:white; color:#ff7a00; }
 
-    /* PANEL ALANI */
     .panel { display:none; grid-template-columns: 1fr 1fr; gap:20px; }
     @media(max-width:900px){ .panel { grid-template-columns: 1fr; } }
-    
+
     .kutu { background:#383838; padding:25px; border-radius:15px; border-top:4px solid #ff7a00; }
     .kutu h2 { color:#ff7a00; margin-bottom:15px; font-size:20px; display:flex; align-items:center; gap:10px; }
 
-    /* DOSYA YÜKLEME ALANI */
     .dosya-alani { background: #252525; border: 2px dashed #ff7a00; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 12px; cursor: pointer; transition: 0.3s; }
     .dosya-alani:hover { background: #1f1f1f; }
     .dosya-alani input[type="file"] { display: none; }
     .dosya-alani label { cursor: pointer; color: #ff7a00; font-weight: bold; display: block; }
 
-    /* PAYLAŞIM LİSTESİ VE TABLO */
     .liste { max-height: 700px; overflow-y: auto; margin-top: 15px; }
     .kart { background: #252525; border-left: 4px solid #ff7a00; padding: 15px; border-radius: 8px; margin-bottom: 12px; position: relative; }
     .kart h4 { color: #ff7a00; font-size: 16px; margin-bottom: 5px; }
     .kart p { font-size: 13px; color: #ddd; margin-bottom: 8px; white-space: pre-wrap; }
     .kart-bilgi { font-size: 11px; color: #aaa; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 8px; margin-top: 8px; }
-    
+
     .dosya-indir-btn { display: inline-flex; align-items: center; gap: 6px; background: #ff7a00; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 12px; font-weight: bold; margin-top: 5px; }
     .dosya-indir-btn:hover { background: white; color: #ff7a00; }
 
     .sil-btn { background: #ff3333; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; width: auto; margin:0; }
     .sil-btn:hover { background: #cc0000; color: white; }
 
-    /* SINAV HAZIRLAMA KUTULARI */
     .soru-olustur-kutusu { background: #252525; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #444; }
     .siklar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
     .cevap-anahtari-secim { display: flex; align-items: center; gap: 10px; margin-top: 5px; background: #1f1f1f; padding: 8px; border-radius: 6px; }
@@ -58,7 +53,6 @@
     .rapor-tablo th, .rapor-tablo td { border: 1px solid #444; padding: 10px; text-align: left; }
     .rapor-tablo th { background: #1f1f1f; color: #ff7a00; }
 
-    /* E-OKUL NOT GÖRÜNTÜLEME ALANI */
     .eokul-ogretmen-kutu { grid-column: 1 / -1; background:#383838; padding:25px; border-radius:15px; border-top:4px solid #ff7a00; }
     .eokul-filtre-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; background:#252525; padding:15px; border-radius:10px; margin-bottom:15px; }
     .eokul-filtre-grid label { display:block; font-size:12px; color:#ccc; margin-bottom:5px; }
@@ -84,7 +78,6 @@
   </div>
 </header>
 
-<!-- GİRİŞ EKRANI -->
 <div class="giris-kutu" id="girisAlani">
   <h2>Öğretmen Girişi</h2>
   <form id="ogretmenGirisForm">
@@ -94,14 +87,11 @@
   </form>
 </div>
 
-<!-- PANEL ALANI -->
 <div class="panel" id="panelAlani">
-  
-  <!-- SOL BÖLÜM: 20 SORULUK TEST HAZIRLAMA ALANI -->
   <div class="kutu">
     <h2><i class="fa-solid fa-file-pen"></i> Test Oluştur & Gönder</h2>
     <input type="text" id="testBasligi" placeholder="Test / Sınav Başlığı (Örn: 1. Ünite Değerlendirme)" style="margin-bottom:10px;" required>
-    
+
     <label style="font-size:12px; color:#aaa;">Test Gönderim Hedefi:</label>
     <select id="testHedefTuru" required>
       <option value="hepsi">Tüm Öğrenciler (Genel Test)</option>
@@ -134,7 +124,6 @@
     <button type="button" id="sinavKaydetBtn" style="margin-top:15px; background: #ff7a00;"><i class="fa-solid fa-paper-plane"></i> Testi Belirtilen Hedefe Gönder</button>
   </div>
 
-  <!-- SAĞ BÖLÜM: BAŞARI DÜZEYİ & DERS NOTU PAYLAŞIMI -->
   <div class="kutu">
     <h2><i class="fa-solid fa-chart-line"></i> Öğrenci Test Başarı Düzeyi (Canlı)</h2>
     <div class="liste" style="max-height: 250px;">
@@ -204,7 +193,6 @@
     </div>
   </div>
 
-  <!-- TAM GENİŞLİK BÖLÜM: ÖĞRENCİ E-OKUL NOTLARI (SINIF BAZLI) -->
   <div class="eokul-ogretmen-kutu" id="eokulOgretmenBolumu">
     <h2><i class="fa-solid fa-graduation-cap"></i> Öğrenci E-Okul Notları (Sınıf Bazlı)</h2>
 
@@ -279,10 +267,8 @@
       </div>
     </div>
   </div>
-
 </div>
 
-<!-- FIREBASE UYGULAMASI -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -317,11 +303,11 @@
   function escapeHtml(text) {
     if (text === null || text === undefined) return "";
     return String(text)
-      .replace(/&/g, "&")
-      .replace(/</g, "<")
-      .replace(/>/g, ">")
-      .replace(/"/g, """)
-      .replace(/'/g, "'");
+      .replaceAll("&", "&")
+      .replaceAll("<", "<")
+      .replaceAll(">", ">")
+      .replaceAll('"', """)
+      .replaceAll("'", "'");
   }
 
   function normalizeTr(val) {
@@ -525,14 +511,12 @@
     }
   }
 
-  // TEST HEDEF SEÇİMİ
   const testHedefTuru = document.getElementById("testHedefTuru");
   testHedefTuru.addEventListener("change", () => {
     document.getElementById("testSinifKutu").style.display = testHedefTuru.value === "sinif" ? "block" : "none";
     document.getElementById("testOgrenciKutu").style.display = testHedefTuru.value === "ogrenci" ? "block" : "none";
   });
 
-  // DOSYA SEÇİMİ
   const dosyaInput = document.getElementById("dosyaInput");
   const dosyaEtiket = document.getElementById("dosyaEtiket");
   dosyaInput.addEventListener("change", (e) => {
@@ -543,7 +527,6 @@
     }
   });
 
-  // HEDEF SEÇİMİ (NOTLAR)
   const hedefTuru = document.getElementById("hedefTuru");
   hedefTuru.addEventListener("change", () => {
     document.getElementById("sinifSecimKutu").style.display = hedefTuru.value === "sinif" ? "block" : "none";
@@ -587,7 +570,7 @@
       } else {
         alert("Hatalı kullanıcı adı veya şifre! Lütfen bilgilerinizi kontrol edin.");
       }
-    } catch (err) { alert("Giriş hatası: " + err.message); } 
+    } catch (err) { alert("Giriş hatası: " + err.message); }
     finally { gBtn.disabled = false; gBtn.innerText = "Giriş Yap"; }
   });
 
@@ -608,7 +591,6 @@
   }
   document.getElementById("cikisBtn").addEventListener("click", cikisYap);
 
-  // TESTİ FİREBASE'E GÖNDER
   document.getElementById("sinavKaydetBtn").addEventListener("click", async () => {
     const baslik = document.getElementById("testBasligi").value.trim();
     if (!baslik) { alert("Lütfen bir test başlığı girin!"); return; }
@@ -662,7 +644,6 @@
     }
   });
 
-  // CANLI RAPOR TAKİBİ VE ÖĞRENCİ SONUCUNU SİLME
   function raporlariCanliIzle() {
     const ogretmenId = aktifOgretmen.id || aktifOgretmen.kullaniciAdi;
     onSnapshot(collection(db, "test_sonuclari"), (snapshot) => {
@@ -763,7 +744,7 @@
 
       alert("Paylaşım gönderildi!");
       document.getElementById("paylasimForm").reset();
-    } catch (err) { alert("Hata: " + err.message); } 
+    } catch (err) { alert("Hata: " + err.message); }
     finally { btn.disabled = false; btn.innerText = "Paylaş"; }
   });
 
