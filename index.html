@@ -429,6 +429,177 @@
       transform: translateY(-2px);
     }
 
+    /* DUYURULAR ALANI (HIZLI BİLGİ AL ALTINDA - YUKARIDAN AŞAĞI KAYAN) */
+    .duyurular-bolumu {
+      margin-top: 14px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 210px;
+    }
+
+    .duyurular-baslik {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      color: var(--secondary);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .duyurular-baslik span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .duyurular-baslik i {
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    .duyuru-pencere {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      border-radius: var(--radius-sm);
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 8px;
+    }
+
+    .duyuru-akisi {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      will-change: transform;
+    }
+
+    .duyuru-akisi.kaydir-aktif {
+      animation: duyuruYukaridanAsagi var(--duyuru-sure, 18s) linear infinite;
+    }
+
+    .duyuru-pencere:hover .duyuru-akisi.kaydir-aktif {
+      animation-play-state: paused;
+    }
+
+    @keyframes duyuruYukaridanAsagi {
+      0% {
+        transform: translateY(-50%);
+      }
+      100% {
+        transform: translateY(0%);
+      }
+    }
+
+    .duyuru-kart {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s ease;
+    }
+
+    .duyuru-kart:hover {
+      border-color: var(--primary);
+      background: #fffaf5;
+      transform: translateX(3px);
+      box-shadow: 0 6px 14px var(--primary-glow);
+    }
+
+    .duyuru-kart-gorsel {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--border-color);
+      background: #f1f5f9;
+    }
+
+    .duyuru-kart-icerik {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .duyuru-kart-baslik {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .duyuru-kart-ozet {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .duyuru-kart-tarih {
+      font-size: 10.5px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .duyuru-bos {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      padding: 12px;
+      gap: 6px;
+    }
+
+    /* DUYURU DETAY MODAL */
+    .duyuru-modal-gorsel {
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      margin: 16px 0;
+      border: 1px solid var(--border-color);
+      background: #f8fafc;
+    }
+
+    .duyuru-modal-tarih {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .duyuru-modal-metin {
+      font-size: 15px;
+      color: var(--text-main);
+      line-height: 1.75;
+      white-space: pre-line;
+    }
+
     /* SLIDER */
     .slider-frame-wrapper {
       position: relative;
@@ -907,6 +1078,17 @@
     </div>
   </div>
 
+  <!-- DUYURU DETAY POPUP -->
+  <div id="duyuruModal" class="program-modal">
+    <div class="program-modal-content">
+      <span class="program-modal-close" onclick="duyuruDetayKapat()">×</span>
+      <h2 id="duyuruModalBaslik" style="color:var(--secondary); font-size:22px; font-weight:800; padding-right:36px;"></h2>
+      <div id="duyuruModalTarih" class="duyuru-modal-tarih"></div>
+      <img id="duyuruModalGorsel" class="duyuru-modal-gorsel" src="" alt="" style="display:none;">
+      <div id="duyuruModalMetin" class="duyuru-modal-metin"></div>
+    </div>
+  </div>
+
   <section class="ana-alan">
     <div class="kutu giris">
       <h3>
@@ -950,6 +1132,21 @@
           <textarea id="hOgrenciMesaj" placeholder="Mesajınız"></textarea>
           <button type="submit" id="hGonderBtn">Gönder</button>
         </form>
+      </div>
+
+      <!-- DUYURULAR (HIZLI BİLGİ AL ALTINDA - YUKARIDAN AŞAĞI KAYARAK) -->
+      <div class="duyurular-bolumu" id="duyurularBolumu">
+        <div class="duyurular-baslik">
+          <span><i class="fa-solid fa-bullhorn"></i> Duyurular</span>
+        </div>
+        <div class="duyuru-pencere" id="duyuruPencere">
+          <div class="duyuru-akisi" id="duyuruAkisi">
+            <div class="duyuru-bos">
+              <i class="fa-solid fa-bullhorn" style="color:var(--primary); font-size:18px;"></i>
+              <span>Henüz duyuru eklenmemiş.</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1296,10 +1493,45 @@
       document.getElementById("programModal").style.display = "none";
     }
 
+    // DUYURU DETAY AÇ / KAPAT
+    window.duyuruDetayAc = function(duyuru) {
+      const modal = document.getElementById("duyuruModal");
+      const baslikEl = document.getElementById("duyuruModalBaslik");
+      const tarihEl = document.getElementById("duyuruModalTarih");
+      const gorselEl = document.getElementById("duyuruModalGorsel");
+      const metinEl = document.getElementById("duyuruModalMetin");
+
+      baslikEl.innerText = duyuru.baslik || "Duyuru Detayı";
+      tarihEl.innerHTML = duyuru.tarih
+        ? `<i class="fa-regular fa-calendar"></i> ${duyuru.tarih}`
+        : "";
+
+      const gorselSrc = duyuru.gorsel || duyuru.url || "";
+      if (gorselSrc) {
+        gorselEl.src = gorselSrc;
+        gorselEl.alt = duyuru.baslik || "Duyuru Görseli";
+        gorselEl.style.display = "block";
+      } else {
+        gorselEl.removeAttribute("src");
+        gorselEl.style.display = "none";
+      }
+
+      metinEl.innerText = duyuru.icerik || duyuru.metin || duyuru.aciklama || "";
+      modal.style.display = "block";
+    };
+
+    window.duyuruDetayKapat = function() {
+      document.getElementById("duyuruModal").style.display = "none";
+    };
+
     window.onclick = function(event) {
       const modal = document.getElementById("programModal");
+      const dModal = document.getElementById("duyuruModal");
       if (event.target === modal) {
         modal.style.display = "none";
+      }
+      if (event.target === dModal) {
+        dModal.style.display = "none";
       }
     };
   </script>
@@ -1322,6 +1554,88 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    // DUYURULARI DİNAMİK YÜKLEME (YUKARIDAN AŞAĞI KAYAN AKIŞ)
+    function duyuruKartOlustur(duyuru) {
+      const kart = document.createElement("div");
+      kart.className = "duyuru-kart";
+      kart.addEventListener("click", function() {
+        window.duyuruDetayAc(duyuru);
+      });
+
+      const gorselSrc = duyuru.gorsel || duyuru.url || "";
+      if (gorselSrc) {
+        const img = document.createElement("img");
+        img.className = "duyuru-kart-gorsel";
+        img.src = gorselSrc;
+        img.alt = duyuru.baslik || "Duyuru";
+        kart.appendChild(img);
+      }
+
+      const icerikDiv = document.createElement("div");
+      icerikDiv.className = "duyuru-kart-icerik";
+
+      const baslikDiv = document.createElement("div");
+      baslikDiv.className = "duyuru-kart-baslik";
+      baslikDiv.innerText = duyuru.baslik || "Duyuru";
+
+      const ozetDiv = document.createElement("div");
+      ozetDiv.className = "duyuru-kart-ozet";
+      ozetDiv.innerText = duyuru.icerik || duyuru.metin || duyuru.aciklama || "";
+
+      const altSatir = document.createElement("div");
+      altSatir.className = "duyuru-kart-tarih";
+      altSatir.innerHTML = `<span>${duyuru.tarih || ""}</span><span>İncele <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></span>`;
+
+      icerikDiv.appendChild(baslikDiv);
+      icerikDiv.appendChild(ozetDiv);
+      icerikDiv.appendChild(altSatir);
+      kart.appendChild(icerikDiv);
+
+      return kart;
+    }
+
+    onSnapshot(collection(db, "duyurular"), (snapshot) => {
+      const akis = document.getElementById("duyuruAkisi");
+      if (!akis) return;
+
+      const liste = [];
+      snapshot.forEach((docSnap) => {
+        liste.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      // En güncel / eklenme sırasına göre sırala
+      liste.sort((a, b) => {
+        const tA = a.timestamp || 0;
+        const tB = b.timestamp || 0;
+        return tB - tA;
+      });
+
+      akis.innerHTML = "";
+      akis.classList.remove("kaydir-aktif");
+
+      if (liste.length === 0) {
+        akis.innerHTML = `
+          <div class="duyuru-bos">
+            <i class="fa-solid fa-bullhorn" style="color:var(--primary); font-size:18px;"></i>
+            <span>Henüz duyuru eklenmemiş.</span>
+          </div>
+        `;
+        return;
+      }
+
+      // Yukarıdan aşağı kesintisiz kayma için listeyi çiftleyerek ekle
+      const tekrarliListe = liste.length > 1 ? [...liste, ...liste] : liste;
+      tekrarliListe.forEach((item) => {
+        akis.appendChild(duyuruKartOlustur(item));
+      });
+
+      if (liste.length > 1) {
+        const sure = Math.max(12, liste.length * 5);
+        akis.style.setProperty("--duyuru-sure", sure + "s");
+        akis.classList.add("kaydir-aktif");
+      }
+    });
 
     // DERS PROGRAMI GÖSTERME
     window.dersProgramiGoster = function(sinifAdi) {
